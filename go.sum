@@ -213,6 +213,7 @@ github.com/go-openapi/spec v0.0.0-20160808142527-6aced65f8501/go.mod h1:J8+jY1nA
 github.com/go-openapi/swag v0.0.0-20160704191624-1d0bd113de87/go.mod h1:DXUve3Dpr1UfpPtxFw+EFuQ41HhCWZfha5jSVRG7C7I=
 github.com/go-playground/locales v0.12.1/go.mod h1:IUMDtCfWo/w/mtMfIE/IG2K+Ey3ygWanZIBtBW0W2TM=
 github.com/go-playground/universal-translator v0.16.0/go.mod h1:1AnU7NaIRDWWzGEKwgtJRd2xk99HeFyHw3yid4rvQIY=
+github.com/go-redis/redis v6.15.2+incompatible h1:9SpNVG76gr6InJGxoZ6IuuxaCOQwDAhzyXg+Bs+0Sb4=
 github.com/go-redis/redis v6.15.2+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
 github.com/go-redsync/redsync v1.3.0/go.mod h1:QClK/s99KRhfKdpxLTMsI5mSu43iLp0NfOneLPie+78=
 github.com/go-sql-driver/mysql v1.4.1/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
@@ -462,8 +463,7 @@ github.com/myproject-0722/mn-hosted v0.0.0-20191018084235-f5278d949aaa h1:p6+hbI
 github.com/myproject-0722/mn-hosted v0.0.0-20191018084235-f5278d949aaa/go.mod h1:SELrsUKESUbcqBVxRwXahlC6630a0shuNOxTT7mLTF4=
 github.com/myproject-0722/mn-hosted v0.0.0-20191018084433-108183dc94dd h1:mFwq0W5okTXScVQ4Xd/KMT8siHavBUoH9E/m7bH7LQA=
 github.com/myproject-0722/mn-hosted v0.0.0-20191018084433-108183dc94dd/go.mod h1:SELrsUKESUbcqBVxRwXahlC6630a0shuNOxTT7mLTF4=
-github.com/myproject-0722/my-micro v0.0.0-20190921053924-c591a1bce2c3 h1:mS99gDQbDM3h+Ghqe/89DV9b8+1d4PmbBwN4gyAnheg=
-github.com/myproject-0722/my-micro v0.0.0-20190921053924-c591a1bce2c3/go.mod h1:+6yPoloabEM3C2Op0zvmMj18WfGRAZt7WT26BjfBqHI=
+github.com/myproject-0722/mn-hosted v0.0.0-20191019014105-e0e45485912e h1:XMOvxi77PJNUGqY4CwZn5EHqUZuR26O9MSi8Lo3yFww=
 github.com/namedotcom/go v0.0.0-20180403034216-08470befbe04/go.mod h1:5sN+Lt1CaY4wsPvgQH/jsuJi4XO2ssZbdsIizr4CVC8=
 github.com/nats-io/jwt v0.2.6/go.mod h1:mQxQ0uHQ9FhEVPIcTSKwx2lqZEpXWWcCgA7R6NrWvvY=
 github.com/nats-io/jwt v0.2.8/go.mod h1:mQxQ0uHQ9FhEVPIcTSKwx2lqZEpXWWcCgA7R6NrWvvY=

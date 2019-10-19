@@ -15,6 +15,13 @@ import (
 
 type User struct{}
 
+func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.SignUpResponse) error {
+	log.Print("Received SignUpRequest Name: ", req.Name, " Passwd: ", req.Passwd)
+	rsp.Rescode = 200
+	rsp.Msg = " SignUp OK!"
+	return nil
+}
+
 func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.SignInResponse) error {
 	log.Print("Received SignInRequest Name: ", req.Name, " Passwd: ", req.Passwd)
 	rsp.Rescode = 200

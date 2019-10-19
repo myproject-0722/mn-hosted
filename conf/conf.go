@@ -9,5 +9,5 @@ var (
 var (
 	NSQIP   string = "127.0.0.1:4150" //NSQ
 	RedisIP string = "127.0.0.1:6379" //redis
-	MySQL          = "root:123456@tcp(localhost:3306)/mn-hosted?charset=utf8&parseTime=true"
+	MySQL          = "mnhosted:123456@tcp(localhost:3306)/mnhosted?charset=utf8&parseTime=true"
 )
