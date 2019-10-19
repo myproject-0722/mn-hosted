@@ -3,7 +3,18 @@ syntax = "proto3";
 package go.mymicro.srv.user;
 
 service User {
+	rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
 	rpc SignIn(SignInRequest) returns (SignInResponse) {}
+}
+
+message SignUpRequest {
+	string name = 1;
+	string passwd = 2;
+}
+
+message SignUpResponse {
+	int32 rescode = 1; 	//200 ok
+	string msg = 2;		//
 }
 
 message SignInRequest {

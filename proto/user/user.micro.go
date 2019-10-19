@@ -34,6 +34,7 @@ var _ server.Option
 // Client API for User service
 
 type UserService interface {
+	SignUp(ctx context.Context, in *SignUpRequest, opts ...client.CallOption) (*SignUpResponse, error)
 	SignIn(ctx context.Context, in *SignInRequest, opts ...client.CallOption) (*SignInResponse, error)
 }
 
@@ -55,6 +56,16 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
+func (c *userService) SignUp(ctx context.Context, in *SignUpRequest, opts ...client.CallOption) (*SignUpResponse, error) {
+	req := c.c.NewRequest(c.name, "User.SignUp", in)
+	out := new(SignUpResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) SignIn(ctx context.Context, in *SignInRequest, opts ...client.CallOption) (*SignInResponse, error) {
 	req := c.c.NewRequest(c.name, "User.SignIn", in)
 	out := new(SignInResponse)
@@ -68,11 +79,13 @@ func (c *userService) SignIn(ctx context.Context, in *SignInRequest, opts ...cli
 // Server API for User service
 
 type UserHandler interface {
+	SignUp(context.Context, *SignUpRequest, *SignUpResponse) error
 	SignIn(context.Context, *SignInRequest, *SignInResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
+		SignUp(ctx context.Context, in *SignUpRequest, out *SignUpResponse) error
 		SignIn(ctx context.Context, in *SignInRequest, out *SignInResponse) error
 	}
 	type User struct {
@@ -84,6 +97,10 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 
 type userHandler struct {
 	UserHandler
+}
+
+func (h *userHandler) SignUp(ctx context.Context, in *SignUpRequest, out *SignUpResponse) error {
+	return h.UserHandler.SignUp(ctx, in, out)
 }
 
 func (h *userHandler) SignIn(ctx context.Context, in *SignInRequest, out *SignInResponse) error {
