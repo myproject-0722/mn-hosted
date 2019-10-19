@@ -1,0 +1,37 @@
+version: '2'
+services: 
+  consul:
+    image: consul
+    container_name: node1
+    volumes:
+      - /etc/consul.d
+      - /data/consul.d
+    command: nohup consul agent -server -config-dir=/etc/consul.d -data-dir=/data/consul.d -bootstrap-expect=1 -node=node1 -bind=0.0.0.0 -client=0.0.0.0 -ui
+    ports:
+      - 8500:8500
+    networks: 
+      - default
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    volumes:
+      - ./nsq/nsqd/data:/data
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "4171:4171"
