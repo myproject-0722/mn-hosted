@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package go.mymicro.srv.user;
+package go.mnhosted.srv.user;
 
 service User {
 	rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
