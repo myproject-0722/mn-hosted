@@ -5,7 +5,7 @@ mn-hosted基于[micro](https://github.com/micro/micro)，编写主节点托管�
 go1.12.2,请自行搜索安装
 ## 2.protobuf
 [下载](https://github.com/protocolbuffers/protobuf/archive/v3.6.0.1.zip)或wget https://github.com/protocolbuffers/protobuf/archive/v3.6.0.1.zip
-./autogen.sh && ./configure && make && make check  
+./autogen.sh && ./configure && make  
 sudo make install    
 sudo ldconfig  
 ## 3.protoc-gen-go
