@@ -8,6 +8,7 @@ require (
 	github.com/containerd/continuity v0.0.0-20190426062206-aaeac12a7ffc // indirect
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/go-redis/redis v6.15.2+incompatible
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.2
 	github.com/google/pprof v0.0.0-20190723021845-34ac40c74b70 // indirect
 	github.com/hashicorp/go-immutable-radix v1.1.0 // indirect

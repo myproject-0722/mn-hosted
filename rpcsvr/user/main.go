@@ -8,6 +8,8 @@ import (
 
 	"github.com/micro/go-micro"
 
+	"github.com/myproject-0722/mn-hosted/lib/dao"
+	db "github.com/myproject-0722/mn-hosted/lib/db"
 	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	user "github.com/myproject-0722/mn-hosted/proto/user"
@@ -16,14 +18,22 @@ import (
 type User struct{}
 
 func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.SignUpResponse) error {
-	log.Print("Received SignUpRequest Name: ", req.Name, " Passwd: ", req.Passwd)
+	log.Print("Received SignUpRequest Name: ", req.Account, " Passwd: ", req.Passwd)
+
+	id, err := dao.UserDao.Add(db.Factoty.GetSession(), req.Account, req.Passwd)
+	if err != nil {
+		rsp.Rescode = 404
+		rsp.Msg = " SignUp Error"
+		return nil
+	}
 	rsp.Rescode = 200
 	rsp.Msg = " SignUp OK!"
+	rsp.Id = id
 	return nil
 }
 
 func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.SignInResponse) error {
-	log.Print("Received SignInRequest Name: ", req.Name, " Passwd: ", req.Passwd)
+	log.Print("Received SignInRequest Name: ", req.Account, " Passwd: ", req.Passwd)
 	rsp.Rescode = 200
 	rsp.Msg = " SignIn OK!"
 	return nil
@@ -32,7 +42,7 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 func main() {
 
 	liblog.InitLog("/var/log/mn-hosted/rpcsvr/user", "user.log")
-
+	db.Init()
 	reg := register.NewRegistry()
 
 	service := micro.NewService(
