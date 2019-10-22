@@ -22,5 +22,5 @@ go run rpcsvr/user/main.go
 ## 2.运行gateway
 micro --registry=consul --registry_address=127.0.0.1:8500 --server_advertise=192.168.0.118:8080 api --handler=rpc --address=0.0.0.0:8080 --namespace=go.mnhosted.srv
 ## 3.测试
-### curl -H 'Content-Type: application/json' -d '{"name": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignUp"
-### curl -H 'Content-Type: application/json' -d '{"name": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignIn"
+### curl -H 'Content-Type: application/json' -d '{"account": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignUp"
+### curl -H 'Content-Type: application/json' -d '{"account": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignIn"
