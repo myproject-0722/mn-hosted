@@ -34,6 +34,12 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 
 func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.SignInResponse) error {
 	log.Print("Received SignInRequest Name: ", req.Account, " Passwd: ", req.Passwd)
+	isEquis, err := dao.UserDao.Check(db.Factoty.GetSession(), req.Account, req.Passwd)
+	if isEquis != true || err != nil {
+		rsp.Rescode = 404
+		rsp.Msg = " SignIn Error!"
+		return nil
+	}
 	rsp.Rescode = 200
 	rsp.Msg = " SignIn OK!"
 	return nil
