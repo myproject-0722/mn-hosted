@@ -1,4 +1,4 @@
-package gateway
+package redisclient
 
 import (
 	conf "github.com/myproject-0722/mn-hosted/conf"
@@ -7,17 +7,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var redisClient *redis.Client
+var Client *redis.Client
 
-func InitRedis() {
-	redisClient = redis.NewClient(
+func Init() {
+	Client = redis.NewClient(
 		&redis.Options{
 			Addr: conf.RedisIP,
-			DB:   1,
+			DB:   9,
 		},
 	)
 
-	_, err := redisClient.Ping().Result()
+	_, err := Client.Ping().Result()
 	if err != nil {
 		log.Error(err)
 		panic(err)

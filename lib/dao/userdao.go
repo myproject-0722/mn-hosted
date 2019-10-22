@@ -25,17 +25,18 @@ func (*userDao) Add(session *dbsession.DBSession, account string, passwd string)
 }
 
 // Insert
-func (*userDao) Check(session *dbsession.DBSession, account string, passwd string) (bool, error) {
-	row := session.QueryRow("select passwd from t_account where account = ?", account)
+func (*userDao) Check(session *dbsession.DBSession, account string, passwd string) (int64, error) {
+	row := session.QueryRow("select id, passwd from t_account where account = ?", account)
 	var dbPasswd string
-	err := row.Scan(&dbPasswd)
+	var id int64
+	err := row.Scan(&id, &dbPasswd)
 	if err != nil {
 		log.Error(err)
-		return false, err
+		return 0, err
 	}
 	if passwd != dbPasswd {
 		log.Error("password error")
-		return false, err
+		return 0, err
 	}
-	return true, nil
+	return id, nil
 }
