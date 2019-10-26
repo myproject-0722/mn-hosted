@@ -44,7 +44,7 @@ func (s *User) SignIn(ctx context.Context, req *api.Request, rsp *api.Response) 
 		return err
 	}
 
-	rsp.StatusCode = 200
+	rsp.StatusCode = response.Rescode
 	/*b, _ := json.Marshal(map[string]string{
 		"message": response.Msg,
 	})*/
