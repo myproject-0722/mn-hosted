@@ -44,13 +44,14 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 		return nil
 	}
 
-	token := utils.GetRandomString(16)
+	token := utils.GetRandomString(32)
 	log.Print("token=", token)
 	redisclient.Client.Set("userToken:"+fmt.Sprint(id), token, 0)
 
 	rsp.Rescode = 200
 	rsp.Msg = " SignIn OK!"
 	rsp.Id = id
+	rsp.Token = token
 	return nil
 }
 

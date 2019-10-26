@@ -27,4 +27,5 @@ message SignInResponse {
 	int32 rescode = 1; 	//200 ok
 	string msg = 2;		//
 	int64 id = 3;
+  string token = 4;
 }
