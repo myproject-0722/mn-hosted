@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package go.mnhosted.srv.node;
+
+service masternode {
+	rpc New(MasterNodeNewRequest) returns (MasterNodeNewResponse) {}
+}
+
+message MasterNodeNewRequest {
+    int64 userId = 1;
+	string mnAddress = 2;
+    int32 outputIndex = 3;
+	string vps = 4;
+    string alias = 5;
+    string txId = 6;
+    string mnConf = 7;
+}
+
+message MasterNodeNewResponse {
+	int32 rescode = 1; 	//200 ok
+}

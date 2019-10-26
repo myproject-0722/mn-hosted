@@ -18,9 +18,18 @@ go get github.com/micro/protoc-gen-micro
 docker-compose up &
 # 2.测试：
 ## 1.运行rpcsvr
-go run rpcsvr/user/main.go
+### go run rpcsvr/user/main.go
+### go run apisvr/user/main.go(如采用参数形式需要启动)
 ## 2.运行gateway
-micro --registry=consul --registry_address=127.0.0.1:8500 --server_advertise=192.168.0.118:8080 api --handler=rpc --address=0.0.0.0:8080 --namespace=go.mnhosted.srv
+### micro --registry=consul --registry_address=127.0.0.1:8500 --server_advertise=192.168.0.118:8080 api --handler=rpc --address=0.0.0.0:8080 --namespace=go.mnhosted.srv
+### 或micro --registry=consul --registry_address=127.0.0.1:8500 --server_advertise=192.168.0.118:8080 api --handler=api --address=0.0.0.0:8080 --namespace=go.mnhosted.api(如采用参数形式需要启动)
 ## 3.测试
 ### curl -H 'Content-Type: application/json' -d '{"account": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignUp"
+### 或curl "http://localhost:8080/user/User/SignUp?account=lixu&passwd=123456"
 ### curl -H 'Content-Type: application/json' -d '{"account": "john", "passwd":"123456"}' "http://localhost:8080/user/User/SignIn"
+### curl -H 'Content-Type: application/json' -d '{"userId": 1, "mnAddress":"dddd", "outputIndex":1, "vps":"", "alias":"","txId":"", "mnConf":""}' "http://localhost:8080/node/Masternode/New"
+
+
+# TODO
+## 1.gateway鉴权，可参考https://blog.csdn.net/linux_Allen/article/details/89914647，后面处理
+## 2.忘记密码处理
