@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -44,10 +45,12 @@ func (s *User) SignIn(ctx context.Context, req *api.Request, rsp *api.Response) 
 	}
 
 	rsp.StatusCode = 200
-	b, _ := json.Marshal(map[string]string{
+	/*b, _ := json.Marshal(map[string]string{
 		"message": response.Msg,
-	})
+	})*/
+	b, _ := json.Marshal(response)
 	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
 
 	return nil
 }
@@ -74,11 +77,12 @@ func (s *User) SignUp(ctx context.Context, req *api.Request, rsp *api.Response) 
 	}
 
 	rsp.StatusCode = 200
-	b, _ := json.Marshal(map[string]string{
+	/* b, _ := json.Marshal(map[string]string{
 		"message": response.Msg,
-	})
+	}) */
+	b, _ := json.Marshal(response)
 	rsp.Body = string(b)
-
+	fmt.Println(rsp.Body)
 	return nil
 }
 
