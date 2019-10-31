@@ -31,6 +31,65 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
+// Client API for Coinlist service
+
+type CoinlistService interface {
+	Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error)
+}
+
+type coinlistService struct {
+	c    client.Client
+	name string
+}
+
+func NewCoinlistService(name string, c client.Client) CoinlistService {
+	if c == nil {
+		c = client.NewClient()
+	}
+	if len(name) == 0 {
+		name = "go.mnhosted.srv.node"
+	}
+	return &coinlistService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *coinlistService) Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error) {
+	req := c.c.NewRequest(c.name, "Coinlist.Get", in)
+	out := new(CoinListResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Coinlist service
+
+type CoinlistHandler interface {
+	Get(context.Context, *CoinListRequest, *CoinListResponse) error
+}
+
+func RegisterCoinlistHandler(s server.Server, hdlr CoinlistHandler, opts ...server.HandlerOption) error {
+	type coinlist interface {
+		Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error
+	}
+	type Coinlist struct {
+		coinlist
+	}
+	h := &coinlistHandler{hdlr}
+	return s.Handle(s.NewHandler(&Coinlist{h}, opts...))
+}
+
+type coinlistHandler struct {
+	CoinlistHandler
+}
+
+func (h *coinlistHandler) Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error {
+	return h.CoinlistHandler.Get(ctx, in, out)
+}
+
 // Client API for Masternode service
 
 type MasternodeService interface {

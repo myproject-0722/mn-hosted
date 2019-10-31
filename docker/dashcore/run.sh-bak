@@ -1,0 +1,4 @@
+docker run -d -p 19999:9999 --name mnhosted-dashcore \
+  -e mnkey=1213456 \
+  -e externalip=192.168.0.110 \
+  mnhosted/dashcore:v1.0 /bin/sh -C

@@ -2,18 +2,42 @@ syntax = "proto3";
 
 package go.mnhosted.srv.node;
 
+service coinlist {
+  rpc Get(CoinListRequest) returns (CoinListResponse) {}
+}
+
+message CoinListRequest {
+  int32 curPage = 1;
+  int32 pageSize = 2;
+}
+
+message CoinItem {
+  int32 MNRequired = 1;
+  string coinName = 2;
+  int32 MNPrice = 3;    //need /100
+  int32 volume = 4;
+  int32 roi = 5;
+  int32 monthlyIncome = 6;
+  int32 MNHosted = 7;
+}
+
+message CoinListResponse {
+  int32 rescode = 1;
+  repeated CoinItem coinlist = 2;
+}
+
 service masternode {
 	rpc New(MasterNodeNewRequest) returns (MasterNodeNewResponse) {}
 }
 
 message MasterNodeNewRequest {
-    int64 userId = 1;
-	string mnAddress = 2;
-    int32 outputIndex = 3;
+  int64 userId = 1;
+	string MNAddress = 2;
+  int32 outputIndex = 3;
 	string vps = 4;
-    string alias = 5;
-    string txId = 6;
-    string mnConf = 7;
+  string alias = 5;
+  string txId = 6;
+  string MNConf = 7;
 }
 
 message MasterNodeNewResponse {

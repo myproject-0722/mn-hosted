@@ -8,12 +8,34 @@ import (
 
 	"github.com/micro/go-micro"
 
+	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
 	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	node "github.com/myproject-0722/mn-hosted/proto/node"
 )
+
+type Coinlist struct{}
+
+func (s *Coinlist) Get(ctx context.Context, req *node.CoinListRequest, rsp *node.CoinListResponse) error {
+	coin, err := dao.NodeDao.GetCoinList(db.Factoty.GetSession(), req.CurPage, req.PageSize)
+	if err != nil {
+		return err
+	}
+
+	rsp.Rescode = 200
+	item := new(node.CoinItem)
+	item.CoinName = coin.CoinName
+	item.MNRequired = coin.MNRequired
+	item.MNPrice = coin.MNPrice
+	item.Volume = coin.Volume
+	item.Roi = coin.Roi
+	item.MonthlyIncome = coin.MonthlyIncome
+	item.MNHosted = coin.MNHosted
+	rsp.Coinlist = append(rsp.Coinlist, item)
+	return nil
+}
 
 type Masternode struct{}
 
@@ -52,6 +74,7 @@ func main() {
 
 	// Register Handlers
 	node.RegisterMasternodeHandler(service.Server(), new(Masternode))
+	node.RegisterCoinlistHandler(service.Server(), new(Coinlist))
 
 	// Run server
 	if err := service.Run(); err != nil {
