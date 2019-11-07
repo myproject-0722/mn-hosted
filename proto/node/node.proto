@@ -28,18 +28,60 @@ message CoinListResponse {
 
 service masternode {
 	rpc New(MasterNodeNewRequest) returns (MasterNodeNewResponse) {}
+  rpc Renew(MasterNodeRenewRequest) returns (MasterNodeRenewResponse) {}
+  rpc IsExsit(MasterNodeCheckRequest) returns (MasterNodeCheckResponse) {}
+  rpc Get(MasterNodeListRequest) returns (MasterNodeListResponse) {}
+}
+
+message MasterNodeListRequest {
+  int64 userId = 1;
+}
+
+message MasternodeItem {
+  int64 MNID = 1;
+  string coinName = 2;
+  string MNKey = 3;
+  int32 SyncStatus = 4;
+  string createTime = 5;
+  string expireTime = 6;
+}
+
+message MasterNodeListResponse {
+  int32 rescode = 1;
+  repeated MasternodeItem masternodelist = 2;
 }
 
 message MasterNodeNewRequest {
   int64 userId = 1;
-	string MNAddress = 2;
-  int32 outputIndex = 3;
-	string vps = 4;
-  string alias = 5;
-  string txId = 6;
-  string MNConf = 7;
+  string token = 2;
+  string coinName = 3;
+  string MNKey = 4;
+  string externalIp = 5;
+  string timeType = 6;
 }
 
 message MasterNodeNewResponse {
 	int32 rescode = 1; 	//200 ok
+}
+
+message MasterNodeRenewRequest {
+  int64 userId = 1;
+  string token = 2;
+  string coinName = 3;
+  string MNKey = 4;
+  string timeType = 5;
+  int32 timeNum = 6;
+}
+
+message MasterNodeRenewResponse {
+	int32 rescode = 1; 	//200 ok
+}
+
+message MasterNodeCheckRequest {
+  string coinName = 1;
+  string MNKey = 2;
+}
+
+message MasterNodeCheckResponse {
+	bool IsExsit = 1; 	//
 }

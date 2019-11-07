@@ -201,14 +201,178 @@ func (m *CoinListResponse) GetCoinlist() []*CoinItem {
 	return nil
 }
 
+type MasterNodeListRequest struct {
+	UserId               int64    `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasterNodeListRequest) Reset()         { *m = MasterNodeListRequest{} }
+func (m *MasterNodeListRequest) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeListRequest) ProtoMessage()    {}
+func (*MasterNodeListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{3}
+}
+
+func (m *MasterNodeListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeListRequest.Unmarshal(m, b)
+}
+func (m *MasterNodeListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeListRequest.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeListRequest.Merge(m, src)
+}
+func (m *MasterNodeListRequest) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeListRequest.Size(m)
+}
+func (m *MasterNodeListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeListRequest proto.InternalMessageInfo
+
+func (m *MasterNodeListRequest) GetUserId() int64 {
+	if m != nil {
+		return m.UserId
+	}
+	return 0
+}
+
+type MasternodeItem struct {
+	MNID                 int64    `protobuf:"varint,1,opt,name=MNID,proto3" json:"MNID,omitempty"`
+	CoinName             string   `protobuf:"bytes,2,opt,name=coinName,proto3" json:"coinName,omitempty"`
+	MNKey                string   `protobuf:"bytes,3,opt,name=MNKey,proto3" json:"MNKey,omitempty"`
+	SyncStatus           int32    `protobuf:"varint,4,opt,name=SyncStatus,proto3" json:"SyncStatus,omitempty"`
+	CreateTime           string   `protobuf:"bytes,5,opt,name=createTime,proto3" json:"createTime,omitempty"`
+	ExpireTime           string   `protobuf:"bytes,6,opt,name=expireTime,proto3" json:"expireTime,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasternodeItem) Reset()         { *m = MasternodeItem{} }
+func (m *MasternodeItem) String() string { return proto.CompactTextString(m) }
+func (*MasternodeItem) ProtoMessage()    {}
+func (*MasternodeItem) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{4}
+}
+
+func (m *MasternodeItem) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasternodeItem.Unmarshal(m, b)
+}
+func (m *MasternodeItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasternodeItem.Marshal(b, m, deterministic)
+}
+func (m *MasternodeItem) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasternodeItem.Merge(m, src)
+}
+func (m *MasternodeItem) XXX_Size() int {
+	return xxx_messageInfo_MasternodeItem.Size(m)
+}
+func (m *MasternodeItem) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasternodeItem.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasternodeItem proto.InternalMessageInfo
+
+func (m *MasternodeItem) GetMNID() int64 {
+	if m != nil {
+		return m.MNID
+	}
+	return 0
+}
+
+func (m *MasternodeItem) GetCoinName() string {
+	if m != nil {
+		return m.CoinName
+	}
+	return ""
+}
+
+func (m *MasternodeItem) GetMNKey() string {
+	if m != nil {
+		return m.MNKey
+	}
+	return ""
+}
+
+func (m *MasternodeItem) GetSyncStatus() int32 {
+	if m != nil {
+		return m.SyncStatus
+	}
+	return 0
+}
+
+func (m *MasternodeItem) GetCreateTime() string {
+	if m != nil {
+		return m.CreateTime
+	}
+	return ""
+}
+
+func (m *MasternodeItem) GetExpireTime() string {
+	if m != nil {
+		return m.ExpireTime
+	}
+	return ""
+}
+
+type MasterNodeListResponse struct {
+	Rescode              int32             `protobuf:"varint,1,opt,name=rescode,proto3" json:"rescode,omitempty"`
+	Masternodelist       []*MasternodeItem `protobuf:"bytes,2,rep,name=masternodelist,proto3" json:"masternodelist,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *MasterNodeListResponse) Reset()         { *m = MasterNodeListResponse{} }
+func (m *MasterNodeListResponse) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeListResponse) ProtoMessage()    {}
+func (*MasterNodeListResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{5}
+}
+
+func (m *MasterNodeListResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeListResponse.Unmarshal(m, b)
+}
+func (m *MasterNodeListResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeListResponse.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeListResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeListResponse.Merge(m, src)
+}
+func (m *MasterNodeListResponse) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeListResponse.Size(m)
+}
+func (m *MasterNodeListResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeListResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeListResponse proto.InternalMessageInfo
+
+func (m *MasterNodeListResponse) GetRescode() int32 {
+	if m != nil {
+		return m.Rescode
+	}
+	return 0
+}
+
+func (m *MasterNodeListResponse) GetMasternodelist() []*MasternodeItem {
+	if m != nil {
+		return m.Masternodelist
+	}
+	return nil
+}
+
 type MasterNodeNewRequest struct {
 	UserId               int64    `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	MNAddress            string   `protobuf:"bytes,2,opt,name=MNAddress,proto3" json:"MNAddress,omitempty"`
-	OutputIndex          int32    `protobuf:"varint,3,opt,name=outputIndex,proto3" json:"outputIndex,omitempty"`
-	Vps                  string   `protobuf:"bytes,4,opt,name=vps,proto3" json:"vps,omitempty"`
-	Alias                string   `protobuf:"bytes,5,opt,name=alias,proto3" json:"alias,omitempty"`
-	TxId                 string   `protobuf:"bytes,6,opt,name=txId,proto3" json:"txId,omitempty"`
-	MNConf               string   `protobuf:"bytes,7,opt,name=MNConf,proto3" json:"MNConf,omitempty"`
+	Token                string   `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	CoinName             string   `protobuf:"bytes,3,opt,name=coinName,proto3" json:"coinName,omitempty"`
+	MNKey                string   `protobuf:"bytes,4,opt,name=MNKey,proto3" json:"MNKey,omitempty"`
+	ExternalIp           string   `protobuf:"bytes,5,opt,name=externalIp,proto3" json:"externalIp,omitempty"`
+	TimeType             string   `protobuf:"bytes,6,opt,name=timeType,proto3" json:"timeType,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -218,7 +382,7 @@ func (m *MasterNodeNewRequest) Reset()         { *m = MasterNodeNewRequest{} }
 func (m *MasterNodeNewRequest) String() string { return proto.CompactTextString(m) }
 func (*MasterNodeNewRequest) ProtoMessage()    {}
 func (*MasterNodeNewRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c843d59d2d938e7, []int{3}
+	return fileDescriptor_0c843d59d2d938e7, []int{6}
 }
 
 func (m *MasterNodeNewRequest) XXX_Unmarshal(b []byte) error {
@@ -246,44 +410,37 @@ func (m *MasterNodeNewRequest) GetUserId() int64 {
 	return 0
 }
 
-func (m *MasterNodeNewRequest) GetMNAddress() string {
+func (m *MasterNodeNewRequest) GetToken() string {
 	if m != nil {
-		return m.MNAddress
+		return m.Token
 	}
 	return ""
 }
 
-func (m *MasterNodeNewRequest) GetOutputIndex() int32 {
+func (m *MasterNodeNewRequest) GetCoinName() string {
 	if m != nil {
-		return m.OutputIndex
-	}
-	return 0
-}
-
-func (m *MasterNodeNewRequest) GetVps() string {
-	if m != nil {
-		return m.Vps
+		return m.CoinName
 	}
 	return ""
 }
 
-func (m *MasterNodeNewRequest) GetAlias() string {
+func (m *MasterNodeNewRequest) GetMNKey() string {
 	if m != nil {
-		return m.Alias
+		return m.MNKey
 	}
 	return ""
 }
 
-func (m *MasterNodeNewRequest) GetTxId() string {
+func (m *MasterNodeNewRequest) GetExternalIp() string {
 	if m != nil {
-		return m.TxId
+		return m.ExternalIp
 	}
 	return ""
 }
 
-func (m *MasterNodeNewRequest) GetMNConf() string {
+func (m *MasterNodeNewRequest) GetTimeType() string {
 	if m != nil {
-		return m.MNConf
+		return m.TimeType
 	}
 	return ""
 }
@@ -299,7 +456,7 @@ func (m *MasterNodeNewResponse) Reset()         { *m = MasterNodeNewResponse{} }
 func (m *MasterNodeNewResponse) String() string { return proto.CompactTextString(m) }
 func (*MasterNodeNewResponse) ProtoMessage()    {}
 func (*MasterNodeNewResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c843d59d2d938e7, []int{4}
+	return fileDescriptor_0c843d59d2d938e7, []int{7}
 }
 
 func (m *MasterNodeNewResponse) XXX_Unmarshal(b []byte) error {
@@ -327,44 +484,267 @@ func (m *MasterNodeNewResponse) GetRescode() int32 {
 	return 0
 }
 
+type MasterNodeRenewRequest struct {
+	UserId               int64    `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	Token                string   `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	CoinName             string   `protobuf:"bytes,3,opt,name=coinName,proto3" json:"coinName,omitempty"`
+	MNKey                string   `protobuf:"bytes,4,opt,name=MNKey,proto3" json:"MNKey,omitempty"`
+	TimeType             string   `protobuf:"bytes,5,opt,name=timeType,proto3" json:"timeType,omitempty"`
+	TimeNum              int32    `protobuf:"varint,6,opt,name=timeNum,proto3" json:"timeNum,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasterNodeRenewRequest) Reset()         { *m = MasterNodeRenewRequest{} }
+func (m *MasterNodeRenewRequest) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeRenewRequest) ProtoMessage()    {}
+func (*MasterNodeRenewRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{8}
+}
+
+func (m *MasterNodeRenewRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeRenewRequest.Unmarshal(m, b)
+}
+func (m *MasterNodeRenewRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeRenewRequest.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeRenewRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeRenewRequest.Merge(m, src)
+}
+func (m *MasterNodeRenewRequest) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeRenewRequest.Size(m)
+}
+func (m *MasterNodeRenewRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeRenewRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeRenewRequest proto.InternalMessageInfo
+
+func (m *MasterNodeRenewRequest) GetUserId() int64 {
+	if m != nil {
+		return m.UserId
+	}
+	return 0
+}
+
+func (m *MasterNodeRenewRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *MasterNodeRenewRequest) GetCoinName() string {
+	if m != nil {
+		return m.CoinName
+	}
+	return ""
+}
+
+func (m *MasterNodeRenewRequest) GetMNKey() string {
+	if m != nil {
+		return m.MNKey
+	}
+	return ""
+}
+
+func (m *MasterNodeRenewRequest) GetTimeType() string {
+	if m != nil {
+		return m.TimeType
+	}
+	return ""
+}
+
+func (m *MasterNodeRenewRequest) GetTimeNum() int32 {
+	if m != nil {
+		return m.TimeNum
+	}
+	return 0
+}
+
+type MasterNodeRenewResponse struct {
+	Rescode              int32    `protobuf:"varint,1,opt,name=rescode,proto3" json:"rescode,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasterNodeRenewResponse) Reset()         { *m = MasterNodeRenewResponse{} }
+func (m *MasterNodeRenewResponse) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeRenewResponse) ProtoMessage()    {}
+func (*MasterNodeRenewResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{9}
+}
+
+func (m *MasterNodeRenewResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeRenewResponse.Unmarshal(m, b)
+}
+func (m *MasterNodeRenewResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeRenewResponse.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeRenewResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeRenewResponse.Merge(m, src)
+}
+func (m *MasterNodeRenewResponse) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeRenewResponse.Size(m)
+}
+func (m *MasterNodeRenewResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeRenewResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeRenewResponse proto.InternalMessageInfo
+
+func (m *MasterNodeRenewResponse) GetRescode() int32 {
+	if m != nil {
+		return m.Rescode
+	}
+	return 0
+}
+
+type MasterNodeCheckRequest struct {
+	CoinName             string   `protobuf:"bytes,1,opt,name=coinName,proto3" json:"coinName,omitempty"`
+	MNKey                string   `protobuf:"bytes,2,opt,name=MNKey,proto3" json:"MNKey,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasterNodeCheckRequest) Reset()         { *m = MasterNodeCheckRequest{} }
+func (m *MasterNodeCheckRequest) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeCheckRequest) ProtoMessage()    {}
+func (*MasterNodeCheckRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{10}
+}
+
+func (m *MasterNodeCheckRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeCheckRequest.Unmarshal(m, b)
+}
+func (m *MasterNodeCheckRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeCheckRequest.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeCheckRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeCheckRequest.Merge(m, src)
+}
+func (m *MasterNodeCheckRequest) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeCheckRequest.Size(m)
+}
+func (m *MasterNodeCheckRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeCheckRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeCheckRequest proto.InternalMessageInfo
+
+func (m *MasterNodeCheckRequest) GetCoinName() string {
+	if m != nil {
+		return m.CoinName
+	}
+	return ""
+}
+
+func (m *MasterNodeCheckRequest) GetMNKey() string {
+	if m != nil {
+		return m.MNKey
+	}
+	return ""
+}
+
+type MasterNodeCheckResponse struct {
+	IsExsit              bool     `protobuf:"varint,1,opt,name=IsExsit,proto3" json:"IsExsit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MasterNodeCheckResponse) Reset()         { *m = MasterNodeCheckResponse{} }
+func (m *MasterNodeCheckResponse) String() string { return proto.CompactTextString(m) }
+func (*MasterNodeCheckResponse) ProtoMessage()    {}
+func (*MasterNodeCheckResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c843d59d2d938e7, []int{11}
+}
+
+func (m *MasterNodeCheckResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MasterNodeCheckResponse.Unmarshal(m, b)
+}
+func (m *MasterNodeCheckResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MasterNodeCheckResponse.Marshal(b, m, deterministic)
+}
+func (m *MasterNodeCheckResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MasterNodeCheckResponse.Merge(m, src)
+}
+func (m *MasterNodeCheckResponse) XXX_Size() int {
+	return xxx_messageInfo_MasterNodeCheckResponse.Size(m)
+}
+func (m *MasterNodeCheckResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MasterNodeCheckResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MasterNodeCheckResponse proto.InternalMessageInfo
+
+func (m *MasterNodeCheckResponse) GetIsExsit() bool {
+	if m != nil {
+		return m.IsExsit
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*CoinListRequest)(nil), "go.mnhosted.srv.node.CoinListRequest")
 	proto.RegisterType((*CoinItem)(nil), "go.mnhosted.srv.node.CoinItem")
 	proto.RegisterType((*CoinListResponse)(nil), "go.mnhosted.srv.node.CoinListResponse")
+	proto.RegisterType((*MasterNodeListRequest)(nil), "go.mnhosted.srv.node.MasterNodeListRequest")
+	proto.RegisterType((*MasternodeItem)(nil), "go.mnhosted.srv.node.MasternodeItem")
+	proto.RegisterType((*MasterNodeListResponse)(nil), "go.mnhosted.srv.node.MasterNodeListResponse")
 	proto.RegisterType((*MasterNodeNewRequest)(nil), "go.mnhosted.srv.node.MasterNodeNewRequest")
 	proto.RegisterType((*MasterNodeNewResponse)(nil), "go.mnhosted.srv.node.MasterNodeNewResponse")
+	proto.RegisterType((*MasterNodeRenewRequest)(nil), "go.mnhosted.srv.node.MasterNodeRenewRequest")
+	proto.RegisterType((*MasterNodeRenewResponse)(nil), "go.mnhosted.srv.node.MasterNodeRenewResponse")
+	proto.RegisterType((*MasterNodeCheckRequest)(nil), "go.mnhosted.srv.node.MasterNodeCheckRequest")
+	proto.RegisterType((*MasterNodeCheckResponse)(nil), "go.mnhosted.srv.node.MasterNodeCheckResponse")
 }
 
 func init() { proto.RegisterFile("node.proto", fileDescriptor_0c843d59d2d938e7) }
 
 var fileDescriptor_0c843d59d2d938e7 = []byte{
-	// 441 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xdf, 0x6b, 0x13, 0x41,
-	0x10, 0xc7, 0x4d, 0xaf, 0x49, 0x7b, 0x53, 0xc4, 0xb2, 0xc4, 0xb2, 0x04, 0x29, 0xe1, 0x50, 0x29,
-	0x0a, 0x07, 0xc6, 0x37, 0xdf, 0xa4, 0x0f, 0xf5, 0xc0, 0x5b, 0xca, 0x0a, 0x3e, 0x7b, 0xbd, 0x1d,
-	0x93, 0x85, 0xdc, 0xee, 0xb9, 0xbb, 0x97, 0x56, 0xff, 0x3c, 0x9f, 0xfd, 0xa3, 0x64, 0xf7, 0x7e,
-	0x24, 0x4a, 0x24, 0xbe, 0xcd, 0x77, 0x66, 0xf2, 0x9d, 0x99, 0xcf, 0xe6, 0x00, 0x94, 0x16, 0x98,
-	0xd6, 0x46, 0x3b, 0x4d, 0xa6, 0x4b, 0x9d, 0x56, 0x6a, 0xa5, 0xad, 0x43, 0x91, 0x5a, 0xb3, 0x49,
-	0x7d, 0x2d, 0xb9, 0x81, 0x27, 0xd7, 0x5a, 0xaa, 0x8f, 0xd2, 0x3a, 0x8e, 0xdf, 0x1a, 0xb4, 0x8e,
-	0x50, 0x38, 0x29, 0x1b, 0x73, 0x5b, 0x2c, 0x91, 0x8e, 0xe6, 0xa3, 0xab, 0x31, 0xef, 0x25, 0x99,
-	0xc1, 0x69, 0x5d, 0x2c, 0xf1, 0x93, 0xfc, 0x81, 0xf4, 0x28, 0x94, 0x06, 0x9d, 0xfc, 0x1a, 0xc1,
-	0xa9, 0x77, 0xca, 0x1c, 0x56, 0xe4, 0x12, 0x20, 0x67, 0xde, 0x4f, 0x1a, 0x14, 0x9d, 0xcb, 0x4e,
-	0xc6, 0x1b, 0x95, 0x5a, 0x2a, 0x56, 0x54, 0xad, 0x51, 0xcc, 0x07, 0xed, 0xc7, 0xe7, 0xec, 0xd6,
-	0xc8, 0x12, 0x69, 0xd4, 0x8e, 0xef, 0x24, 0xb9, 0x80, 0xc9, 0x46, 0xaf, 0x9b, 0x0a, 0xe9, 0x71,
-	0x28, 0x74, 0x8a, 0x9c, 0x43, 0x64, 0xb4, 0xa4, 0xe3, 0x90, 0xf4, 0x21, 0x79, 0x0e, 0x8f, 0x2b,
-	0xad, 0xdc, 0x6a, 0xfd, 0x3d, 0x53, 0xa5, 0xae, 0x90, 0x4e, 0x42, 0xed, 0xcf, 0xa4, 0xdf, 0x22,
-	0x67, 0x1f, 0x02, 0x10, 0x7a, 0xd2, 0x9e, 0xd3, 0xeb, 0x64, 0x05, 0xe7, 0x5b, 0x2e, 0xb6, 0xd6,
-	0xca, 0x86, 0xcd, 0x0c, 0xda, 0x52, 0x8b, 0x01, 0x4c, 0x27, 0xc9, 0xbb, 0xf6, 0x9e, 0xb5, 0xb4,
-	0x8e, 0x1e, 0xcd, 0xa3, 0xab, 0xb3, 0xc5, 0x65, 0xba, 0x0f, 0x77, 0xda, 0x13, 0xe2, 0x43, 0x7f,
-	0xf2, 0x73, 0x04, 0xd3, 0xbc, 0xb0, 0x0e, 0x0d, 0xd3, 0x02, 0x19, 0xde, 0xf7, 0xef, 0x70, 0x01,
-	0x93, 0xc6, 0xa2, 0xc9, 0x5a, 0x80, 0x11, 0xef, 0x14, 0x79, 0x06, 0x71, 0xce, 0xde, 0x0b, 0x61,
-	0xd0, 0xda, 0x8e, 0xde, 0x36, 0x41, 0xe6, 0x70, 0xa6, 0x1b, 0x57, 0x37, 0x2e, 0x53, 0x02, 0x1f,
-	0x3a, 0x84, 0xbb, 0x29, 0x8f, 0x6b, 0x53, 0xdb, 0xc0, 0x30, 0xe6, 0x3e, 0x24, 0x53, 0x18, 0x17,
-	0x6b, 0x59, 0xd8, 0x80, 0x30, 0xe6, 0xad, 0x20, 0x04, 0x8e, 0xdd, 0x43, 0x26, 0x02, 0xbb, 0x98,
-	0x87, 0xd8, 0xef, 0x94, 0xb3, 0x6b, 0xad, 0xbe, 0x06, 0x60, 0x31, 0xef, 0x54, 0xf2, 0x06, 0x9e,
-	0xfe, 0x75, 0xc3, 0x21, 0x66, 0x8b, 0xbb, 0x2d, 0x33, 0xf2, 0x19, 0xa2, 0x1b, 0x74, 0xe4, 0xc5,
-	0xbf, 0xa1, 0xed, 0xfc, 0x41, 0x67, 0x2f, 0x0f, 0xb5, 0xb5, 0xb3, 0x93, 0x47, 0x0b, 0x05, 0x50,
-	0x85, 0xb5, 0x7c, 0x03, 0xf9, 0x02, 0x11, 0xc3, 0x7b, 0xf2, 0x6a, 0xff, 0xcf, 0xf7, 0xbd, 0xc1,
-	0xec, 0xf5, 0x7f, 0xf5, 0xf6, 0xf3, 0xee, 0x26, 0xe1, 0x53, 0x7b, 0xfb, 0x3b, 0x00, 0x00, 0xff,
-	0xff, 0x49, 0x8a, 0x9b, 0xf4, 0x78, 0x03, 0x00, 0x00,
+	// 630 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x95, 0xcf, 0x4f, 0xd4, 0x40,
+	0x14, 0xc7, 0x29, 0x65, 0x17, 0x78, 0x46, 0x24, 0x13, 0xc4, 0x66, 0x0f, 0x84, 0x4c, 0xd0, 0x10,
+	0xc5, 0x35, 0xc2, 0xcd, 0x2b, 0x1a, 0x5c, 0xa5, 0x0d, 0x29, 0xc4, 0xb3, 0xa5, 0xfb, 0x64, 0x27,
+	0x6c, 0x3b, 0xb5, 0x33, 0x05, 0xd6, 0x93, 0x7f, 0x8c, 0x67, 0x0f, 0x1e, 0xfc, 0x2b, 0xfc, 0xa3,
+	0xcc, 0xcc, 0xf4, 0xc7, 0x14, 0x81, 0x72, 0xf2, 0xd6, 0xef, 0x7b, 0x6f, 0xde, 0x8f, 0xcf, 0x9b,
+	0x49, 0x01, 0x52, 0x3e, 0xc6, 0x61, 0x96, 0x73, 0xc9, 0xc9, 0xda, 0x19, 0x1f, 0x26, 0xe9, 0x84,
+	0x0b, 0x89, 0xe3, 0xa1, 0xc8, 0x2f, 0x86, 0xca, 0x47, 0x0f, 0xe0, 0xd1, 0x3e, 0x67, 0xe9, 0x21,
+	0x13, 0x32, 0xc4, 0xaf, 0x05, 0x0a, 0x49, 0x3c, 0x58, 0x8c, 0x8b, 0xfc, 0x28, 0x3a, 0x43, 0xcf,
+	0xd9, 0x74, 0xb6, 0x7b, 0x61, 0x25, 0xc9, 0x00, 0x96, 0xb2, 0xe8, 0x0c, 0x8f, 0xd9, 0x37, 0xf4,
+	0xe6, 0xb5, 0xab, 0xd6, 0xf4, 0x8f, 0x03, 0x4b, 0x2a, 0xd3, 0x48, 0x62, 0x42, 0x36, 0x00, 0xfc,
+	0x40, 0xe5, 0x63, 0x39, 0x8e, 0xcb, 0x2c, 0x96, 0x45, 0x25, 0x8a, 0x39, 0x4b, 0x83, 0x28, 0x31,
+	0x89, 0x96, 0xc3, 0x5a, 0xab, 0xf2, 0x7e, 0x70, 0x94, 0xb3, 0x18, 0x3d, 0xd7, 0x94, 0x2f, 0x25,
+	0x59, 0x87, 0xfe, 0x05, 0x9f, 0x16, 0x09, 0x7a, 0x0b, 0xda, 0x51, 0x2a, 0xb2, 0x0a, 0x6e, 0xce,
+	0x99, 0xd7, 0xd3, 0x46, 0xf5, 0x49, 0xb6, 0xe0, 0x61, 0xc2, 0x53, 0x39, 0x99, 0xce, 0x46, 0x69,
+	0xcc, 0x13, 0xf4, 0xfa, 0xda, 0xd7, 0x36, 0xaa, 0x2e, 0xfc, 0xe0, 0xbd, 0x06, 0xe2, 0x2d, 0x9a,
+	0x71, 0x2a, 0x4d, 0x27, 0xb0, 0xda, 0x70, 0x11, 0x19, 0x4f, 0x85, 0xee, 0x2c, 0x47, 0x11, 0xf3,
+	0x71, 0x0d, 0xa6, 0x94, 0xe4, 0x8d, 0x99, 0x67, 0xca, 0x84, 0xf4, 0xe6, 0x37, 0xdd, 0xed, 0x07,
+	0xbb, 0x1b, 0xc3, 0x9b, 0x70, 0x0f, 0x2b, 0x42, 0x61, 0x1d, 0x4f, 0x5f, 0xc1, 0x63, 0x3f, 0x12,
+	0x12, 0xf3, 0x80, 0x8f, 0xd1, 0xde, 0xc3, 0x3a, 0xf4, 0x0b, 0x81, 0xf9, 0xc8, 0x00, 0x74, 0xc3,
+	0x52, 0xd1, 0xdf, 0x0e, 0xac, 0x98, 0x13, 0x2a, 0xa5, 0xe6, 0x4d, 0x60, 0xc1, 0x0f, 0x46, 0x6f,
+	0xcb, 0x40, 0xfd, 0x7d, 0x27, 0xe3, 0x35, 0xe8, 0xf9, 0xc1, 0x47, 0x9c, 0x69, 0xc2, 0xcb, 0xa1,
+	0x11, 0x6a, 0x6b, 0xc7, 0xb3, 0x34, 0x3e, 0x96, 0x91, 0x2c, 0x44, 0xc9, 0xd8, 0xb2, 0x28, 0x7f,
+	0x9c, 0x63, 0x24, 0xf1, 0x84, 0x25, 0xa8, 0x71, 0x2f, 0x87, 0x96, 0x45, 0xf9, 0xf1, 0x2a, 0x63,
+	0xb9, 0xf1, 0xf7, 0x8d, 0xbf, 0xb1, 0xd0, 0xef, 0x0e, 0xac, 0x5f, 0x1f, 0xb5, 0x13, 0xed, 0x21,
+	0xac, 0x24, 0xf5, 0xb0, 0x16, 0xe0, 0xad, 0x9b, 0x01, 0xb7, 0xc1, 0x84, 0xd7, 0xce, 0xd2, 0x5f,
+	0x0e, 0xac, 0x35, 0x2d, 0x04, 0x78, 0xd9, 0x01, 0x5b, 0x91, 0x92, 0xfc, 0x1c, 0xd3, 0x12, 0xa1,
+	0x11, 0x2d, 0xb6, 0xee, 0x6d, 0x6c, 0x17, 0xae, 0xb1, 0xc5, 0x2b, 0xd5, 0x49, 0x34, 0x1d, 0x65,
+	0x15, 0xbb, 0xc6, 0xa2, 0x32, 0x4a, 0x96, 0xe0, 0xc9, 0x2c, 0xab, 0xc8, 0xd5, 0x9a, 0xbe, 0xb6,
+	0x6f, 0x88, 0xee, 0xb9, 0x8b, 0x1a, 0xfd, 0xd9, 0x42, 0x1d, 0x62, 0xfa, 0xff, 0x26, 0xb5, 0x27,
+	0xe9, 0xb5, 0x27, 0x51, 0x0d, 0xab, 0xef, 0xa0, 0x48, 0xca, 0x17, 0x59, 0x49, 0xba, 0x07, 0x4f,
+	0xfe, 0xe9, 0xb7, 0x73, 0xca, 0x0f, 0xf6, 0x90, 0xfb, 0x13, 0x8c, 0xcf, 0xab, 0x21, 0xed, 0xb6,
+	0x9d, 0xdb, 0xda, 0x9e, 0xb7, 0xda, 0x6e, 0x37, 0x50, 0xe6, 0x6a, 0x1a, 0x18, 0x89, 0x77, 0x57,
+	0x82, 0x49, 0x9d, 0x6b, 0x29, 0xac, 0xe4, 0xee, 0x69, 0xf3, 0xee, 0xc9, 0x27, 0x70, 0x0f, 0x50,
+	0x92, 0xa7, 0xb7, 0x3f, 0x7c, 0xeb, 0x71, 0x0f, 0x9e, 0x75, 0x85, 0x99, 0xda, 0x74, 0x6e, 0xf7,
+	0x87, 0x0b, 0xd0, 0xdc, 0x62, 0xf2, 0x19, 0xdc, 0x00, 0x2f, 0xc9, 0xf3, 0xbb, 0xae, 0x7f, 0xfb,
+	0x6e, 0x0f, 0x5e, 0xdc, 0x2b, 0xb6, 0x2a, 0x48, 0xbe, 0x40, 0x4f, 0x2f, 0x80, 0xec, 0x74, 0x9d,
+	0xb3, 0xef, 0xd5, 0xe0, 0xe5, 0x3d, 0xa3, 0xeb, 0x3a, 0x93, 0x1a, 0x6b, 0x77, 0x25, 0x7b, 0xb9,
+	0xdd, 0x95, 0x5a, 0xeb, 0xa3, 0x73, 0xe4, 0xd4, 0xac, 0xa6, 0x93, 0x83, 0xbd, 0xa0, 0x9d, 0xfb,
+	0x05, 0x57, 0x35, 0x4e, 0xfb, 0xfa, 0x2f, 0xbb, 0xf7, 0x37, 0x00, 0x00, 0xff, 0xff, 0x88, 0x7e,
+	0x37, 0x89, 0x73, 0x07, 0x00, 0x00,
 }

@@ -5,6 +5,7 @@ fi
 if [[ $externalip ]]; then
   sed -i '/externalip/c externalip='$externalip'' /root/dash.conf
 fi
-sleep 10000
+#dashd -testnet -conf=/root/dash.conf -daemon
+dashd -testnet
 #dashd -testnet -conf=/root/dash.conf
 exec "$@"

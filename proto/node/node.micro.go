@@ -94,6 +94,9 @@ func (h *coinlistHandler) Get(ctx context.Context, in *CoinListRequest, out *Coi
 
 type MasternodeService interface {
 	New(ctx context.Context, in *MasterNodeNewRequest, opts ...client.CallOption) (*MasterNodeNewResponse, error)
+	Renew(ctx context.Context, in *MasterNodeRenewRequest, opts ...client.CallOption) (*MasterNodeRenewResponse, error)
+	IsExsit(ctx context.Context, in *MasterNodeCheckRequest, opts ...client.CallOption) (*MasterNodeCheckResponse, error)
+	Get(ctx context.Context, in *MasterNodeListRequest, opts ...client.CallOption) (*MasterNodeListResponse, error)
 }
 
 type masternodeService struct {
@@ -124,15 +127,51 @@ func (c *masternodeService) New(ctx context.Context, in *MasterNodeNewRequest, o
 	return out, nil
 }
 
+func (c *masternodeService) Renew(ctx context.Context, in *MasterNodeRenewRequest, opts ...client.CallOption) (*MasterNodeRenewResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.Renew", in)
+	out := new(MasterNodeRenewResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masternodeService) IsExsit(ctx context.Context, in *MasterNodeCheckRequest, opts ...client.CallOption) (*MasterNodeCheckResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.IsExsit", in)
+	out := new(MasterNodeCheckResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masternodeService) Get(ctx context.Context, in *MasterNodeListRequest, opts ...client.CallOption) (*MasterNodeListResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.Get", in)
+	out := new(MasterNodeListResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Masternode service
 
 type MasternodeHandler interface {
 	New(context.Context, *MasterNodeNewRequest, *MasterNodeNewResponse) error
+	Renew(context.Context, *MasterNodeRenewRequest, *MasterNodeRenewResponse) error
+	IsExsit(context.Context, *MasterNodeCheckRequest, *MasterNodeCheckResponse) error
+	Get(context.Context, *MasterNodeListRequest, *MasterNodeListResponse) error
 }
 
 func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...server.HandlerOption) error {
 	type masternode interface {
 		New(ctx context.Context, in *MasterNodeNewRequest, out *MasterNodeNewResponse) error
+		Renew(ctx context.Context, in *MasterNodeRenewRequest, out *MasterNodeRenewResponse) error
+		IsExsit(ctx context.Context, in *MasterNodeCheckRequest, out *MasterNodeCheckResponse) error
+		Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error
 	}
 	type Masternode struct {
 		masternode
@@ -147,4 +186,16 @@ type masternodeHandler struct {
 
 func (h *masternodeHandler) New(ctx context.Context, in *MasterNodeNewRequest, out *MasterNodeNewResponse) error {
 	return h.MasternodeHandler.New(ctx, in, out)
+}
+
+func (h *masternodeHandler) Renew(ctx context.Context, in *MasterNodeRenewRequest, out *MasterNodeRenewResponse) error {
+	return h.MasternodeHandler.Renew(ctx, in, out)
+}
+
+func (h *masternodeHandler) IsExsit(ctx context.Context, in *MasterNodeCheckRequest, out *MasterNodeCheckResponse) error {
+	return h.MasternodeHandler.IsExsit(ctx, in, out)
+}
+
+func (h *masternodeHandler) Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error {
+	return h.MasternodeHandler.Get(ctx, in, out)
 }

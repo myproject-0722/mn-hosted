@@ -13,11 +13,9 @@ var reg registry.Registry
 
 func NewRegistry() registry.Registry {
 	if reg != nil {
-		log.Print("reg is not null")
 		return reg
 	}
 
-	log.Print("reg is null")
 	// 推荐使用etcd集群 做为服务发现,为测试暂用consul
 	reg = consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = []string{
