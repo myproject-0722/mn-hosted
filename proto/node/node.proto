@@ -69,8 +69,9 @@ message MasterNodeRenewRequest {
   string token = 2;
   string coinName = 3;
   string MNKey = 4;
-  string timeType = 5;
-  int32 timeNum = 6;
+  string externalIp = 5;
+  string timeType = 6;
+  int32 timeNum = 7;
 }
 
 message MasterNodeRenewResponse {

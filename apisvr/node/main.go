@@ -28,6 +28,71 @@ type Masternode struct {
 	Client node.MasternodeService
 }
 
+func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received Masternode Renew API request")
+
+	userid, ok := req.Get["userid"]
+	if !ok || len(userid.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
+	}
+
+	token, ok := req.Get["token"]
+	if !ok || len(token.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.node", "token cannot be blank")
+	}
+
+	coinname, ok := req.Get["coinname"]
+	if !ok || len(coinname.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "coinname cannot be blank")
+	}
+
+	mnkey, ok := req.Get["mnkey"]
+	if !ok || len(mnkey.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "mnkey cannot be blank")
+	}
+
+	externalip, ok := req.Get["externalip"]
+	if !ok || len(externalip.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "externalip cannot be blank")
+	}
+
+	timetype, ok := req.Get["timetype"]
+	if !ok || len(timetype.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "timetype cannot be blank")
+	}
+
+	timenum, ok := req.Get["timenum"]
+	if !ok || len(timenum.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "timenum cannot be blank")
+	}
+
+	strUserid := strings.Join(userid.Values, " ")
+	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+	if err != nil {
+		//
+		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be error")
+	}
+
+	strTimeNum := strings.Join(timenum.Values, " ")
+	intTimeNum, err := strconv.Atoi(strTimeNum)
+	if err != nil {
+		return errors.BadRequest("go.mnhosted.api.node", "timenum cannot be error")
+	}
+
+	resp, err := s.Client.Renew(ctx, &node.MasterNodeRenewRequest{
+		UserId:     intUserid,
+		CoinName:   strings.Join(coinname.Values, " "),
+		MNKey:      strings.Join(mnkey.Values, " "),
+		ExternalIp: strings.Join(externalip.Values, " "),
+		TimeType:   strings.Join(timetype.Values, " "),
+		TimeNum:    int32(intTimeNum),
+	})
+
+	b, _ := json.Marshal(resp)
+	rsp.Body = string(b)
+	return nil
+}
+
 func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Print("Received Masternode New API request")
 

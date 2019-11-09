@@ -2,6 +2,7 @@ package dao
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/myproject-0722/mn-hosted/lib/dbsession"
 	"github.com/myproject-0722/mn-hosted/lib/model"
@@ -35,12 +36,12 @@ func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagen
 
 // get
 func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnkey string) (*model.Masternode, error) {
-	strSql := "select id, coinname, mnkey, userid, syncstatus from t_masternode where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
+	strSql := "select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
 	log.Println("sql=", strSql)
 	row := session.QueryRow(strSql)
 	//row := session.QueryRow("select id, coinname, mnkey, userid, vps, status, txid from t_masternode where coinname = '?' and mnkey= '?'", coinname, mnkey)
 	node := new(model.Masternode)
-	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus)
+	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -57,6 +58,20 @@ func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnk
 // udpate
 func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinname string, mnkey string, status int32) error {
 	result, err := session.Exec("update t_masternode set syncstatus = ? where coinname = '?' and mnkey = '?'", status, coinname, mnkey)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
+// udpate
+func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinname string, mnkey string, expiretime time.Time) error {
+	//strSql := "update t_masternode set expiretime = '" + expiretime.Unix() + "' where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
+	//log.Println("sql=", strSql)
+	//result, err := session.Exec(strSql)
+	result, err := session.Exec("update t_masternode set expiretime = ? where coinname = ? and mnkey = ?", expiretime, coinname, mnkey)
 	if err != nil {
 		log.Error(err)
 		return err

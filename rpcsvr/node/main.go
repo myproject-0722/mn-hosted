@@ -93,21 +93,54 @@ func (s *Masternode) Renew(ctx context.Context, req *node.MasterNodeRenewRequest
 		return err
 	}
 
-	if masternode != nil && masternode.ExpireTime.Before(time.Now()) {
+	if masternode != nil && masternode.ExpireTime.After(time.Now()) {
 		//更新有效期时间即可
+		if req.TimeType == "1" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, int(req.TimeNum))
+		} else if req.TimeType == "2" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, int(req.TimeNum), 0)
+		} else if req.TimeType == "3" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(int(req.TimeNum), 0, 0)
+		} else {
+			//error
+			rsp.Rescode = 401
+		}
+
+		dao.NodeDao.UpdateMasternodeExpireTime(db.Factoty.GetSession(), req.CoinName, req.MNKey, masternode.ExpireTime)
 	} else {
 		//新建
+		var command string = "docker run -d -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
+		fmt.Println(command)
+		dockerid := cmd.ExecShell(command)
+		dockerid = strings.TrimRight(dockerid, "\n")
+
+		var masternode model.Masternode
+		masternode.CoinName = req.CoinName
+		masternode.MNKey = req.MNKey
+		masternode.UserID = req.UserId
+		masternode.Vps = req.ExternalIp
+		masternode.Status = 1
+		masternode.ExpireTime = time.Now()
+
+		masternode.DockerID = dockerid
+		if req.TimeType == "1" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, int(req.TimeNum))
+		} else if req.TimeType == "2" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, int(req.TimeNum), 0)
+		} else if req.TimeType == "3" {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(int(req.TimeNum), 0, 0)
+		}
 	}
 	return nil
 }
 
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
 	log.Print("Received MasterNodeNewRequest:", req.UserId)
-	var command string = "docker run -d -p 19999:9999 --name mnhosted-dashcore -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
+	//var command string = "docker run -d -p 19999:9999 --name mnhosted-dashcore -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
+	var command string = "docker run -d -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
 	fmt.Println(command)
 	dockerid := cmd.ExecShell(command)
 	dockerid = strings.TrimRight(dockerid, "\n")
-	rsp.Rescode = 200
 
 	var masternode model.Masternode
 	masternode.CoinName = req.CoinName
@@ -149,6 +182,7 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 		}
 	})
 	c.Start()
+	rsp.Rescode = 200
 	//defer c.Stop()
 	//GetNodeSyncStatus(req.UserId, req.MNKey, dockerid)
 	/* var syncCmd string = "docker exec -it " + dockerid + "/bin/bash -c dash-cli -testnet mnsync status"
