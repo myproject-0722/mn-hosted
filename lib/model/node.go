@@ -7,7 +7,9 @@ type Coin struct {
 	Id            int64     `json:"id"`            // id
 	CoinName      string    `json:"coinname"`      // 货币名称
 	MNRequired    int32     `json:"mnrequired"`    //
-	MNPrice       int32     `json:"mnprice"`       //
+	DPrice        int32     `json:"dprice"`        //
+	MPrice        int32     `json:"mprice"`        //
+	YPrice        int32     `json:"yprice"`        //
 	Volume        int32     `json:"volume"`        //
 	Roi           int32     `json:"roi"`           //
 	MonthlyIncome int32     `json:"monthlyincome"` //
@@ -22,6 +24,7 @@ type Masternode struct {
 	CoinName   string    `json:"coinname"`   // 货币名称
 	MNKey      string    `json:"mnkey"`      // key
 	UserID     int64     `json:"userid"`     //
+	OrderID    int64     `json:"orderid"`    //
 	Vps        string    `json:"vps"`        // vps
 	DockerID   string    `json:"dockerid"`   //dockerid
 	Status     int32     `json:"status"`     //

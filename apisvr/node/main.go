@@ -16,16 +16,24 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	node "github.com/myproject-0722/mn-hosted/proto/node"
+	order "github.com/myproject-0722/mn-hosted/proto/order"
+	user "github.com/myproject-0722/mn-hosted/proto/user"
+	wallet "github.com/myproject-0722/mn-hosted/proto/wallet"
 
 	"context"
 )
 
-type Coinlist struct {
-	Client node.CoinlistService
-}
+/*
+type Coin struct {
+	Client node.CoinService
+}*/
 
 type Masternode struct {
-	Client node.MasternodeService
+	Client       node.MasternodeService
+	CoinClient   node.CoinService
+	WalletClient wallet.WalletService
+	UserClient   user.UserService
+	OrderClient  order.OrderService
 }
 
 func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Response) error {
@@ -79,6 +87,70 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 		return errors.BadRequest("go.mnhosted.api.node", "timenum cannot be error")
 	}
 
+	coinItem, err := s.CoinClient.GetCoinItem(ctx, &node.CoinItemRequest{
+		CoinName: strings.Join(coinname.Values, " "),
+	})
+	if err != nil || coinItem == nil {
+		return errors.BadRequest("go.mnhosted.api.node", "coinname not support")
+	}
+
+	userInfo, err := s.UserClient.GetInfo(ctx, &user.GetInfoRequest{
+		UserID: intUserid,
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "account err")
+	}
+	account := userInfo.Account
+
+	strTimetype := strings.Join(timetype.Values, " ")
+	var price float64 = 0
+	if strTimetype == "1" {
+		price = coinItem.Coin.DPrice * float64(intTimeNum)
+	} else if strTimetype == "2" {
+		price = coinItem.Coin.MPrice * float64(intTimeNum)
+	} else if strTimetype == "3" {
+		price = coinItem.Coin.YPrice * float64(intTimeNum)
+	}
+
+	payResp, err := s.WalletClient.Pay(ctx, &wallet.PayRequest{
+		Account: account,
+		Balance: price,
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", err.Error())
+	}
+
+	if payResp.Rescode != 200 {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "not enlough")
+	}
+
+	txid := payResp.TxID
+
+	intTimeType, err := strconv.Atoi(strTimetype)
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "timetype err")
+	}
+
+	orderResp, err := s.OrderClient.New(ctx, &order.NewRequest{
+		UserID:   intUserid,
+		Coinname: strings.Join(coinname.Values, " "),
+		Timetype: int32(intTimeType),
+		Price:    int32(price),
+		TxID:     txid,
+		IsRenew:  1,
+	})
+
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "order err")
+	}
+
+	log.Println("orderID=", orderResp.ID)
+
 	resp, err := s.Client.Renew(ctx, &node.MasterNodeRenewRequest{
 		UserId:     intUserid,
 		CoinName:   strings.Join(coinname.Values, " "),
@@ -87,6 +159,17 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 		TimeType:   strings.Join(timetype.Values, " "),
 		TimeNum:    int32(intTimeNum),
 	})
+
+	orderUpdateResp, err := s.OrderClient.Update(ctx, &order.UpdateRequest{
+		ID:    orderResp.ID,
+		MNKey: strings.Join(mnkey.Values, " "),
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "order err")
+	}
+
+	resp.Rescode = orderUpdateResp.Rescode
 
 	b, _ := json.Marshal(resp)
 	rsp.Body = string(b)
@@ -126,6 +209,19 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		return errors.BadRequest("go.mnhosted.api.node", "timetype cannot be blank")
 	}
 
+	strUserid := strings.Join(userid.Values, " ")
+	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+	if err != nil {
+		return errors.BadRequest("go.mnhosted.api.node", "userid err")
+	}
+
+	coinItem, err := s.CoinClient.GetCoinItem(ctx, &node.CoinItemRequest{
+		CoinName: strings.Join(coinname.Values, " "),
+	})
+	if err != nil || coinItem == nil {
+		return errors.BadRequest("go.mnhosted.api.node", "coinname not support")
+	}
+
 	response, err := s.Client.IsExsit(ctx, &node.MasterNodeCheckRequest{
 		CoinName: strings.Join(coinname.Values, " "),
 		MNKey:    strings.Join(mnkey.Values, " "),
@@ -135,18 +231,69 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		if response.IsExsit {
 			rsp.StatusCode = 404
 			b, _ := json.Marshal(map[string]string{
-				"message": "Masternode is exsit",
+				"message": "Masternode is exsit, please check",
 			})
 			rsp.Body = string(b)
 			return nil
 		}
 	} else {
 		rsp.StatusCode = 500
-		return errors.BadRequest("go.mnhosted.api.node", "system err")
+		return errors.BadRequest("go.mnhosted.api.node", "service err")
 	}
 
-	strUserid := strings.Join(userid.Values, " ")
-	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+	userInfo, err := s.UserClient.GetInfo(ctx, &user.GetInfoRequest{
+		UserID: intUserid,
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "account err")
+	}
+	account := userInfo.Account
+
+	strTimetype := strings.Join(timetype.Values, " ")
+	var price float64 = 0
+	if strTimetype == "1" {
+		price = coinItem.Coin.DPrice
+	} else if strTimetype == "2" {
+		price = coinItem.Coin.MPrice
+	} else if strTimetype == "3" {
+		price = coinItem.Coin.YPrice
+	}
+
+	payResp, err := s.WalletClient.Pay(ctx, &wallet.PayRequest{
+		Account: account,
+		Balance: price,
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", err.Error())
+	}
+	if payResp.Rescode != 200 {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "not enlough")
+	}
+
+	intTimeType, err := strconv.Atoi(strTimetype)
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "timetype err")
+	}
+
+	txid := payResp.TxID
+	orderResp, err := s.OrderClient.New(ctx, &order.NewRequest{
+		UserID:   intUserid,
+		Coinname: strings.Join(coinname.Values, " "),
+		Timetype: int32(intTimeType),
+		Price:    int32(price),
+		TxID:     txid,
+		IsRenew:  0,
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "order err")
+	}
+
+	log.Println("orderID=", orderResp.ID)
 
 	resp, err := s.Client.New(ctx, &node.MasterNodeNewRequest{
 		UserId:     intUserid,
@@ -154,8 +301,22 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		MNKey:      strings.Join(mnkey.Values, " "),
 		ExternalIp: strings.Join(externalip.Values, " "),
 		TimeType:   strings.Join(timetype.Values, " "),
+		OrderID:    orderResp.ID,
 	})
+	if err != nil {
+		return errors.BadRequest("go.mnhosted.api.node", err.Error())
+	}
 
+	orderUpdateResp, err := s.OrderClient.Update(ctx, &order.UpdateRequest{
+		ID:    orderResp.ID,
+		MNKey: strings.Join(mnkey.Values, " "),
+	})
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "order err")
+	}
+
+	resp.Rescode = orderUpdateResp.Rescode
 	b, _ := json.Marshal(resp)
 	rsp.Body = string(b)
 	return nil
@@ -187,7 +348,33 @@ func (s *Masternode) Get(ctx context.Context, req *api.Request, rsp *api.Respons
 	return nil
 }
 
-func (s *Coinlist) Get(ctx context.Context, req *api.Request, rsp *api.Response) error {
+func (s *Masternode) GetCount(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received Masternode Get request")
+
+	userid, ok := req.Get["userid"]
+	if !ok || len(userid.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
+	}
+
+	strUserid := strings.Join(userid.Values, " ")
+	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+
+	response, err := s.Client.GetCount(ctx, &node.GetCountRequest{
+		UserID: intUserid,
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = 200
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	fmt.Println(response)
+	return nil
+}
+
+func (s *Masternode) GetCoinList(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Print("Received Coinlist Get request")
 
 	curPage, ok := req.Get["curpage"]
@@ -205,7 +392,7 @@ func (s *Coinlist) Get(ctx context.Context, req *api.Request, rsp *api.Response)
 
 	strPageSize := strings.Join(pageSize.Values, " ")
 	intPageSize, err := strconv.Atoi(strPageSize)
-	response, err := s.Client.Get(ctx, &node.CoinListRequest{
+	response, err := s.CoinClient.Get(ctx, &node.CoinListRequest{
 		CurPage:  int32(intCurPage),
 		PageSize: int32(intPageSize),
 	})
@@ -243,13 +430,13 @@ func main() {
 
 	service.Server().Handle(
 		service.Server().NewHandler(
-			&Coinlist{Client: node.NewCoinlistService("go.mnhosted.srv.node", service.Client())},
-		),
-	)
-
-	service.Server().Handle(
-		service.Server().NewHandler(
-			&Masternode{Client: node.NewMasternodeService("go.mnhosted.srv.node", service.Client())},
+			&Masternode{
+				Client:       node.NewMasternodeService("go.mnhosted.srv.node", service.Client()),
+				CoinClient:   node.NewCoinService("go.mnhosted.srv.node", service.Client()),
+				UserClient:   user.NewUserService("go.mnhosted.srv.user", service.Client()),
+				OrderClient:  order.NewOrderService("go.mnhosted.srv.order", service.Client()),
+				WalletClient: wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client()),
+			},
 		),
 	)
 

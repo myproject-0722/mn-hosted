@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package go.mnhosted.srv.order;
+
+service order {
+	rpc New(NewRequest) returns (NewResponse) {}
+  rpc Update(UpdateRequest) returns (UpdateResponse) {}
+}
+
+message NewRequest {
+	int64 userID = 1;
+	string coinname = 2;
+  int32 timetype = 3;
+  int32 price = 4;
+  string txID = 5;
+  int32 isRenew = 6;
+}
+
+message NewResponse {
+	int32 rescode = 1; 	//200 ok
+	int64 ID = 2;
+}
+
+message UpdateRequest {
+  int64 ID = 1;
+  string MNKey = 2;
+  int32 status = 3;
+}
+
+message UpdateResponse {
+  int32 rescode = 1;
+}

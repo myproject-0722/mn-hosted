@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package go.mnhosted.srv.node;
 
-service coinlist {
+service coin {
   rpc Get(CoinListRequest) returns (CoinListResponse) {}
+  rpc GetCoinItem(CoinItemRequest) returns (CoinItemResponse) {}
 }
 
 message CoinListRequest {
@@ -14,11 +15,13 @@ message CoinListRequest {
 message CoinItem {
   int32 MNRequired = 1;
   string coinName = 2;
-  int32 MNPrice = 3;    //need /100
-  int32 volume = 4;
-  int32 roi = 5;
-  int32 monthlyIncome = 6;
-  int32 MNHosted = 7;
+  double DPrice = 3;
+  double MPrice = 4;
+  double YPrice = 5;
+  int32 volume = 6;
+  int32 roi = 7;
+  int32 monthlyIncome = 8;
+  int32 MNHosted = 9;
 }
 
 message CoinListResponse {
@@ -26,11 +29,29 @@ message CoinListResponse {
   repeated CoinItem coinlist = 2;
 }
 
+message CoinItemRequest {
+  string coinName = 1;
+}
+
+message CoinItemResponse {
+  int32 rescode = 1;
+  CoinItem coin = 2;
+}
+
 service masternode {
 	rpc New(MasterNodeNewRequest) returns (MasterNodeNewResponse) {}
   rpc Renew(MasterNodeRenewRequest) returns (MasterNodeRenewResponse) {}
   rpc IsExsit(MasterNodeCheckRequest) returns (MasterNodeCheckResponse) {}
   rpc Get(MasterNodeListRequest) returns (MasterNodeListResponse) {}
+  rpc GetCount(GetCountRequest) returns (GetCountResponse) {}
+}
+
+message GetCountRequest {
+  int64 userID = 1;
+}
+
+message GetCountResponse {
+  int32 count = 1;
 }
 
 message MasterNodeListRequest {
@@ -58,6 +79,7 @@ message MasterNodeNewRequest {
   string MNKey = 4;
   string externalIp = 5;
   string timeType = 6;
+  int64 orderID = 7;
 }
 
 message MasterNodeNewResponse {

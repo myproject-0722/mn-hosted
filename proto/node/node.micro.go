@@ -31,32 +31,33 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Client API for Coinlist service
+// Client API for Coin service
 
-type CoinlistService interface {
+type CoinService interface {
 	Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error)
+	GetCoinItem(ctx context.Context, in *CoinItemRequest, opts ...client.CallOption) (*CoinItemResponse, error)
 }
 
-type coinlistService struct {
+type coinService struct {
 	c    client.Client
 	name string
 }
 
-func NewCoinlistService(name string, c client.Client) CoinlistService {
+func NewCoinService(name string, c client.Client) CoinService {
 	if c == nil {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
 		name = "go.mnhosted.srv.node"
 	}
-	return &coinlistService{
+	return &coinService{
 		c:    c,
 		name: name,
 	}
 }
 
-func (c *coinlistService) Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error) {
-	req := c.c.NewRequest(c.name, "Coinlist.Get", in)
+func (c *coinService) Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error) {
+	req := c.c.NewRequest(c.name, "Coin.Get", in)
 	out := new(CoinListResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -65,29 +66,45 @@ func (c *coinlistService) Get(ctx context.Context, in *CoinListRequest, opts ...
 	return out, nil
 }
 
-// Server API for Coinlist service
+func (c *coinService) GetCoinItem(ctx context.Context, in *CoinItemRequest, opts ...client.CallOption) (*CoinItemResponse, error) {
+	req := c.c.NewRequest(c.name, "Coin.GetCoinItem", in)
+	out := new(CoinItemResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
-type CoinlistHandler interface {
+// Server API for Coin service
+
+type CoinHandler interface {
 	Get(context.Context, *CoinListRequest, *CoinListResponse) error
+	GetCoinItem(context.Context, *CoinItemRequest, *CoinItemResponse) error
 }
 
-func RegisterCoinlistHandler(s server.Server, hdlr CoinlistHandler, opts ...server.HandlerOption) error {
-	type coinlist interface {
+func RegisterCoinHandler(s server.Server, hdlr CoinHandler, opts ...server.HandlerOption) error {
+	type coin interface {
 		Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error
+		GetCoinItem(ctx context.Context, in *CoinItemRequest, out *CoinItemResponse) error
 	}
-	type Coinlist struct {
-		coinlist
+	type Coin struct {
+		coin
 	}
-	h := &coinlistHandler{hdlr}
-	return s.Handle(s.NewHandler(&Coinlist{h}, opts...))
+	h := &coinHandler{hdlr}
+	return s.Handle(s.NewHandler(&Coin{h}, opts...))
 }
 
-type coinlistHandler struct {
-	CoinlistHandler
+type coinHandler struct {
+	CoinHandler
 }
 
-func (h *coinlistHandler) Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error {
-	return h.CoinlistHandler.Get(ctx, in, out)
+func (h *coinHandler) Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error {
+	return h.CoinHandler.Get(ctx, in, out)
+}
+
+func (h *coinHandler) GetCoinItem(ctx context.Context, in *CoinItemRequest, out *CoinItemResponse) error {
+	return h.CoinHandler.GetCoinItem(ctx, in, out)
 }
 
 // Client API for Masternode service
@@ -97,6 +114,7 @@ type MasternodeService interface {
 	Renew(ctx context.Context, in *MasterNodeRenewRequest, opts ...client.CallOption) (*MasterNodeRenewResponse, error)
 	IsExsit(ctx context.Context, in *MasterNodeCheckRequest, opts ...client.CallOption) (*MasterNodeCheckResponse, error)
 	Get(ctx context.Context, in *MasterNodeListRequest, opts ...client.CallOption) (*MasterNodeListResponse, error)
+	GetCount(ctx context.Context, in *GetCountRequest, opts ...client.CallOption) (*GetCountResponse, error)
 }
 
 type masternodeService struct {
@@ -157,6 +175,16 @@ func (c *masternodeService) Get(ctx context.Context, in *MasterNodeListRequest, 
 	return out, nil
 }
 
+func (c *masternodeService) GetCount(ctx context.Context, in *GetCountRequest, opts ...client.CallOption) (*GetCountResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.GetCount", in)
+	out := new(GetCountResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Masternode service
 
 type MasternodeHandler interface {
@@ -164,6 +192,7 @@ type MasternodeHandler interface {
 	Renew(context.Context, *MasterNodeRenewRequest, *MasterNodeRenewResponse) error
 	IsExsit(context.Context, *MasterNodeCheckRequest, *MasterNodeCheckResponse) error
 	Get(context.Context, *MasterNodeListRequest, *MasterNodeListResponse) error
+	GetCount(context.Context, *GetCountRequest, *GetCountResponse) error
 }
 
 func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...server.HandlerOption) error {
@@ -172,6 +201,7 @@ func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...
 		Renew(ctx context.Context, in *MasterNodeRenewRequest, out *MasterNodeRenewResponse) error
 		IsExsit(ctx context.Context, in *MasterNodeCheckRequest, out *MasterNodeCheckResponse) error
 		Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error
+		GetCount(ctx context.Context, in *GetCountRequest, out *GetCountResponse) error
 	}
 	type Masternode struct {
 		masternode
@@ -198,4 +228,8 @@ func (h *masternodeHandler) IsExsit(ctx context.Context, in *MasterNodeCheckRequ
 
 func (h *masternodeHandler) Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error {
 	return h.MasternodeHandler.Get(ctx, in, out)
+}
+
+func (h *masternodeHandler) GetCount(ctx context.Context, in *GetCountRequest, out *GetCountResponse) error {
+	return h.MasternodeHandler.GetCount(ctx, in, out)
 }

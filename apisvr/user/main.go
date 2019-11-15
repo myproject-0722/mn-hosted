@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -80,6 +81,36 @@ func (s *User) SignUp(ctx context.Context, req *api.Request, rsp *api.Response) 
 	/* b, _ := json.Marshal(map[string]string{
 		"message": response.Msg,
 	}) */
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	return nil
+}
+
+func (s *User) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received GetInfo API request")
+
+	userID, ok := req.Get["userid"]
+	if !ok || len(userID.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+	}
+
+	strUserID := strings.Join(userID.Values, " ")
+	intUserID, err := strconv.ParseInt(strUserID, 10, 64)
+	if err != nil {
+		//
+		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be error")
+	}
+
+	response, err := s.Client.GetInfo(ctx, &user.GetInfoRequest{
+		UserID: intUserID,
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+
 	b, _ := json.Marshal(response)
 	rsp.Body = string(b)
 	fmt.Println(rsp.Body)
