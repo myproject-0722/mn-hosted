@@ -2,26 +2,34 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/micro/go-micro"
 
+	"github.com/myproject-0722/mn-hosted/conf"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
 	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
-	"github.com/myproject-0722/mn-hosted/lib/utils"
+	"github.com/myproject-0722/mn-hosted/lib/token"
 	user "github.com/myproject-0722/mn-hosted/proto/user"
 	wallet "github.com/myproject-0722/mn-hosted/proto/wallet"
 )
 
+const issuer = "go.mnhosted.srv.auth"
+
 type User struct {
 	Client wallet.WalletService
+	token  *token.Token
 }
+
+/*
+func New(token *token.Token) *User {
+	return &User{token: token}
+}*/
 
 func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.SignUpResponse) error {
 	log.Print("Received SignUpRequest Name: ", req.Account, " Passwd: ", req.Passwd)
@@ -63,14 +71,22 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 		return nil
 	}
 
-	token := utils.GetRandomString(32)
-	log.Print("token=", token)
-	redisclient.Client.Set("userToken:"+fmt.Sprint(id), token, 0)
+	var tokenStr string
+	expireTime := time.Now().Add(time.Hour * 24).Unix() // 1天后过期
+	tokenStr, err = s.token.Encode(issuer, req.Account, expireTime)
+	if err != nil {
+		return err
+	}
+	rsp.Token = tokenStr
+	/*
+		token := utils.GetRandomString(32)
+		log.Print("token=", token)
+		redisclient.Client.Set("userToken:"+fmt.Sprint(id), token, 0)*/
 
 	rsp.Rescode = 200
 	rsp.Msg = " SignIn OK!"
 	rsp.Id = id
-	rsp.Token = token
+	//rsp.Token = token
 	return nil
 }
 
@@ -104,6 +120,8 @@ func (s *User) GetInfo(ctx context.Context, req *user.GetInfoRequest, rsp *user.
 }
 
 func main() {
+	token := &token.Token{}
+	token.InitConfig(conf.ConsulAddresses, "micro", "config", "jwt-key", "key")
 
 	liblog.InitLog("/var/log/mn-hosted/rpcsvr/user", "user.log")
 	db.Init()
@@ -122,7 +140,8 @@ func main() {
 
 	service.Server().Handle(
 		service.Server().NewHandler(
-			&User{Client: wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client())},
+			&User{Client: wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client()),
+				token: token},
 		),
 	)
 
