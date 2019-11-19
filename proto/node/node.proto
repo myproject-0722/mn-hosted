@@ -74,12 +74,11 @@ message MasterNodeListResponse {
 
 message MasterNodeNewRequest {
   int64 userId = 1;
-  string token = 2;
-  string coinName = 3;
-  string MNKey = 4;
-  string externalIp = 5;
-  string timeType = 6;
-  int64 orderID = 7;
+  string coinName = 2;
+  string MNKey = 3;
+  string externalIp = 4;
+  string timeType = 5;
+  int64 orderID = 6;
 }
 
 message MasterNodeNewResponse {
@@ -88,12 +87,11 @@ message MasterNodeNewResponse {
 
 message MasterNodeRenewRequest {
   int64 userId = 1;
-  string token = 2;
-  string coinName = 3;
-  string MNKey = 4;
-  string externalIp = 5;
-  string timeType = 6;
-  int32 timeNum = 7;
+  string coinName = 2;
+  string MNKey = 3;
+  string externalIp = 4;
+  string timeType = 5;
+  int32 timeNum = 6;
 }
 
 message MasterNodeRenewResponse {

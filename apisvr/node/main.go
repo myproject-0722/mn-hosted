@@ -44,11 +44,6 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
 	}
 
-	token, ok := req.Get["token"]
-	if !ok || len(token.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.node", "token cannot be blank")
-	}
-
 	coinname, ok := req.Get["coinname"]
 	if !ok || len(coinname.Values) == 0 {
 		return errors.BadRequest("go.mnhosted.api.node", "coinname cannot be blank")
@@ -182,11 +177,6 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
 		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
-	}
-
-	token, ok := req.Get["token"]
-	if !ok || len(token.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.node", "token cannot be blank")
 	}
 
 	coinname, ok := req.Get["coinname"]
