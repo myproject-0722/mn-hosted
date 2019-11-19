@@ -5,7 +5,7 @@ import (
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-plugins/registry/consul"
+	"github.com/micro/go-micro/registry/consul"
 )
 
 var registerService micro.Service
