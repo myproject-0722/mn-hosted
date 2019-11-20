@@ -6,6 +6,8 @@ service User {
 	rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
 	rpc SignIn(SignInRequest) returns (SignInResponse) {}
   rpc GetInfo(GetInfoRequest) returns (GetInfoResponse) {}
+  rpc MailCode(MailCodeRequest) returns (MailCodeResponse) {}
+  rpc Reset(ResetRequest) returns (ResetResponse) {}
 }
 
 message SignUpRequest {
@@ -43,4 +45,23 @@ message GetInfoResponse {
   double balance = 4;
   int32 MNCount = 5;
   string msg = 6;
+}
+
+message MailCodeRequest {
+  string account = 1;
+}
+
+message MailCodeResponse {
+  int32 rescode = 1;
+}
+
+message ResetRequest {
+	string account = 1;
+	string passwd = 2;
+  string authcode = 3;
+}
+
+message ResetResponse {
+	int32 rescode = 1; 	//200 ok
+	string msg = 2;		//
 }

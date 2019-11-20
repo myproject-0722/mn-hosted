@@ -37,6 +37,8 @@ type UserService interface {
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...client.CallOption) (*SignUpResponse, error)
 	SignIn(ctx context.Context, in *SignInRequest, opts ...client.CallOption) (*SignInResponse, error)
 	GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error)
+	MailCode(ctx context.Context, in *MailCodeRequest, opts ...client.CallOption) (*MailCodeResponse, error)
+	Reset(ctx context.Context, in *ResetRequest, opts ...client.CallOption) (*ResetResponse, error)
 }
 
 type userService struct {
@@ -87,12 +89,34 @@ func (c *userService) GetInfo(ctx context.Context, in *GetInfoRequest, opts ...c
 	return out, nil
 }
 
+func (c *userService) MailCode(ctx context.Context, in *MailCodeRequest, opts ...client.CallOption) (*MailCodeResponse, error) {
+	req := c.c.NewRequest(c.name, "User.MailCode", in)
+	out := new(MailCodeResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Reset(ctx context.Context, in *ResetRequest, opts ...client.CallOption) (*ResetResponse, error) {
+	req := c.c.NewRequest(c.name, "User.Reset", in)
+	out := new(ResetResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	SignUp(context.Context, *SignUpRequest, *SignUpResponse) error
 	SignIn(context.Context, *SignInRequest, *SignInResponse) error
 	GetInfo(context.Context, *GetInfoRequest, *GetInfoResponse) error
+	MailCode(context.Context, *MailCodeRequest, *MailCodeResponse) error
+	Reset(context.Context, *ResetRequest, *ResetResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -100,6 +124,8 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		SignUp(ctx context.Context, in *SignUpRequest, out *SignUpResponse) error
 		SignIn(ctx context.Context, in *SignInRequest, out *SignInResponse) error
 		GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error
+		MailCode(ctx context.Context, in *MailCodeRequest, out *MailCodeResponse) error
+		Reset(ctx context.Context, in *ResetRequest, out *ResetResponse) error
 	}
 	type User struct {
 		user
@@ -122,4 +148,12 @@ func (h *userHandler) SignIn(ctx context.Context, in *SignInRequest, out *SignIn
 
 func (h *userHandler) GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error {
 	return h.UserHandler.GetInfo(ctx, in, out)
+}
+
+func (h *userHandler) MailCode(ctx context.Context, in *MailCodeRequest, out *MailCodeResponse) error {
+	return h.UserHandler.MailCode(ctx, in, out)
+}
+
+func (h *userHandler) Reset(ctx context.Context, in *ResetRequest, out *ResetResponse) error {
+	return h.UserHandler.Reset(ctx, in, out)
 }

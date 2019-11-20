@@ -50,6 +50,18 @@ func (*userDao) GetUserByUserID(session *dbsession.DBSession, id int64) *model.U
 	return user
 }
 
+func (*userDao) GetUserByAccount(session *dbsession.DBSession, account string) *model.User {
+	row := session.QueryRow("select account,walletaddress from t_account where account = ?", account)
+	user := new(model.User)
+	err := row.Scan(&user.Account, &user.WalletAddress)
+	if err != nil {
+		//log.Error(err)
+		return nil
+	}
+
+	return user
+}
+
 // Insert
 func (*userDao) Check(session *dbsession.DBSession, account string, passwd string) (int64, error) {
 	row := session.QueryRow("select id, passwd from t_account where account = ?", account)
@@ -65,4 +77,15 @@ func (*userDao) Check(session *dbsession.DBSession, account string, passwd strin
 		return 0, err
 	}
 	return id, nil
+}
+
+// udpate
+func (*userDao) UpdatePasswd(session *dbsession.DBSession, account string, passwd string) error {
+	result, err := session.Exec("update t_account set passwd = ? where account = ?", passwd, account)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
 }

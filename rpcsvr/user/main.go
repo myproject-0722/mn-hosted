@@ -12,9 +12,11 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
 	liblog "github.com/myproject-0722/mn-hosted/lib/log"
+	"github.com/myproject-0722/mn-hosted/lib/mail"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	"github.com/myproject-0722/mn-hosted/lib/token"
+	"github.com/myproject-0722/mn-hosted/lib/utils"
 	user "github.com/myproject-0722/mn-hosted/proto/user"
 	wallet "github.com/myproject-0722/mn-hosted/proto/wallet"
 )
@@ -116,6 +118,58 @@ func (s *User) GetInfo(ctx context.Context, req *user.GetInfoRequest, rsp *user.
 	rsp.Balance = response.Balance
 	rsp.Account = user.Account
 	rsp.WalletAddress = user.WalletAddress
+	return nil
+}
+
+func (s *User) MailCode(ctx context.Context, req *user.MailCodeRequest, rsp *user.MailCodeResponse) error {
+	log.Print("Received MailCode: ", req.Account)
+
+	user := dao.UserDao.GetUserByAccount(db.Factoty.GetSession(), req.Account)
+	if user == nil {
+		rsp.Rescode = 404
+		return nil
+	}
+
+	authCode := utils.GetRandomString(6)
+	log.Print("authCode=", authCode)
+	redisclient.Client.Set("authCode:"+req.Account, authCode, 0)
+
+	mailTo := []string{
+		req.Account,
+	}
+	//邮件主题为"Hello"
+	subject := "重置邮箱验证码"
+	// 邮件正文
+	body := authCode
+	err := mail.SendMail(mailTo, subject, body)
+	if err != nil {
+		rsp.Rescode = 404
+	}
+
+	rsp.Rescode = 200
+	return nil
+}
+
+func (s *User) Reset(ctx context.Context, req *user.ResetRequest, rsp *user.ResetResponse) error {
+	log.Print("Received Reset Name: ", req.Account, " Passwd: ", req.Passwd, " Authcode:", req.Authcode)
+
+	code := redisclient.Client.Get("authCode:" + req.Account)
+	if code == nil || code.Val() != req.Authcode {
+		rsp.Rescode = 404
+		rsp.Msg = " Autocode err!"
+		log.Error(" Autocode err")
+	}
+
+	err := dao.UserDao.UpdatePasswd(db.Factoty.GetSession(), req.Account, req.Passwd)
+	if err != nil {
+		rsp.Rescode = 404
+		rsp.Msg = " UpdatePasswd Error!"
+		return nil
+	}
+
+	rsp.Rescode = 200
+	rsp.Msg = " Reset OK!"
+	//rsp.Token = token
 	return nil
 }
 

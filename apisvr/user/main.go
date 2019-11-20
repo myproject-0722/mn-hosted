@@ -117,6 +117,64 @@ func (s *User) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response)
 	return nil
 }
 
+func (s *User) MailCode(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received MailCode API request")
+
+	account, ok := req.Get["account"]
+	if !ok || len(account.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+	}
+
+	response, err := s.Client.MailCode(ctx, &user.MailCodeRequest{
+		Account: strings.Join(account.Values, " "),
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	return nil
+}
+
+func (s *User) Reset(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received Reset API request")
+
+	account, ok := req.Get["account"]
+	if !ok || len(account.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+	}
+
+	passwd, ok := req.Get["password"]
+	if !ok || len(passwd.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "passwd cannot be blank")
+	}
+
+	authcode, ok := req.Get["authcode"]
+	if !ok || len(authcode.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "authcode cannot be blank")
+	}
+
+	response, err := s.Client.Reset(ctx, &user.ResetRequest{
+		Account:  strings.Join(account.Values, " "),
+		Passwd:   strings.Join(passwd.Values, " "),
+		Authcode: strings.Join(authcode.Values, " "),
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	return nil
+}
+
 func main() {
 	liblog.InitLog("/var/log/mn-hosted/rpcsvr/user", "user.log")
 	db.Init()
