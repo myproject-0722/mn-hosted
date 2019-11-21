@@ -36,10 +36,10 @@ func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagen
 
 // get
 func (*nodeDao) GetCoinItem(session *dbsession.DBSession, coinname string) (*model.Coin, error) {
-	strSql := "select id, coinname, mnrequired, dprice, mprice, yprice, volume, roi, monthlyincome, mnhosted, createtime, updatetime from t_coinlist where coinname = '" + coinname + "'"
-	log.Println("sql=", strSql)
-	row := session.QueryRow(strSql)
-	//row := session.QueryRow("select id, coinname, mnkey, userid, vps, status, txid from t_masternode where coinname = '?' and mnkey= '?'", coinname, mnkey)
+	//strSql := "select id, coinname, mnrequired, dprice, mprice, yprice, volume, roi, monthlyincome, mnhosted, createtime, updatetime from t_coinlist where coinname = '" + coinname + "'"
+	//log.Println("sql=", strSql)
+	//row := session.QueryRow(strSql)
+	row := session.QueryRow("select id, coinname, mnrequired, dprice, mprice, yprice, volume, roi, monthlyincome, mnhosted, createtime, updatetime from t_coinlist where coinname = ? ", coinname)
 	coin := new(model.Coin)
 	err := row.Scan(&coin.Id, &coin.CoinName, &coin.MNRequired, &coin.DPrice, &coin.MPrice, &coin.YPrice, &coin.Volume, &coin.Roi, &coin.MonthlyIncome, &coin.MNHosted, &coin.CreateTime, &coin.UpdateTime)
 	if err != nil {
@@ -58,10 +58,10 @@ func (*nodeDao) GetCoinItem(session *dbsession.DBSession, coinname string) (*mod
 
 // get
 func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnkey string) (*model.Masternode, error) {
-	strSql := "select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
-	log.Println("sql=", strSql)
-	row := session.QueryRow(strSql)
-	//row := session.QueryRow("select id, coinname, mnkey, userid, vps, status, txid from t_masternode where coinname = '?' and mnkey= '?'", coinname, mnkey)
+	//strSql := "select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
+	//log.Println("sql=", strSql)
+	//row := session.QueryRow(strSql)
+	row := session.QueryRow("select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = ? and mnkey = ? ", coinname, mnkey)
 	node := new(model.Masternode)
 	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
 	if err == sql.ErrNoRows {
