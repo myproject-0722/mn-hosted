@@ -92,6 +92,20 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 	return nil
 }
 
+func (s *User) SignOut(ctx context.Context, req *user.SignOutRequest, rsp *user.SignOutResponse) error {
+	log.Print("Received SignOut: ", req.UserID)
+
+	user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), req.UserID)
+	if user == nil {
+		rsp.Rescode = 404
+		rsp.Msg = " Account Not Exsit"
+		return nil
+	}
+
+	rsp.Rescode = 200
+	return nil
+}
+
 func (s *User) GetInfo(ctx context.Context, req *user.GetInfoRequest, rsp *user.GetInfoResponse) error {
 	log.Print("Received GetInfo: ", req.UserID)
 

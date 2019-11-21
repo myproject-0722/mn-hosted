@@ -36,6 +36,7 @@ var _ server.Option
 type UserService interface {
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...client.CallOption) (*SignUpResponse, error)
 	SignIn(ctx context.Context, in *SignInRequest, opts ...client.CallOption) (*SignInResponse, error)
+	SignOut(ctx context.Context, in *SignOutRequest, opts ...client.CallOption) (*SignOutResponse, error)
 	GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error)
 	MailCode(ctx context.Context, in *MailCodeRequest, opts ...client.CallOption) (*MailCodeResponse, error)
 	Reset(ctx context.Context, in *ResetRequest, opts ...client.CallOption) (*ResetResponse, error)
@@ -79,6 +80,16 @@ func (c *userService) SignIn(ctx context.Context, in *SignInRequest, opts ...cli
 	return out, nil
 }
 
+func (c *userService) SignOut(ctx context.Context, in *SignOutRequest, opts ...client.CallOption) (*SignOutResponse, error) {
+	req := c.c.NewRequest(c.name, "User.SignOut", in)
+	out := new(SignOutResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error) {
 	req := c.c.NewRequest(c.name, "User.GetInfo", in)
 	out := new(GetInfoResponse)
@@ -114,6 +125,7 @@ func (c *userService) Reset(ctx context.Context, in *ResetRequest, opts ...clien
 type UserHandler interface {
 	SignUp(context.Context, *SignUpRequest, *SignUpResponse) error
 	SignIn(context.Context, *SignInRequest, *SignInResponse) error
+	SignOut(context.Context, *SignOutRequest, *SignOutResponse) error
 	GetInfo(context.Context, *GetInfoRequest, *GetInfoResponse) error
 	MailCode(context.Context, *MailCodeRequest, *MailCodeResponse) error
 	Reset(context.Context, *ResetRequest, *ResetResponse) error
@@ -123,6 +135,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 	type user interface {
 		SignUp(ctx context.Context, in *SignUpRequest, out *SignUpResponse) error
 		SignIn(ctx context.Context, in *SignInRequest, out *SignInResponse) error
+		SignOut(ctx context.Context, in *SignOutRequest, out *SignOutResponse) error
 		GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error
 		MailCode(ctx context.Context, in *MailCodeRequest, out *MailCodeResponse) error
 		Reset(ctx context.Context, in *ResetRequest, out *ResetResponse) error
@@ -144,6 +157,10 @@ func (h *userHandler) SignUp(ctx context.Context, in *SignUpRequest, out *SignUp
 
 func (h *userHandler) SignIn(ctx context.Context, in *SignInRequest, out *SignInResponse) error {
 	return h.UserHandler.SignIn(ctx, in, out)
+}
+
+func (h *userHandler) SignOut(ctx context.Context, in *SignOutRequest, out *SignOutResponse) error {
+	return h.UserHandler.SignOut(ctx, in, out)
 }
 
 func (h *userHandler) GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error {

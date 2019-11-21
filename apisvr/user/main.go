@@ -117,6 +117,36 @@ func (s *User) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response)
 	return nil
 }
 
+func (s *User) SignOut(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Print("Received SignOut API request")
+
+	userID, ok := req.Get["userid"]
+	if !ok || len(userID.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+	}
+
+	strUserID := strings.Join(userID.Values, " ")
+	intUserID, err := strconv.ParseInt(strUserID, 10, 64)
+	if err != nil {
+		//
+		return errors.BadRequest("go.mnhosted.api.user", "userid cannot be error")
+	}
+
+	response, err := s.Client.SignOut(ctx, &user.SignOutRequest{
+		UserID: intUserID,
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	return nil
+}
+
 func (s *User) MailCode(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Print("Received MailCode API request")
 

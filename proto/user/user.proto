@@ -5,6 +5,7 @@ package go.mnhosted.srv.user;
 service User {
 	rpc SignUp(SignUpRequest) returns (SignUpResponse) {}
 	rpc SignIn(SignInRequest) returns (SignInResponse) {}
+  rpc SignOut(SignOutRequest) returns (SignOutResponse) {}
   rpc GetInfo(GetInfoRequest) returns (GetInfoResponse) {}
   rpc MailCode(MailCodeRequest) returns (MailCodeResponse) {}
   rpc Reset(ResetRequest) returns (ResetResponse) {}
@@ -33,9 +34,17 @@ message SignInResponse {
   string token = 4;
 }
 
+message SignOutRequest {
+	int64 userID = 1; //
+}
+
+message SignOutResponse {
+	int32 rescode = 1; 	//200 ok
+	string msg = 2;		//
+}
+
 message GetInfoRequest {
   int64 userID = 1; //
-  string token = 2;
 }
 
 message GetInfoResponse {
