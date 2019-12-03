@@ -20,7 +20,7 @@ func main() {
 		//i++
 		handler.CheckMasterNodeExpired()
 
-		handler.UpdateCoinsPrice()
+		//handler.UpdateCoinsPrice()
 		//if i >= 5 {
 		//exitProgram <- true
 		//}
