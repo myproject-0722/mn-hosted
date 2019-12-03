@@ -3,15 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	api "github.com/micro/go-micro/api/proto"
 	"github.com/micro/go-micro/errors"
-	"github.com/myproject-0722/mn-hosted/lib/db"
-	liblog "github.com/myproject-0722/mn-hosted/lib/log"
-	"github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	user "github.com/myproject-0722/mn-hosted/proto/user"
 
@@ -23,16 +21,16 @@ type User struct {
 }
 
 func (s *User) SignIn(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received SignIn API request")
+	log.Debug("Received SignIn API request")
 
 	account, ok := req.Get["account"]
 	if !ok || len(account.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "account cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "account cannot be blank")
 	}
 
 	passwd, ok := req.Get["passwd"]
 	if !ok || len(passwd.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "passwd cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "passwd cannot be blank")
 	}
 
 	response, err := s.Client.SignIn(ctx, &user.SignInRequest{
@@ -55,16 +53,16 @@ func (s *User) SignIn(ctx context.Context, req *api.Request, rsp *api.Response) 
 }
 
 func (s *User) SignUp(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Say.Hello API request")
+	log.Debug("Received SignUp API request")
 
 	account, ok := req.Get["account"]
 	if !ok || len(account.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "account cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "account cannot be blank")
 	}
 
 	passwd, ok := req.Get["passwd"]
 	if !ok || len(account.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "account cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "account cannot be blank")
 	}
 
 	response, err := s.Client.SignUp(ctx, &user.SignUpRequest{
@@ -86,11 +84,11 @@ func (s *User) SignUp(ctx context.Context, req *api.Request, rsp *api.Response) 
 }
 
 func (s *User) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received GetInfo API request")
+	log.Debug("Received GetInfo API request")
 
 	userID, ok := req.Get["userid"]
 	if !ok || len(userID.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "userid cannot be blank")
 	}
 
 	strUserID := strings.Join(userID.Values, " ")
@@ -116,11 +114,11 @@ func (s *User) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response)
 }
 
 func (s *User) SignOut(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received SignOut API request")
+	log.Debug("Received SignOut API request")
 
 	userID, ok := req.Get["userid"]
 	if !ok || len(userID.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "userid cannot be blank")
 	}
 
 	strUserID := strings.Join(userID.Values, " ")
@@ -146,11 +144,11 @@ func (s *User) SignOut(ctx context.Context, req *api.Request, rsp *api.Response)
 }
 
 func (s *User) MailCode(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received MailCode API request")
+	log.Debug("Received MailCode API request")
 
 	account, ok := req.Get["account"]
 	if !ok || len(account.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "userid cannot be blank")
 	}
 
 	response, err := s.Client.MailCode(ctx, &user.MailCodeRequest{
@@ -169,21 +167,21 @@ func (s *User) MailCode(ctx context.Context, req *api.Request, rsp *api.Response
 }
 
 func (s *User) Reset(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Reset API request")
+	log.Debug("Received Reset API request")
 
 	account, ok := req.Get["account"]
 	if !ok || len(account.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "userid cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "userid cannot be blank")
 	}
 
 	passwd, ok := req.Get["password"]
 	if !ok || len(passwd.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "passwd cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "passwd cannot be blank")
 	}
 
 	authcode, ok := req.Get["authcode"]
 	if !ok || len(authcode.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.srv.user", "authcode cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.user", "authcode cannot be blank")
 	}
 
 	response, err := s.Client.Reset(ctx, &user.ResetRequest{
@@ -204,10 +202,12 @@ func (s *User) Reset(ctx context.Context, req *api.Request, rsp *api.Response) e
 }
 
 func main() {
-	liblog.InitLog("/var/log/mn-hosted/rpcsvr/user", "user.log")
-	db.Init()
-	redisclient.Init()
 	service := register.NewMicroService("go.mnhosted.api.user")
+	//db.Init()
+	//redisclient.Init()
+
+	// optionally setup command line usage
+	service.Init()
 
 	service.Server().Handle(
 		service.Server().NewHandler(

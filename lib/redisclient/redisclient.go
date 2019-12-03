@@ -12,7 +12,7 @@ var Client *redis.Client
 func Init() {
 	Client = redis.NewClient(
 		&redis.Options{
-			Addr: conf.RedisIP,
+			Addr: conf.GetRedisHost(),
 			DB:   9,
 		},
 	)

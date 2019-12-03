@@ -3,32 +3,23 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	api "github.com/micro/go-micro/api/proto"
 	"github.com/micro/go-micro/errors"
-	"github.com/myproject-0722/mn-hosted/lib/cmd"
-	"github.com/myproject-0722/mn-hosted/lib/db"
-	liblog "github.com/myproject-0722/mn-hosted/lib/log"
-	"github.com/myproject-0722/mn-hosted/lib/redisclient"
+
+	"github.com/myproject-0722/mn-hosted/lib/http"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	node "github.com/myproject-0722/mn-hosted/proto/node"
 	order "github.com/myproject-0722/mn-hosted/proto/order"
 	user "github.com/myproject-0722/mn-hosted/proto/user"
-	vps "github.com/myproject-0722/mn-hosted/proto/vps"
 	wallet "github.com/myproject-0722/mn-hosted/proto/wallet"
-
-	//"github.com/John-Tonny/mnhost/conf"
 
 	"context"
 )
-
-/*
-type Coin struct {
-	Client node.CoinService
-}*/
 
 type Masternode struct {
 	Client       node.MasternodeService
@@ -36,11 +27,10 @@ type Masternode struct {
 	WalletClient wallet.WalletService
 	UserClient   user.UserService
 	OrderClient  order.OrderService
-	VpsClient    vps.VpsService
 }
 
 func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Masternode Renew API request")
+	log.Debug("Received Masternode Renew API request")
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
@@ -147,7 +137,7 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 		return errors.BadRequest("go.mnhosted.api.node", "order err")
 	}
 
-	log.Println("orderID=", orderResp.ID)
+	log.Debug("orderID=", orderResp.ID)
 
 	resp, err := s.Client.Renew(ctx, &node.MasterNodeRenewRequest{
 		UserId:     intUserid,
@@ -175,7 +165,7 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 }
 
 func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Masternode New API request")
+	log.Debug("Received Masternode New API request")
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
@@ -286,28 +276,17 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		return errors.BadRequest("go.mnhosted.api.node", "order err")
 	}
 
-	log.Println("orderID=", orderResp.ID)
-
-	var vpsAddCmd string = "vpsadd " + strconv.FormatInt(orderResp.ID, 10)
-	log.Print("vpsAddCmd=", vpsAddCmd)
-	vpsAddCmdStatus := cmd.ExecShell(vpsAddCmd)
-	if vpsAddCmdStatus == "1" {
+	log.Debug("orderID=", orderResp.ID)
+	if http.AddVpsNode(orderResp.ID) == false {
 		return errors.BadRequest("go.mnhosted.api.node", "vps add err")
 	}
-
-	/*vpsResp, err := s.VpsClient.NewNode(context.Background(), &vps.Request{
-		Id: 3,
-	})
-	if err != nil {
-		log.Println("new node error", err)
-		return errors.BadRequest("go.mnhosted.api.node", "vps new node err")
-	} else {
-		var msg interface{}
-		if err := json.Unmarshal(vpsResp.Mix, &msg); err != nil {
-			log.Println(err)
-		}
-		log.Println("new node: ", msg)
-	}*/
+	/*
+		var vpsAddCmd string = "vpsadd " + strconv.FormatInt(orderResp.ID, 10)
+		log.Print("vpsAddCmd=", vpsAddCmd)
+		vpsAddCmdStatus := cmd.ExecShell(vpsAddCmd)
+		if vpsAddCmdStatus == "1" {
+			return errors.BadRequest("go.mnhosted.api.node", "vps add err")
+		}*/
 
 	resp, err := s.Client.New(ctx, &node.MasterNodeNewRequest{
 		UserId:     intUserid,
@@ -337,7 +316,7 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 }
 
 func (s *Masternode) Get(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Masternode Get request")
+	log.Debug("Received Masternode Get request")
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
@@ -363,7 +342,7 @@ func (s *Masternode) Get(ctx context.Context, req *api.Request, rsp *api.Respons
 }
 
 func (s *Masternode) GetCount(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Masternode Get request")
+	log.Debug("Received Masternode Get request")
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
@@ -389,7 +368,7 @@ func (s *Masternode) GetCount(ctx context.Context, req *api.Request, rsp *api.Re
 }
 
 func (s *Masternode) GetCoinList(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Print("Received Coinlist Get request")
+	log.Debug("Received Coinlist Get request")
 
 	curPage, ok := req.Get["curpage"]
 	if !ok || len(curPage.Values) == 0 {
@@ -427,10 +406,12 @@ func (s *Masternode) GetCoinList(ctx context.Context, req *api.Request, rsp *api
 }
 
 func main() {
-	liblog.InitLog("/var/log/mn-hosted/apisvr/node", "node.log")
-	db.Init()
-	redisclient.Init()
 	service := register.NewMicroService("go.mnhosted.api.node")
+	//db.Init()
+	//redisclient.Init()
+
+	// optionally setup command line usage
+	service.Init()
 
 	service.Server().Handle(
 		service.Server().NewHandler(
@@ -440,7 +421,6 @@ func main() {
 				UserClient:   user.NewUserService("go.mnhosted.srv.user", service.Client()),
 				OrderClient:  order.NewOrderService("go.mnhosted.srv.order", service.Client()),
 				WalletClient: wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client()),
-				VpsClient:    vps.NewVpsService("go.mnhosted.srv.vps", service.Client()),
 			},
 		),
 	)

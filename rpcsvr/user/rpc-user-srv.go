@@ -9,7 +9,6 @@ import (
 	"github.com/myproject-0722/mn-hosted/conf"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
-	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	"github.com/myproject-0722/mn-hosted/lib/mail"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
@@ -26,13 +25,8 @@ type User struct {
 	token  *token.Token
 }
 
-/*
-func New(token *token.Token) *User {
-	return &User{token: token}
-}*/
-
 func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.SignUpResponse) error {
-	log.Print("Received SignUpRequest Name: ", req.Account, " Passwd: ", req.Passwd)
+	log.Info("Received SignUpRequest Name: ", req.Account, " Passwd: ", req.Passwd)
 
 	accountid := dao.UserDao.Get(db.Factoty.GetSession(), req.Account)
 	if accountid != -1 {
@@ -41,16 +35,28 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 		return nil
 	}
 
-	response, err := s.Client.New(ctx, &wallet.NewRequest{
-		Account: req.Account,
-	})
-	if err != nil {
+	//改用协程执行,作测试
+	address := make(chan string)
+	success := make(chan bool)
+	go func() {
+		response, err := s.Client.New(ctx, &wallet.NewRequest{
+			Account: req.Account,
+		})
+		if err != nil {
+			success <- false
+			return
+		}
+		success <- true
+		address <- response.Address
+	}()
+
+	if <-success == false {
 		rsp.Rescode = 500
 		rsp.Msg = "Get wallet address  Error"
 		return nil
 	}
 
-	id, err := dao.UserDao.Add(db.Factoty.GetSession(), req.Account, req.Passwd, response.Address)
+	id, err := dao.UserDao.Add(db.Factoty.GetSession(), req.Account, req.Passwd, <-address)
 	if err != nil {
 		rsp.Rescode = 500
 		rsp.Msg = "Sql Server Error"
@@ -63,7 +69,7 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 }
 
 func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.SignInResponse) error {
-	log.Print("Received SignInRequest Name: ", req.Account, " Passwd: ", req.Passwd)
+	log.Info("Received SignInRequest Name: ", req.Account, " Passwd: ", req.Passwd)
 	id, err := dao.UserDao.Check(db.Factoty.GetSession(), req.Account, req.Passwd)
 	if err != nil {
 		rsp.Rescode = 404
@@ -91,7 +97,7 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 }
 
 func (s *User) SignOut(ctx context.Context, req *user.SignOutRequest, rsp *user.SignOutResponse) error {
-	log.Print("Received SignOut: ", req.UserID)
+	log.Info("Received SignOut: ", req.UserID)
 
 	user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), req.UserID)
 	if user == nil {
@@ -105,7 +111,7 @@ func (s *User) SignOut(ctx context.Context, req *user.SignOutRequest, rsp *user.
 }
 
 func (s *User) GetInfo(ctx context.Context, req *user.GetInfoRequest, rsp *user.GetInfoResponse) error {
-	log.Print("Received GetInfo: ", req.UserID)
+	log.Debug("Received GetInfo: ", req.UserID)
 
 	user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), req.UserID)
 	if user == nil {
@@ -134,7 +140,7 @@ func (s *User) GetInfo(ctx context.Context, req *user.GetInfoRequest, rsp *user.
 }
 
 func (s *User) MailCode(ctx context.Context, req *user.MailCodeRequest, rsp *user.MailCodeResponse) error {
-	log.Print("Received MailCode: ", req.Account)
+	log.Info("Received MailCode: ", req.Account)
 
 	user := dao.UserDao.GetUserByAccount(db.Factoty.GetSession(), req.Account)
 	if user == nil {
@@ -143,7 +149,7 @@ func (s *User) MailCode(ctx context.Context, req *user.MailCodeRequest, rsp *use
 	}
 
 	authCode := utils.GetRandomString(6)
-	log.Print("authCode=", authCode)
+	log.Info("authCode=", authCode)
 	redisclient.Client.Set("authCode:"+req.Account, authCode, 0)
 
 	mailTo := []string{
@@ -163,7 +169,7 @@ func (s *User) MailCode(ctx context.Context, req *user.MailCodeRequest, rsp *use
 }
 
 func (s *User) Reset(ctx context.Context, req *user.ResetRequest, rsp *user.ResetResponse) error {
-	log.Print("Received Reset Name: ", req.Account, " Passwd: ", req.Passwd, " Authcode:", req.Authcode)
+	log.Info("Received ResetPasswd Name: ", req.Account, " Passwd: ", req.Passwd, " Authcode:", req.Authcode)
 
 	code := redisclient.Client.Get("authCode:" + req.Account)
 	if code == nil || code.Val() != req.Authcode {
@@ -186,13 +192,12 @@ func (s *User) Reset(ctx context.Context, req *user.ResetRequest, rsp *user.Rese
 }
 
 func main() {
-	token := &token.Token{}
-	token.InitConfig(conf.ConsulAddresses, "micro", "config", "jwt-key", "key")
+	service := register.NewMicroService("go.mnhosted.srv.user")
 
-	liblog.InitLog("/var/log/mn-hosted/rpcsvr/user", "user.log")
+	token := &token.Token{}
+	token.InitConfig(conf.GetConsulHosts(), "micro", "config", "jwt-key", "key")
 	db.Init()
 	redisclient.Init()
-	service := register.NewMicroService("go.mnhosted.srv.user")
 
 	service.Server().Handle(
 		service.Server().NewHandler(

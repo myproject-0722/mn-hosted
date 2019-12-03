@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package go.mnhosted.srv.alipay;
+
+service AliPay {
+  rpc Pay(payRequest) returns (payResponse) {}
+}
+
+message payRequest {
+  string account = 1;
+  double balance = 2;
+}
+
+message payResponse {
+  int32 rescode = 1;
+}

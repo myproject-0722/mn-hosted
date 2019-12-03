@@ -39,9 +39,9 @@ func (srv *Token) put(newKey []byte) {
 }
 
 // InitConfig 初始化
-func (srv *Token) InitConfig(address string, path ...string) {
+func (srv *Token) InitConfig(address []string, path ...string) {
 	consulSource := consul.NewSource(
-		consul.WithAddress(address),
+		consul.WithAddress(address[0]),
 		// consul.WithPrefix("/my/prefix"),
 		// consul.StripPrefix(true),
 	)

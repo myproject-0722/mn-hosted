@@ -11,7 +11,7 @@ import (
 //const name = "API gateway"
 func init() {
 	token := &token.Token{}
-	token.InitConfig(conf.ConsulAddresses, "micro", "config", "jwt-key", "key")
+	token.InitConfig(conf.GetConsulHosts(), "micro", "config", "jwt-key", "key")
 
 	//plugin.Register(cors.NewPlugin())
 

@@ -11,7 +11,6 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/cmd"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
-	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
@@ -48,8 +47,9 @@ func (s *Coin) Get(ctx context.Context, req *node.CoinListRequest, rsp *node.Coi
 	}
 
 	rsp.Rescode = 200
-	for i, v := range coinlist {
-		log.Print("list get", i)
+	coinlistLength := len(coinlist)
+	for i := 0; i < coinlistLength; i++ {
+		v := coinlist[i]
 		item := new(node.CoinItem)
 		item.CoinName = v.CoinName
 		item.MNRequired = v.MNRequired
@@ -139,7 +139,7 @@ func (s *Masternode) Renew(ctx context.Context, req *node.MasterNodeRenewRequest
 }
 
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
-	log.Print("Received MasterNodeNewRequest:", req.UserId)
+	log.Debug("Received MasterNodeNewRequest:", req.UserId)
 	//var command string = "docker run -d -p 19999:9999 --name mnhosted-dashcore -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
 	/* var command string = "docker run -d -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
 	fmt.Println(command)
@@ -171,10 +171,10 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 
 	id, err := dao.NodeDao.AddMasternode(db.Factoty.GetSession(), masternode)
 	if err != nil {
-		log.Error("sql error, please check!")
+		log.Error("sql error, please check!", err.Error())
 		return err
 	}
-	log.Print("mn id=", id)
+	log.Debug("AddMasternode id=", id)
 
 	//c := cron.New()
 	//spec := "*/30 * * * * ?"
@@ -197,14 +197,14 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 }
 
 func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, rsp *node.MasterNodeListResponse) error {
-	log.Print("Received MasterNodeListRequest:", req.UserId)
+	log.Debug("Received MasterNodeListRequest:", req.UserId)
 	nodelist, err := dao.NodeDao.GetMasternodeByUserID(db.Factoty.GetSession(), req.UserId)
 	if err != nil {
 		return err
 	}
 
 	for i, v := range nodelist {
-		log.Print("list get", i, v.SyncStatus)
+		log.Debug("masternodelist get", i, v.SyncStatus)
 		item := new(node.MasternodeItem)
 		item.MNID = v.Id
 		item.CoinName = v.CoinName
@@ -218,11 +218,9 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 }
 
 func main() {
-
-	liblog.InitLog("/var/log/mn-hosted/rpcsvr/node", "node.log")
+	service := register.NewMicroService("go.mnhosted.srv.node")
 	db.Init()
 	redisclient.Init()
-	service := register.NewMicroService("go.mnhosted.srv.node")
 
 	// Register Handlers
 	node.RegisterMasternodeHandler(service.Server(), new(Masternode))

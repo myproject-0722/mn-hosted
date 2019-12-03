@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/myproject-0722/mn-hosted/conf"
+	log "github.com/sirupsen/logrus"
 )
 
 func RpcCall(s string) (string, error) {
@@ -33,7 +33,7 @@ func RpcCall(s string) (string, error) {
 
 	fmt.Println(quest)
 	var jsonStr = []byte(quest)
-	req, err := http.NewRequest("POST", conf.WalletBaseUrl, bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", conf.GetWalletUrl(), bytes.NewBuffer(jsonStr))
 	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 
@@ -83,9 +83,9 @@ func GetRpcCallResult(cmd string) (interface{}, error) {
 }
 
 // Request method:GET or POST
-func Request(method string, reqURL string, reqBody string) (res []byte, err error) {
+func Request(method string, reqURL string, reqBody []byte) (res []byte, err error) {
 	client := &http.Client{}
-	req, err := http.NewRequest(method, reqURL, strings.NewReader(reqBody))
+	req, err := http.NewRequest(method, reqURL, bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, err
 	}
@@ -111,10 +111,100 @@ func Request(method string, reqURL string, reqBody string) (res []byte, err erro
 	return res, err
 }
 
-func WalletRequest(reqBody string) ([]byte, error) {
-	res, err := Request("POST", conf.WalletBaseUrl, reqBody)
+func VpsRequest(api string, reqBody []byte) (interface{}, error) {
+	r, err := Request("POST", conf.GetVpsUrl()+api, reqBody)
 	if err != nil {
-		log.Println(res)
+		log.Println(r)
 	}
-	return res, nil
+
+	var dat map[string]interface{}
+	if err := json.Unmarshal([]byte(r), &dat); err == nil {
+		res := dat["Errno"]
+		return res, nil
+	}
+	return "1", nil
 }
+
+func AddVpsNode(orderid int64) bool {
+	jsondata := make(map[string]interface{})
+	jsondata["id"] = orderid
+	bytesData, err := json.Marshal(jsondata)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	res, err := VpsRequest("vps/new", bytesData)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	if res == "0" {
+		//fmt.Println("添加主节点成功")
+		return true
+	}
+	return false
+}
+
+func DelVpsNode(nodeid int64) bool {
+	jsondata := make(map[string]interface{})
+	jsondata["id"] = nodeid
+	bytesData, err := json.Marshal(jsondata)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	res, err := VpsRequest("vps/del", bytesData)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	if res == "0" {
+		//fmt.Println("添加主节点成功")
+		return true
+	}
+	return false
+}
+
+func GetCoinsPrice() (string, error) {
+	resp, error := http.Get("https://api.coincap.io/v2/assets?ids=bitcoin,dash")
+	if error != nil {
+		return "", error
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	return string(body), nil
+}
+
+/*
+package main
+
+import (
+  "fmt"
+  "os"
+  "path/filepath"
+  "net/http"
+  "io/ioutil"
+)
+
+func main() {
+
+  url := "api.coincap.io/v2/assets"
+  method := "GET"
+
+  client := &http.Client {
+    CheckRedirect: func(req *http.Request, via []*http.Request) error {
+      return http.ErrUseLastResponse
+    },
+  }
+  req, err := http.NewRequest(method, url, nil)
+
+  if err != nil {
+    fmt.Println(err)
+  }
+  res, err := client.Do(req)
+  defer res.Body.Close()
+  body, err := ioutil.ReadAll(res.Body)
+
+  fmt.Println(string(body))
+}*/

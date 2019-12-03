@@ -12,7 +12,7 @@ CREATE TABLE `t_account` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY (`account`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for t_order
@@ -32,7 +32,7 @@ CREATE TABLE `t_order` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------
@@ -43,9 +43,9 @@ CREATE TABLE `t_coinlist` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `coinname` varchar(32) COMMENT '主节点币名称',
   `mnrequired` int(11) DEFAULT 0 COMMENT '主节点质押所需货币',
-  `dprice` int(11) DEFAULT 0 COMMENT '托管价格(按天)',
-  `mprice` int(11) DEFAULT 0 COMMENT '托管价格(按月)',
-  `yprice` int(11) DEFAULT 0 COMMENT '托管价格(按年)',
+  `dprice` int(11) DEFAULT 0 COMMENT '托管价格(美元/按天)',
+  `mprice` int(11) DEFAULT 0 COMMENT '托管价格(美元/按月)',
+  `yprice` int(11) DEFAULT 0 COMMENT '托管价格(美元/按年)',
   `volume` int(11) DEFAULT 0 COMMENT '收益',
   `roi` int(11) DEFAULT 0 COMMENT '收益率',
   `monthlyincome` int(11) DEFAULT 0 COMMENT '当月收益',
@@ -54,7 +54,22 @@ CREATE TABLE `t_coinlist` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY (`coinname`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for t_coinprice
+-- ----------------------------
+DROP TABLE IF EXISTS `t_coinprice`;
+CREATE TABLE `t_coinprice` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `coinname` varchar(32) COMMENT '支付币名称',
+  `price` bigint(20) DEFAULT 0 COMMENT '与美元汇率*1000000',
+  `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`coinname`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for t_masternode
@@ -70,11 +85,35 @@ CREATE TABLE `t_masternode` (
   `dockerid` varchar(128) COMMENT 'dockerid',
   `status` int(11) DEFAULT 0 COMMENT '0未发布、1已发布',
   `syncstatus` int(11) DEFAULT 0 COMMENT '0未同步、2已同步',
-  `mnstatus` varchar(32) COMMENT '主节点状态',
+  `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态',
   `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `expiretime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '到期时间',
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`coinname`,`mnkey`),
   UNIQUE KEY (`id`),
   KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for t_masternode_bak
+-- ----------------------------
+DROP TABLE IF EXISTS `t_masternode_backup`;
+CREATE TABLE `t_masternode_backup` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主节点唯一id',
+  `coinname` varchar(32) COMMENT '主节点币类型',
+  `mnkey` varchar(32) COMMENT '主节点私钥',
+  `userid` bigint(20) NOT NULL COMMENT '所属用户id',
+  `orderid` bigint(20) COMMENT '定单id',
+  `vps` varchar(255),
+  `dockerid` varchar(128) COMMENT 'dockerid',
+  `status` int(11) DEFAULT 0 COMMENT '0未发布、1已发布',
+  `syncstatus` int(11) DEFAULT 0 COMMENT '0未同步、2已同步',
+  `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态',
+  `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `expiretime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '到期时间',
+  `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`coinname`,`mnkey`),
+  UNIQUE KEY (`id`),
+  KEY (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

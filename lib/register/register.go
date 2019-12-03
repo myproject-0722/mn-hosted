@@ -1,14 +1,19 @@
 package register
 
 import (
-	"log"
+	"time"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/consul"
+	ocplugin "github.com/micro/go-plugins/wrapper/trace/opentracing"
+	"github.com/myproject-0722/mn-hosted/conf"
+	liblog "github.com/myproject-0722/mn-hosted/lib/log"
+	"github.com/myproject-0722/mn-hosted/lib/tracer"
+	"github.com/opentracing/opentracing-go"
 )
 
-var registerService micro.Service
+var microService micro.Service
 var reg registry.Registry
 
 func NewRegistry() registry.Registry {
@@ -16,11 +21,8 @@ func NewRegistry() registry.Registry {
 		return reg
 	}
 
-	// 推荐使用etcd集群 做为服务发现,为测试暂用consul
 	reg = consul.NewRegistry(func(op *registry.Options) {
-		op.Addrs = []string{
-			"127.0.0.1:8500",
-		}
+		op.Addrs = conf.GetConsulHosts()
 	})
 
 	return reg
@@ -31,24 +33,30 @@ func NewRegistry() registry.Registry {
 	})*/
 }
 
-func NewRegistryService() micro.Service {
-	if registerService != nil {
-		log.Print("service is not null")
-		return registerService
-	}
+func NewMicroService(servername string) micro.Service {
+	liblog.InitLog(conf.GetLogDir(), servername+".log")
+	tracer.InitTracer(servername)
 
-	log.Print("service is null")
+	/*brokerKafka := kafka.NewBroker(func(options *broker.Options) {
+					options.Addrs = conf.KafkaIP
+	})
+	if err := brokerKafka.Connect(); err != nil {
+					log.Error("Broker Connect error: ", err)
+	}*/
+
 	reg := NewRegistry()
 
-	// create a new service
-	registerService = micro.NewService(micro.Registry(reg))
-	// parse command line flags
-	registerService.Init()
+	microService := micro.NewService(
+		micro.Registry(reg),
+		micro.Name(servername),
+		micro.RegisterTTL(time.Second*30),
+		micro.RegisterInterval(time.Second*10),
+		//micro.Broker(brokerKafka),
+		micro.WrapHandler(ocplugin.NewHandlerWrapper(opentracing.GlobalTracer())),
+	)
 
-	//registerService = service
+	// optionally setup command line usage
+	microService.Init()
 
-	if registerService == nil {
-		log.Print("service is null 2")
-	}
-	return registerService
+	return microService
 }

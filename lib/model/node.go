@@ -19,6 +19,15 @@ type Coin struct {
 }
 
 //
+type CoinsPrice struct {
+	Id         int64     `json:"id"`         // id
+	CoinName   string    `json:"coinname"`   // 货币名称
+	Price      int32     `json:"price"`      //
+	CreateTime time.Time `json:"createtime"` //
+	UpdateTime time.Time `json:"updatetime"` // 更新时间
+}
+
+//
 type Masternode struct {
 	Id         int64     `json:"id"`         // id
 	CoinName   string    `json:"coinname"`   // 货币名称
@@ -29,6 +38,7 @@ type Masternode struct {
 	DockerID   string    `json:"dockerid"`   //dockerid
 	Status     int32     `json:"status"`     //
 	SyncStatus int32     `json:"syncstatus"` //
+	MNStatus   int32     `json:"mnstatus"`   //
 	CreateTime time.Time `json:"createtime"` //
 	ExpireTime time.Time `json:"expiretime"` //
 	UpdateTime time.Time `json:"updatetime"` // 更新时间

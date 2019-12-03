@@ -7,7 +7,6 @@ import (
 
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
-	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
@@ -50,11 +49,9 @@ func (s *Order) Update(ctx context.Context, req *order.UpdateRequest, rsp *order
 }
 
 func main() {
-
-	liblog.InitLog("/var/log/mn-hosted/rpcsvr/order", "order.log")
+	service := register.NewMicroService("go.mnhosted.srv.order")
 	db.Init()
 	redisclient.Init()
-	service := register.NewMicroService("go.mnhosted.srv.order")
 
 	// Register Handlers
 	order.RegisterOrderHandler(service.Server(), new(Order))

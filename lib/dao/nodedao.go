@@ -92,9 +92,35 @@ func (*nodeDao) GetMasternodeCount(session *dbsession.DBSession, userID int64) i
 	return count
 }
 
+// get
+func (*nodeDao) GetNodeIDByOrderID(session *dbsession.DBSession, orderid int64) int64 {
+	row := session.QueryRow("select id from t_masternode where orderid = ?", orderid)
+	var id int64
+	err := row.Scan(&id)
+
+	if err != nil {
+		log.Error(err)
+		return -1
+	}
+
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return id
+}
+
 // udpate
 func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinname string, mnkey string, status int32) error {
 	result, err := session.Exec("update t_masternode set syncstatus = ? where coinname = '?' and mnkey = '?'", status, coinname, mnkey)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
+// delete
+func (*nodeDao) DelMasternodeByID(session *dbsession.DBSession, id int64) error {
+	result, err := session.Exec("delete from t_masternode where id = ?", id)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -136,6 +162,25 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 	return nodelist, nil
 }
 
+// get
+func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, vps, dockerid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where expiretime <= ?", expiretime)
+	if err != nil {
+		return nil, err
+	}
+	nodelist := make([]*model.Masternode, 0)
+	for rows.Next() {
+		node := new(model.Masternode)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Vps, &node.DockerID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime, &node.UpdateTime)
+		if err != nil {
+			return nil, err
+		}
+		nodelist = append(nodelist, node)
+	}
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return nodelist, nil
+}
+
 // insert
 func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternode) (int64, error) {
 	result, err := session.Exec("insert ignore into t_masternode(coinname, mnkey, userid, orderid, vps, dockerid, status, expiretime) values(?,?,?,?,?,?,?,?)",
@@ -151,4 +196,29 @@ func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternod
 		return 0, err
 	}
 	return id, nil
+}
+
+func (*nodeDao) BackupMasternode(session *dbsession.DBSession, node model.Masternode) error {
+	result, err := session.Exec("insert ignore into t_masternode_backup(coinname, mnkey, userid, orderid, vps, dockerid, status, expiretime) values(?,?,?,?,?,?,?,?)",
+		node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Vps, node.DockerID, node.Status, node.ExpireTime)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	log.Println(result)
+	return nil
+}
+
+// insert or update
+func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsPrice) error {
+
+	_, err := session.Exec("insert into t_coinsprice(coinname, price) values(?,?) on duplicate key update coinname = ?",
+		item.CoinName, item.Price, item.CoinName)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	return nil
 }
