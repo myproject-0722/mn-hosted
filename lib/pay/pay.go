@@ -33,7 +33,7 @@ func WebPageAlipay(orderid int64, price int32) (string, error) {
 	pay := alipay.TradePagePay{}
 	// 支付宝回调地址（需要在支付宝后台配置）
 	// 支付成功后，支付宝会发送一个POST消息到该地址
-	pay.NotifyURL = "http://pay.vpubchain.cn:8000/alipay"
+	pay.NotifyURL = "http://pay.vpubchain.cn:8088/alipay"
 	// 支付成功之后，浏览器将会重定向到该 URL
 	pay.ReturnURL = "http://pay.vpubchain.cn:8088/return"
 	//支付标题
