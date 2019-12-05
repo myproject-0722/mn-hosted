@@ -19,9 +19,9 @@ var (
 )
 
 func init() {
-	Client.LoadAppPublicCertFromFile("/home/lixu/git/golang/src/alipay/appCertPublicKey_2016101600698927.crt")
-	Client.LoadAliPayPublicCertFromFile("/home/lixu/git/golang/src/alipay/alipayCertPublicKey_RSA2.crt")
-	Client.LoadAliPayRootCertFromFile("/home/lixu/git/golang/src/alipay/alipayRootCert.crt")
+	Client.LoadAppPublicCertFromFile("/home/lixu/git/golang/src/mn-hosted/conf/alipay/appCertPublicKey_2016101600698927.crt")
+	Client.LoadAliPayPublicCertFromFile("/home/lixu/git/golang/src/mn-hosted/conf/alipay/alipayCertPublicKey_RSA2.crt")
+	Client.LoadAliPayRootCertFromFile("/home/lixu/git/golang/src/mn-hosted/conf/alipay/alipayRootCert.crt")
 }
 
 func VerifySignAlipay(req *http.Request) (bool, error) {
