@@ -6,7 +6,7 @@ import "time"
 type Order struct {
 	Id         int64     `json:"id"` // id
 	UserID     int64     `json:"userid"`
-	Coinname   string    `json:"Coinname"` // account
+	CoinName   string    `json:"Coinname"` // account
 	MNKey      string    `json:"mnkey"`    //
 	TimeType   int32     `json:"timetype"` //
 	Price      int32     `json:"price"`

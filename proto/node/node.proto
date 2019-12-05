@@ -76,9 +76,8 @@ message MasterNodeNewRequest {
   int64 userId = 1;
   string coinName = 2;
   string MNKey = 3;
-  string externalIp = 4;
-  string timeType = 5;
-  int64 orderID = 6;
+  int32 timeType = 4;
+  int64 orderID = 5;
 }
 
 message MasterNodeNewResponse {

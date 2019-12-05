@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	db "github.com/myproject-0722/mn-hosted/lib/db"
-	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
+	node "github.com/myproject-0722/mn-hosted/proto/node"
 	order "github.com/myproject-0722/mn-hosted/proto/order"
 	"github.com/myproject-0722/mn-hosted/rpcsvr/order/handler"
 )
@@ -13,10 +13,18 @@ import (
 func main() {
 	service := register.NewMicroService("go.mnhosted.srv.order")
 	db.Init()
-	redisclient.Init()
+	//redisclient.Init()
 
 	// Register Handlers
-	order.RegisterOrderHandler(service.Server(), handler.NewOrderService())
+	order.RegisterOrderHandler(service.Server(), new(handler.OrderService))
+
+	service.Server().Handle(
+		service.Server().NewHandler(
+			&handler.OrderService{
+				Client: node.NewMasternodeService("go.mnhosted.srv.node", service.Client()),
+			},
+		),
+	)
 
 	// Run server
 	if err := service.Run(); err != nil {

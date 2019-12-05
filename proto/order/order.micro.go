@@ -36,6 +36,7 @@ var _ server.Option
 type OrderService interface {
 	New(ctx context.Context, in *NewRequest, opts ...client.CallOption) (*NewResponse, error)
 	Alipay(ctx context.Context, in *AlipayRequest, opts ...client.CallOption) (*AlipayResponse, error)
+	ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, opts ...client.CallOption) (*ConfirmAlipayResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error)
 }
 
@@ -77,6 +78,16 @@ func (c *orderService) Alipay(ctx context.Context, in *AlipayRequest, opts ...cl
 	return out, nil
 }
 
+func (c *orderService) ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, opts ...client.CallOption) (*ConfirmAlipayResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.ConfirmAlipay", in)
+	out := new(ConfirmAlipayResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *orderService) Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error) {
 	req := c.c.NewRequest(c.name, "Order.Update", in)
 	out := new(UpdateResponse)
@@ -92,6 +103,7 @@ func (c *orderService) Update(ctx context.Context, in *UpdateRequest, opts ...cl
 type OrderHandler interface {
 	New(context.Context, *NewRequest, *NewResponse) error
 	Alipay(context.Context, *AlipayRequest, *AlipayResponse) error
+	ConfirmAlipay(context.Context, *ConfirmAlipayRequest, *ConfirmAlipayResponse) error
 	Update(context.Context, *UpdateRequest, *UpdateResponse) error
 }
 
@@ -99,6 +111,7 @@ func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.Han
 	type order interface {
 		New(ctx context.Context, in *NewRequest, out *NewResponse) error
 		Alipay(ctx context.Context, in *AlipayRequest, out *AlipayResponse) error
+		ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, out *ConfirmAlipayResponse) error
 		Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error
 	}
 	type Order struct {
@@ -118,6 +131,10 @@ func (h *orderHandler) New(ctx context.Context, in *NewRequest, out *NewResponse
 
 func (h *orderHandler) Alipay(ctx context.Context, in *AlipayRequest, out *AlipayResponse) error {
 	return h.OrderHandler.Alipay(ctx, in, out)
+}
+
+func (h *orderHandler) ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, out *ConfirmAlipayResponse) error {
+	return h.OrderHandler.ConfirmAlipay(ctx, in, out)
 }
 
 func (h *orderHandler) Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error {

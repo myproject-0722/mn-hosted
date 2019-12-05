@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/micro/go-micro/errors"
 	log "github.com/sirupsen/logrus"
 
 	"encoding/json"
@@ -11,6 +12,7 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/cmd"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
+	"github.com/myproject-0722/mn-hosted/lib/http"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
@@ -140,59 +142,36 @@ func (s *Masternode) Renew(ctx context.Context, req *node.MasterNodeRenewRequest
 
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
 	log.Debug("Received MasterNodeNewRequest:", req.UserId)
-	//var command string = "docker run -d -p 19999:9999 --name mnhosted-dashcore -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
-	/* var command string = "docker run -d -e mnkey=" + req.MNKey + " -e externalip=" + req.ExternalIp + " mnhosted/dashcore:v1.0"
-	fmt.Println(command)
-	dockerid := cmd.ExecShell(command)
-	dockerid = strings.TrimRight(dockerid, "\n") */
 
+	//将订单纪录写入主节点表
 	var masternode model.Masternode
 	masternode.CoinName = req.CoinName
 	masternode.MNKey = req.MNKey
 	masternode.UserID = req.UserId
 	masternode.OrderID = req.OrderID
-	masternode.Vps = req.ExternalIp
 	masternode.Status = 1
 	masternode.ExpireTime = time.Now()
-	/* local, err := time.LoadLocation("Asia/Chongqing") //服务器设置的时区
-	if err != nil {
-		fmt.Println(err)
-	}
-	masternode.ExpireTime.In(local) */
-
-	//masternode.DockerID = dockerid
-	if req.TimeType == "1" {
+	if req.TimeType == 1 {
 		masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, 1)
-	} else if req.TimeType == "2" {
+	} else if req.TimeType == 2 {
 		masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 1, 0)
-	} else if req.TimeType == "3" {
+	} else if req.TimeType == 3 {
 		masternode.ExpireTime = masternode.ExpireTime.AddDate(1, 0, 0)
 	}
 
 	id, err := dao.NodeDao.AddMasternode(db.Factoty.GetSession(), masternode)
 	if err != nil {
-		log.Error("sql error, please check!", err.Error())
+		rsp.Rescode = 500
+		log.Error("Sql Error, please check!", err.Error())
 		return err
 	}
 	log.Debug("AddMasternode id=", id)
 
-	//c := cron.New()
-	//spec := "*/30 * * * * ?"
-	/*c.AddFunc(spec, func() {
-		ret := GetNodeSyncStatus(req.UserId, req.MNKey, dockerid)
-		if ret == true {
-			c.Stop()
-			//更新状态
-			dao.NodeDao.UpdateMasternodeSyncStatus(db.Factoty.GetSession(), "dashcore", req.MNKey, 1)
-		}
-	})
-	c.Start()*/
+	if http.AddVpsNode(req.OrderID) == false {
+		rsp.Rescode = 500
+		return errors.BadRequest("AddVpsNode", "Vps add err")
+	}
 	rsp.Rescode = 200
-	//defer c.Stop()
-	//GetNodeSyncStatus(req.UserId, req.MNKey, dockerid)
-	/* var syncCmd string = "docker exec -it " + dockerid + "/bin/bash -c dash-cli -testnet mnsync status"
-	syncStatus := cmd.ExecShell(syncCmd)
-	log.Print("mnstatus=", syncStatus) */
 	return nil
 }
 

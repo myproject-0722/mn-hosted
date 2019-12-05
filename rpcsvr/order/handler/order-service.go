@@ -3,19 +3,24 @@ package handler
 import (
 	"context"
 
+	"github.com/micro/go-micro/errors"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	"github.com/myproject-0722/mn-hosted/lib/pay"
+	node "github.com/myproject-0722/mn-hosted/proto/node"
 	order "github.com/myproject-0722/mn-hosted/proto/order"
 	log "github.com/sirupsen/logrus"
 )
 
-type OrderService struct{}
+type OrderService struct {
+	Client node.MasternodeService
+}
 
+/*
 func NewOrderService() *OrderService {
 	return &OrderService{}
-}
+}*/
 
 func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp *order.AlipayResponse) error {
 	//查询coinname及价格
@@ -45,7 +50,7 @@ func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp
 	//插入order表生成订单id
 	var o model.Order
 	o.UserID = req.UserID
-	o.Coinname = req.CoinName
+	o.CoinName = req.CoinName
 	o.TimeType = req.TimeType
 	o.Price = price
 	o.IsRenew = 1
@@ -71,10 +76,58 @@ func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp
 	return nil
 }
 
+func (s *OrderService) ConfirmAlipay(ctx context.Context, req *order.ConfirmAlipayRequest, rsp *order.ConfirmAlipayResponse) error {
+	//从数据库表中查找纪录
+	o, err := dao.OrderDao.GetOrderItem(db.Factoty.GetSession(), req.OrderID)
+	if err != nil {
+		rsp.Rescode = 500
+		log.Error("ConfirmAlipay GetOrderItem Error: ", req.OrderID)
+		return err
+	}
+
+	//仔细数据是否一致
+	if o.Price != req.Price && o.Status == 0 {
+		rsp.Rescode = 500
+		log.Error("ConfirmAlipay Check Error: ", req.OrderID)
+		return nil
+	}
+
+	//更新订单状态，表示支付完成
+	err = dao.OrderDao.Update(db.Factoty.GetSession(), req.OrderID, o.MNKey, 1)
+	if err != nil {
+		rsp.Rescode = 500
+		log.Error("ConfirmAlipay Update Error: ", req.OrderID)
+		return nil
+	}
+
+	//创建主节点
+	resp, err := s.Client.New(ctx, &node.MasterNodeNewRequest{
+		UserId:   o.UserID,
+		CoinName: o.CoinName,
+		MNKey:    o.MNKey,
+		TimeType: o.TimeType,
+		OrderID:  req.OrderID,
+	})
+	if err != nil {
+		rsp.Rescode = 500
+		return errors.BadRequest("go.mnhosted.srv.node", err.Error())
+	}
+
+	rsp.Rescode = resp.Rescode
+
+	//更新订单状态，表示主节点创建完成
+	err = dao.OrderDao.Update(db.Factoty.GetSession(), req.OrderID, o.MNKey, 2)
+	if err != nil {
+		rsp.Rescode = 500
+		return err
+	}
+	return nil
+}
+
 func (s *OrderService) New(ctx context.Context, req *order.NewRequest, rsp *order.NewResponse) error {
 	var o model.Order
 	o.UserID = req.UserID
-	o.Coinname = req.Coinname
+	o.CoinName = req.Coinname
 	o.TimeType = req.Timetype
 	o.Price = req.Price
 	o.IsRenew = req.IsRenew

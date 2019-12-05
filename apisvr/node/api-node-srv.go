@@ -11,7 +11,6 @@ import (
 	api "github.com/micro/go-micro/api/proto"
 	"github.com/micro/go-micro/errors"
 
-	"github.com/myproject-0722/mn-hosted/lib/http"
 	"github.com/myproject-0722/mn-hosted/lib/register"
 	node "github.com/myproject-0722/mn-hosted/proto/node"
 	order "github.com/myproject-0722/mn-hosted/proto/order"
@@ -164,6 +163,7 @@ func (s *Masternode) Renew(ctx context.Context, req *api.Request, rsp *api.Respo
 	return nil
 }
 
+//供数字货币使用
 func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Debug("Received Masternode New API request")
 
@@ -180,11 +180,6 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 	mnkey, ok := req.Get["mnkey"]
 	if !ok || len(mnkey.Values) == 0 {
 		return errors.BadRequest("go.mnhosted.api.node", "mnkey cannot be blank")
-	}
-
-	externalip, ok := req.Get["externalip"]
-	if !ok || len(externalip.Values) == 0 {
-		return errors.BadRequest("go.mnhosted.api.node", "externalip cannot be blank")
 	}
 
 	timetype, ok := req.Get["timetype"]
@@ -235,11 +230,16 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 
 	strTimetype := strings.Join(timetype.Values, " ")
 	var price float64 = 0
-	if strTimetype == "1" {
+	intTimeType, err := strconv.Atoi(strTimetype)
+	if err != nil {
+		rsp.StatusCode = 404
+		return errors.BadRequest("go.mnhosted.api.node", "timetype err")
+	}
+	if intTimeType == 1 {
 		price = coinItem.Coin.DPrice
-	} else if strTimetype == "2" {
+	} else if intTimeType == 2 {
 		price = coinItem.Coin.MPrice
-	} else if strTimetype == "3" {
+	} else if intTimeType == 3 {
 		price = coinItem.Coin.YPrice
 	}
 
@@ -256,12 +256,6 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		return errors.BadRequest("go.mnhosted.api.node", "not enlough")
 	}
 
-	intTimeType, err := strconv.Atoi(strTimetype)
-	if err != nil {
-		rsp.StatusCode = 404
-		return errors.BadRequest("go.mnhosted.api.node", "timetype err")
-	}
-
 	txid := payResp.TxID
 	orderResp, err := s.OrderClient.New(ctx, &order.NewRequest{
 		UserID:   intUserid,
@@ -276,25 +270,12 @@ func (s *Masternode) New(ctx context.Context, req *api.Request, rsp *api.Respons
 		return errors.BadRequest("go.mnhosted.api.node", "order err")
 	}
 
-	log.Debug("orderID=", orderResp.ID)
-	if http.AddVpsNode(orderResp.ID) == false {
-		return errors.BadRequest("go.mnhosted.api.node", "vps add err")
-	}
-	/*
-		var vpsAddCmd string = "vpsadd " + strconv.FormatInt(orderResp.ID, 10)
-		log.Print("vpsAddCmd=", vpsAddCmd)
-		vpsAddCmdStatus := cmd.ExecShell(vpsAddCmd)
-		if vpsAddCmdStatus == "1" {
-			return errors.BadRequest("go.mnhosted.api.node", "vps add err")
-		}*/
-
 	resp, err := s.Client.New(ctx, &node.MasterNodeNewRequest{
-		UserId:     intUserid,
-		CoinName:   strings.Join(coinname.Values, " "),
-		MNKey:      strings.Join(mnkey.Values, " "),
-		ExternalIp: strings.Join(externalip.Values, " "),
-		TimeType:   strings.Join(timetype.Values, " "),
-		OrderID:    orderResp.ID,
+		UserId:   intUserid,
+		CoinName: strings.Join(coinname.Values, " "),
+		MNKey:    strings.Join(mnkey.Values, " "),
+		TimeType: int32(intTimeType),
+		OrderID:  orderResp.ID,
 	})
 	if err != nil {
 		return errors.BadRequest("go.mnhosted.api.node", err.Error())
