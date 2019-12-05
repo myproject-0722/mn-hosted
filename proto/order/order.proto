@@ -4,6 +4,7 @@ package go.mnhosted.srv.order;
 
 service order {
 	rpc New(NewRequest) returns (NewResponse) {}
+  rpc Alipay(AlipayRequest) returns (AlipayResponse) {}
   rpc Update(UpdateRequest) returns (UpdateResponse) {}
 }
 
@@ -19,6 +20,18 @@ message NewRequest {
 message NewResponse {
 	int32 rescode = 1; 	//200 ok
 	int64 ID = 2;
+}
+
+message AlipayRequest {
+  int64 userID = 1;
+  string coinName = 2;
+  string MNKey = 3;
+  int32 timeType = 4;
+}
+
+message AlipayResponse {
+	int32 rescode = 1; 	//200 ok
+  string payUrl = 2;
 }
 
 message UpdateRequest {

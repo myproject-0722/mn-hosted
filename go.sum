@@ -850,6 +850,12 @@ github.com/smallnest/libkv-etcdv3-store v0.0.0-20191101045330-f92940446965/go.mo
 github.com/smallnest/rpcx v0.0.0-20191115100340-4c760a7be45d h1:32C2ESIm6PGwuyDZwZNgXIflOd7UymTWFJsvVCKKxhU=
 github.com/smallnest/rpcx v0.0.0-20191115100340-4c760a7be45d/go.mod h1:8ASReZgISdhtgkAgauwGie0l6rzZDC57BN9J1HdQEpQ=
 github.com/smallnest/valkeyrie v0.0.0-20191030064635-54a884e4b303/go.mod h1:ixoXqhXnCjUFM17O2cOVoJ98KzDnCb2+iGtJDmtC/qs=
+github.com/smartwalle/alipay v1.0.2 h1:y/uC+6OcVDVxKJ5Bs1qi6aogjDEXwD3XswDXJ5zJurk=
+github.com/smartwalle/alipay v1.0.2/go.mod h1:mLd7S8PCPq6M3yheACnoQ7nq+wGAa7y+2R0uqg0uxhc=
+github.com/smartwalle/alipay/v3 v3.0.10 h1:SgSnpgeeI7EMA6K/yru8EX3u9IjVWTWqjfOvVKRZtdI=
+github.com/smartwalle/alipay/v3 v3.0.10/go.mod h1:cZUMCCnsux9YAxA0/f3PWUR+7wckWtE1BqxbVRtGij0=
+github.com/smartwalle/crypto4go v1.0.2 h1:9DUEOOsPhmp00438L4oBdcL8EZG1zumecft5bWj5phI=
+github.com/smartwalle/crypto4go v1.0.2/go.mod h1:LQ7vCZIb7BE5+MuMtJBuO8ORkkQ01m4DXDBWPzLbkMY=
 github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
 github.com/smartystreets/assertions v1.0.0/go.mod h1:kHHU4qYBaI3q23Pp3VPrmWhuIUrLW/7eUrw0BU5VaoM=
 github.com/smartystreets/assertions v1.0.1/go.mod h1:kHHU4qYBaI3q23Pp3VPrmWhuIUrLW/7eUrw0BU5VaoM=
@@ -891,6 +897,8 @@ github.com/tinylib/msgp v1.1.0/go.mod h1:+d+yLhGm8mzTaHzB+wgMYrodPfmZrzkirds8fDW
 github.com/tjfoc/gmsm v1.0.1/go.mod h1:XxO4hdhhrzAd+G4CjDqaOkd0hUzmtPR/d3EiBBMn/wc=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/transip/gotransip v0.0.0-20190812104329-6d8d9179b66f/go.mod h1:i0f4R4o2HM0m3DZYQWsj6/MEowD57VzoH0v3d7igeFY=
+github.com/tryor/commons v0.0.0-20190820055816-f03235106d91 h1:RhkF0COEaBHa2zYY5gp9ZzD9HROPTYX2gayG063YBk8=
+github.com/tryor/commons v0.0.0-20190820055816-f03235106d91/go.mod h1:F58OAVqv8mgbYDcmHf3To5KPKZ5+QAOGGrvRZnH0Y3M=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/uber-go/atomic v1.3.2/go.mod h1:/Ct5t2lcmbJ4OSe/waGBoaVvVqtO0bmtfVNex1PFV8g=
 github.com/uber-go/atomic v1.4.0/go.mod h1:/Ct5t2lcmbJ4OSe/waGBoaVvVqtO0bmtfVNex1PFV8g=
@@ -971,6 +979,7 @@ golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACk
 golang.org/x/crypto v0.0.0-20190404164418-38d8ce5564a5/go.mod h1:WFFai1msRO1wXaEeE5yQxYXgSfI8pQAWXbQop6sCtWE=
 golang.org/x/crypto v0.0.0-20190418165655-df01cb2cc480/go.mod h1:WFFai1msRO1wXaEeE5yQxYXgSfI8pQAWXbQop6sCtWE=
 golang.org/x/crypto v0.0.0-20190422183909-d864b10871cd/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
+golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20190530122614-20be4c3c3ed5/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=

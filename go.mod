@@ -19,6 +19,9 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smallnest/rpcx v0.0.0-20191115100340-4c760a7be45d
+	github.com/smartwalle/alipay v1.0.2
+	github.com/smartwalle/alipay/v3 v3.0.10
+	github.com/tryor/commons v0.0.0-20190820055816-f03235106d91
 	github.com/uber/jaeger-client-go v2.16.0+incompatible
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v2 v2.2.4

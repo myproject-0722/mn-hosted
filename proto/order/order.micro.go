@@ -35,6 +35,7 @@ var _ server.Option
 
 type OrderService interface {
 	New(ctx context.Context, in *NewRequest, opts ...client.CallOption) (*NewResponse, error)
+	Alipay(ctx context.Context, in *AlipayRequest, opts ...client.CallOption) (*AlipayResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error)
 }
 
@@ -66,6 +67,16 @@ func (c *orderService) New(ctx context.Context, in *NewRequest, opts ...client.C
 	return out, nil
 }
 
+func (c *orderService) Alipay(ctx context.Context, in *AlipayRequest, opts ...client.CallOption) (*AlipayResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.Alipay", in)
+	out := new(AlipayResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *orderService) Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error) {
 	req := c.c.NewRequest(c.name, "Order.Update", in)
 	out := new(UpdateResponse)
@@ -80,12 +91,14 @@ func (c *orderService) Update(ctx context.Context, in *UpdateRequest, opts ...cl
 
 type OrderHandler interface {
 	New(context.Context, *NewRequest, *NewResponse) error
+	Alipay(context.Context, *AlipayRequest, *AlipayResponse) error
 	Update(context.Context, *UpdateRequest, *UpdateResponse) error
 }
 
 func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.HandlerOption) error {
 	type order interface {
 		New(ctx context.Context, in *NewRequest, out *NewResponse) error
+		Alipay(ctx context.Context, in *AlipayRequest, out *AlipayResponse) error
 		Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error
 	}
 	type Order struct {
@@ -101,6 +114,10 @@ type orderHandler struct {
 
 func (h *orderHandler) New(ctx context.Context, in *NewRequest, out *NewResponse) error {
 	return h.OrderHandler.New(ctx, in, out)
+}
+
+func (h *orderHandler) Alipay(ctx context.Context, in *AlipayRequest, out *AlipayResponse) error {
+	return h.OrderHandler.Alipay(ctx, in, out)
 }
 
 func (h *orderHandler) Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error {
