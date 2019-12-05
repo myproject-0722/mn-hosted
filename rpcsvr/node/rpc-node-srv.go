@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/micro/go-micro/errors"
 	log "github.com/sirupsen/logrus"
 
 	"encoding/json"
@@ -12,7 +11,6 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/cmd"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	db "github.com/myproject-0722/mn-hosted/lib/db"
-	"github.com/myproject-0722/mn-hosted/lib/http"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	redisclient "github.com/myproject-0722/mn-hosted/lib/redisclient"
 	"github.com/myproject-0722/mn-hosted/lib/register"
@@ -166,11 +164,12 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 		return err
 	}
 	log.Debug("AddMasternode id=", id)
-
+	/* 暂时注掉方便测试
 	if http.AddVpsNode(req.OrderID) == false {
 		rsp.Rescode = 500
 		return errors.BadRequest("AddVpsNode", "Vps add err")
 	}
+	*/
 	rsp.Rescode = 200
 	return nil
 }
