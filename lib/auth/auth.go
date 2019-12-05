@@ -14,7 +14,7 @@ func JWTAuthWrapper(token *token.Token) plugin.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			log.Println("auth plugin received: " + r.URL.Path)
 			// TODO 从配置中心动态获取白名单URL
-			if r.URL.Path == "/user/User/SignIn" || r.URL.Path == "/user/User/SignUp" || r.URL.Path == "/user/User/MailCode" || r.URL.Path == "/user/User/Reset" || r.URL.Path == "/user/test" {
+			if r.URL.Path == "/alipay" || r.URL.Path == "/user/User/SignIn" || r.URL.Path == "/user/User/SignUp" || r.URL.Path == "/user/User/MailCode" || r.URL.Path == "/user/User/Reset" || r.URL.Path == "/user/test" {
 				h.ServeHTTP(w, r)
 				return
 			}
