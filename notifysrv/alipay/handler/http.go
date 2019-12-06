@@ -51,7 +51,7 @@ func HttpNotifyServer() {
 				return
 			}
 
-			amount, err := strconv.ParseInt(noti.BuyerPayAmount, 10, 64)
+			amount, err := strconv.ParseFloat(noti.BuyerPayAmount, 64)
 			if err != nil {
 				log.Error("BuyerPayAmount parse:", amount)
 				return
