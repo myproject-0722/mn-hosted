@@ -14,15 +14,19 @@ func main() {
 	// optionally setup command line usage
 	service.Init()
 
-	service.Server().Handle(
-		service.Server().NewHandler(
-			&handler.Order{
-				Client: order.NewOrderService("go.mnhosted.srv.order", service.Client()),
-			},
-		),
-	)
-
+	handler.Client = order.NewOrderService("go.mnhosted.srv.order", service.Client())
+	/*
+		service.Server().Handle(
+			service.Server().NewHandler(
+				&handler.Order{
+					Client: order.NewOrderService("go.mnhosted.srv.order", service.Client()),
+				},
+			),
+		)
+	*/
 	go handler.HttpNotifyServer()
+
+	handler.Test()
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

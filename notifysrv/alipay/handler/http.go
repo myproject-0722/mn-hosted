@@ -12,12 +12,24 @@ import (
 	"github.com/smartwalle/alipay/v3"
 )
 
-type Order struct {
+/*type Order struct {
 	Client order.OrderService
+}*/
+var Client order.OrderService
+
+//var OrderServ Order
+/*
+func Test() {
+	response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+		OrderID: 20,
+		Price:   1,
+	})
+	if err != nil || response.Rescode != 200 {
+		log.Error("ConfirmAlipay:", err.Error())
+		return
+	}
 }
-
-var OrderServ Order
-
+*/
 func HttpNotifyServer() {
 	//支付成功之后的返回URL页面
 	http.HandleFunc("/return", func(rep http.ResponseWriter, req *http.Request) {
@@ -36,14 +48,16 @@ func HttpNotifyServer() {
 			orderID, err := strconv.ParseInt(noti.TradeNo, 10, 64)
 			if err != nil {
 				log.Error("TradeNo parse:", orderID)
+				return
 			}
 
 			amount, err := strconv.Atoi(noti.BuyerPayAmount)
 			if err != nil {
-				log.Error("TradeNo parse:", amount)
+				log.Error("BuyerPayAmount parse:", amount)
+				return
 			}
 
-			response, err := OrderServ.Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+			response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
 				OrderID: orderID,
 				Price:   int32(amount),
 			})

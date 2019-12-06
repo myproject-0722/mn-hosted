@@ -26,7 +26,7 @@ CREATE TABLE `t_order` (
   `timetype` TINYINT COMMENT '支付时间(1-天,2-月,3-周)',
   `price` int(11) COMMENT '付费金额',
   `txid` varchar(128) COMMENT 'txid',
-  `isrenew` int(11) COMMENT 'isrenew 0-非 1-是',
+  `isrenew` int(11) DEFAULT 0 COMMENT 'isrenew 0-非 1-是',
   `status` int(11) DEFAULT 0 COMMENT '订单状态 0 未完成 1 已完成',
   `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

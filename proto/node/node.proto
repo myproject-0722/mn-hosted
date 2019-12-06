@@ -88,9 +88,8 @@ message MasterNodeRenewRequest {
   int64 userId = 1;
   string coinName = 2;
   string MNKey = 3;
-  string externalIp = 4;
-  string timeType = 5;
-  int32 timeNum = 6;
+  string timeType = 4;
+  int32 timeNum = 5;
 }
 
 message MasterNodeRenewResponse {

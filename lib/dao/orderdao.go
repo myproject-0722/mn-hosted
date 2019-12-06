@@ -26,7 +26,7 @@ func (*orderDao) Insert(session *dbsession.DBSession, o *model.Order) (int64, er
 
 // get
 func (*orderDao) GetOrderItem(session *dbsession.DBSession, orderID int64) (*model.Order, error) {
-	row := session.QueryRow("select userid, coinname, timetype, price, txid, isrenew, status from t_order where orderid = ? ", orderID)
+	row := session.QueryRow("select userid, coinname, timetype, price, txid, isrenew, status from t_order where id = ? ", orderID)
 	item := new(model.Order)
 	err := row.Scan(&item.UserID, &item.CoinName, &item.TimeType, &item.Price, &item.TxID, &item.IsRenew, &item.Status)
 	if err != nil {
