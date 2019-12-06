@@ -53,6 +53,7 @@ func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp
 	o.UserID = req.UserID
 	o.CoinName = req.CoinName
 	o.TimeType = req.TimeType
+	o.MNKey = req.MNKey
 	o.Price = price
 	o.IsRenew = 1
 	//o.TxID = req.TxID
