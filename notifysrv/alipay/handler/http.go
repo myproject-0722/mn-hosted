@@ -43,7 +43,7 @@ func HttpNotifyServer() {
 	http.HandleFunc("/alipay", func(rep http.ResponseWriter, req *http.Request) {
 		var noti, _ = pay.Client.GetTradeNotification(req)
 		if noti != nil {
-			log.Debug("支付成功 tradeno:", noti.TradeNo, " outtraceno:", noti.OutTradeNo, " amount:", noti.TotalAmount, "", noti.BuyerPayAmount)
+			log.Debug("支付成功 tradeno:", noti.TradeNo, " outtraceno:", noti.OutTradeNo, " amount:", noti.TotalAmount, " ", noti.BuyerPayAmount)
 			//修改订单状态。。。。
 			orderID, err := strconv.ParseInt(noti.OutTradeNo, 10, 64)
 			if err != nil {
