@@ -30,7 +30,7 @@ func Test() {
 	}
 }
 */
-func HttpNotifyServer() {
+func HttpNotifyServer(client order.OrderService) {
 	//支付成功之后的返回URL页面
 	http.HandleFunc("/return", func(rep http.ResponseWriter, req *http.Request) {
 		req.ParseForm()
@@ -57,7 +57,7 @@ func HttpNotifyServer() {
 				return
 			}
 
-			response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+			response, err := client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
 				OrderID: orderID,
 				Price:   int32(amount * 100),
 			})
