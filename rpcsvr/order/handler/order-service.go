@@ -86,9 +86,9 @@ func (s *OrderService) ConfirmAlipay(ctx context.Context, req *order.ConfirmAlip
 	}
 
 	//仔细数据是否一致
-	if o.Price != req.Price && o.Status == 0 {
+	if o.Price != req.Price || o.Status != 0 {
 		rsp.Rescode = 500
-		log.Error("ConfirmAlipay Check Error: ", req.OrderID)
+		log.Error("ConfirmAlipay Check Error: ", req.OrderID, " ", o.Price, " ", req.Price, " ", o.Status)
 		return nil
 	}
 
@@ -101,7 +101,7 @@ func (s *OrderService) ConfirmAlipay(ctx context.Context, req *order.ConfirmAlip
 	}
 
 	//创建主节点
-	resp, err := s.Client.New(ctx, &node.MasterNodeNewRequest{
+	resp, err := s.Client.New(context.Background(), &node.MasterNodeNewRequest{
 		UserId:   o.UserID,
 		CoinName: o.CoinName,
 		MNKey:    o.MNKey,

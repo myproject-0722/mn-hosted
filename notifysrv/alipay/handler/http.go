@@ -79,7 +79,7 @@ func HttpNotifyServer() {
 					return
 				}
 			*/
-			err = ConfirmAlipay(orderID, int32(amount))
+			err = ConfirmAlipay(orderID, int32(amount*100))
 			if err != nil {
 				log.Error("ConfirmAlipay:", err.Error())
 				return
