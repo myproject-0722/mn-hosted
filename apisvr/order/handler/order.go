@@ -21,33 +21,39 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
+		log.Error("userid cannot be blank")
 		return errors.BadRequest("go.mnhosted.api.order", "userid cannot be blank")
 	}
 
 	coinname, ok := req.Get["coinname"]
 	if !ok || len(coinname.Values) == 0 {
+		log.Error("coinname cannot be blank")
 		return errors.BadRequest("go.mnhosted.api.order", "coinname cannot be blank")
 	}
 
 	mnkey, ok := req.Get["mnkey"]
 	if !ok || len(mnkey.Values) == 0 {
+		log.Error("mnkey cannot be blank")
 		return errors.BadRequest("go.mnhosted.api.order", "mnkey cannot be blank")
 	}
 
 	timetype, ok := req.Get["timetype"]
 	if !ok || len(timetype.Values) == 0 {
+		log.Error("timetype cannot be blank")
 		return errors.BadRequest("go.mnhosted.api.order", "timetype cannot be blank")
 	}
 
 	strUserid := strings.Join(userid.Values, " ")
 	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
 	if err != nil {
+		log.Error("userid err")
 		return errors.BadRequest("go.mnhosted.api.order", "userid err")
 	}
 
 	strTimeType := strings.Join(timetype.Values, " ")
 	intTimeType, err := strconv.Atoi(strTimeType)
 	if err != nil {
+		log.Error("timetype err")
 		return errors.BadRequest("go.mnhosted.api.order", "timetype err")
 	}
 
@@ -60,6 +66,7 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 
 	if err != nil {
 		rsp.StatusCode = 404
+		log.Error("Alipay error", err.Error())
 		return errors.BadRequest("go.mnhosted.api.order", "order err")
 	}
 
