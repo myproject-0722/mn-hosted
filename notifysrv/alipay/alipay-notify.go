@@ -26,7 +26,7 @@ func main() {
 	*/
 	go handler.HttpNotifyServer()
 
-	handler.Test()
+	//handler.Test()
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
