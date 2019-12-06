@@ -14,14 +14,14 @@ func main() {
 	service := register.NewMicroService("go.mnhosted.srv.order")
 	db.Init()
 	//redisclient.Init()
-	service.Server().Handle(
+	/*service.Server().Handle(
 		service.Server().NewHandler(
 			&handler.OrderService{
 				Client: node.NewMasternodeService("go.mnhosted.srv.node", service.Client()),
 			},
 		),
-	)
-
+	)*/
+	handler.Client = node.NewMasternodeService("go.mnhosted.srv.node", service.Client())
 	// Register Handlers
 	order.RegisterOrderHandler(service.Server(), new(handler.OrderService))
 

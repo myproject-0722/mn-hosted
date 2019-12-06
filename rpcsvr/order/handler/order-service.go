@@ -14,8 +14,9 @@ import (
 )
 
 type OrderService struct {
-	Client node.MasternodeService
 }
+
+var Client node.MasternodeService
 
 /*
 func NewOrderService() *OrderService {
@@ -101,7 +102,7 @@ func (s *OrderService) ConfirmAlipay(ctx context.Context, req *order.ConfirmAlip
 	}
 
 	//创建主节点
-	resp, err := s.Client.New(context.Background(), &node.MasterNodeNewRequest{
+	resp, err := Client.New(context.Background(), &node.MasterNodeNewRequest{
 		UserId:   o.UserID,
 		CoinName: o.CoinName,
 		MNKey:    o.MNKey,
