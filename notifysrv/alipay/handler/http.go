@@ -51,7 +51,7 @@ func HttpNotifyServer() {
 				return
 			}
 
-			amount, err := strconv.Atoi(noti.BuyerPayAmount)
+			amount, err := strconv.ParseInt(noti.BuyerPayAmount, 10, 64)
 			if err != nil {
 				log.Error("BuyerPayAmount parse:", amount)
 				return
@@ -59,7 +59,7 @@ func HttpNotifyServer() {
 
 			response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
 				OrderID: orderID,
-				Price:   int32(amount),
+				Price:   int32(amount * 100),
 			})
 			if err != nil || response.Rescode != 200 {
 				log.Error("ConfirmAlipay:", err.Error())
