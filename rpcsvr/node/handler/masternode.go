@@ -64,7 +64,7 @@ func (s *Masternode) Renew(ctx context.Context, req *node.MasterNodeRenewRequest
 
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
 	log.Debug("Received MasterNodeNewRequest:", req.UserId)
-
+	log.Debug("Received MasterNodeNewRequest:", req.UserId, " ", req.CoinName, " ", req.MNKey, " ", req.OrderID)
 	//将订单纪录写入主节点表
 	var masternode model.Masternode
 	masternode.CoinName = req.CoinName
