@@ -30,7 +30,7 @@ func Test() {
 	}
 }
 */
-func HttpNotifyServer(client order.OrderService) {
+func HttpNotifyServer() {
 	//支付成功之后的返回URL页面
 	http.HandleFunc("/return", func(rep http.ResponseWriter, req *http.Request) {
 		req.ParseForm()
@@ -57,7 +57,7 @@ func HttpNotifyServer(client order.OrderService) {
 				return
 			}
 
-			response, err := client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+			response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
 				OrderID: orderID,
 				Price:   int32(amount * 100),
 			})
@@ -74,5 +74,5 @@ func HttpNotifyServer(client order.OrderService) {
 	})
 
 	fmt.Println("server start....")
-	http.ListenAndServe(":8088", nil)
+	go http.ListenAndServe(":8088", nil)
 }

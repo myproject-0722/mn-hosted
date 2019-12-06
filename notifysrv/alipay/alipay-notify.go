@@ -24,7 +24,7 @@ func main() {
 			),
 		)
 	*/
-	go handler.HttpNotifyServer(handler.Client)
+	handler.HttpNotifyServer()
 
 	//handler.Test()
 
