@@ -14,10 +14,6 @@ func main() {
 	service := register.NewMicroService("go.mnhosted.srv.order")
 	db.Init()
 	//redisclient.Init()
-
-	// Register Handlers
-	order.RegisterOrderHandler(service.Server(), new(handler.OrderService))
-
 	service.Server().Handle(
 		service.Server().NewHandler(
 			&handler.OrderService{
@@ -25,6 +21,9 @@ func main() {
 			},
 		),
 	)
+
+	// Register Handlers
+	order.RegisterOrderHandler(service.Server(), new(handler.OrderService))
 
 	// Run server
 	if err := service.Run(); err != nil {
