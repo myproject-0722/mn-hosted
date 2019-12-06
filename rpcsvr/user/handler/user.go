@@ -34,27 +34,28 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 	}
 
 	//改用协程执行,作测试
-	address := make(chan string)
-	success := make(chan bool)
-	go func() {
-		response, err := s.Client.New(ctx, &wallet.NewRequest{
-			Account: req.Account,
-		})
-		if err != nil {
-			success <- false
-			return
+	/*
+		address := make(chan string)
+		success := make(chan bool)
+		go func() {
+			response, err := s.Client.New(ctx, &wallet.NewRequest{
+				Account: req.Account,
+			})
+			if err != nil {
+				success <- false
+				return
+			}
+			success <- true
+			address <- response.Address
+		}()
+
+		if <-success == false {
+			rsp.Rescode = 500
+			rsp.Msg = "Get wallet address  Error"
+			return nil
 		}
-		success <- true
-		address <- response.Address
-	}()
-
-	if <-success == false {
-		rsp.Rescode = 500
-		rsp.Msg = "Get wallet address  Error"
-		return nil
-	}
-
-	id, err := dao.UserDao.Add(db.Factoty.GetSession(), req.Account, req.Passwd, <-address)
+	*/
+	id, err := dao.UserDao.Add(db.Factoty.GetSession(), req.Account, req.Passwd, "")
 	if err != nil {
 		rsp.Rescode = 500
 		rsp.Msg = "Sql Server Error"
