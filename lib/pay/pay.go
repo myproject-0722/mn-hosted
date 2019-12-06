@@ -46,7 +46,7 @@ func WebPageAlipay(orderid int64, price int32) (string, error) {
 	pay.ProductCode = "FAST_INSTANT_TRADE_PAY"
 	//金额
 	var amount float64 = float64(price / 100)
-	pay.TotalAmount = strconv.FormatFloat(amount, 'E', -1, 64)
+	pay.TotalAmount = strconv.FormatFloat(amount, 'g', 1, 64)
 
 	url, err := Client.TradePagePay(pay)
 	if err != nil {
