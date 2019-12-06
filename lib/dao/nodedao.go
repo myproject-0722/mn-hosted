@@ -183,8 +183,8 @@ func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretim
 
 // insert
 func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternode) (int64, error) {
-	result, err := session.Exec("insert ignore into t_masternode(coinname, mnkey, userid, orderid, vps, dockerid, status, expiretime) values(?,?,?,?,?,?,?,?)",
-		node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Vps, node.DockerID, node.Status, node.ExpireTime)
+	result, err := session.Exec("insert ignore into t_masternode(coinname, mnkey, userid, orderid, status, expiretime) values(?,?,?,?,?,?)",
+		node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Status, node.ExpireTime)
 	if err != nil {
 		log.Error(err)
 		return 0, err
