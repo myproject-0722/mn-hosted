@@ -19,9 +19,10 @@ import (
 const issuer = "go.mnhosted.srv.auth"
 
 type User struct {
-	Client wallet.WalletService
-	Token  *token.Token
 }
+
+var Client wallet.WalletService
+var Token *token.Token
 
 func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.SignUpResponse) error {
 	log.Info("Received SignUpRequest Name: ", req.Account, " Passwd: ", req.Passwd)
@@ -59,6 +60,7 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 	if err != nil {
 		rsp.Rescode = 500
 		rsp.Msg = "Sql Server Error"
+		log.Error(err.Error())
 		return nil
 	}
 	rsp.Rescode = 200
@@ -78,7 +80,7 @@ func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.Si
 
 	var tokenStr string
 	expireTime := time.Now().Add(time.Hour * 24).Unix() // 1天后过期
-	tokenStr, err = s.Token.Encode(issuer, req.Account, expireTime)
+	tokenStr, err = Token.Encode(issuer, req.Account, expireTime)
 	if err != nil {
 		return err
 	}

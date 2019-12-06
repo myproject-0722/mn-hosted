@@ -21,13 +21,8 @@ func main() {
 	db.Init()
 	redisclient.Init()
 
-	service.Server().Handle(
-		service.Server().NewHandler(
-			&handler.User{Client: wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client()),
-				Token: token},
-		),
-	)
-
+	handler.Client = wallet.NewWalletService("go.mnhosted.srv.wallet", service.Client())
+	handler.Token = token
 	// Register Handlers
 	user.RegisterUserHandler(service.Server(), new(handler.User))
 
