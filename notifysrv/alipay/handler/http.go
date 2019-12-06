@@ -45,7 +45,7 @@ func HttpNotifyServer() {
 		if noti != nil {
 			log.Debug("支付成功 tradeno:", noti.TradeNo, " outtraceno:", noti.OutTradeNo, " amount:", noti.TotalAmount, "", noti.BuyerPayAmount)
 			//修改订单状态。。。。
-			orderID, err := strconv.ParseInt(noti.TradeNo, 10, 64)
+			orderID, err := strconv.ParseInt(noti.OutTradeNo, 10, 64)
 			if err != nil {
 				log.Error("TradeNo parse:", orderID)
 				return
