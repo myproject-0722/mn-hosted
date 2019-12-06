@@ -30,6 +30,19 @@ func Test() {
 	}
 }
 */
+
+func ConfirmAlipay(orderid int64, price int32) error {
+	response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+		OrderID: orderid,
+		Price:   price,
+	})
+	if err != nil || response.Rescode != 200 {
+		log.Error("ConfirmAlipay:", err.Error())
+		return err
+	}
+	return nil
+}
+
 func HttpNotifyServer() {
 	//支付成功之后的返回URL页面
 	http.HandleFunc("/return", func(rep http.ResponseWriter, req *http.Request) {
@@ -56,12 +69,18 @@ func HttpNotifyServer() {
 				log.Error("BuyerPayAmount parse:", amount)
 				return
 			}
-
-			response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
-				OrderID: orderID,
-				Price:   int32(amount * 100),
-			})
-			if err != nil || response.Rescode != 200 {
+			/*
+				response, err := Client.ConfirmAlipay(context.Background(), &order.ConfirmAlipayRequest{
+					OrderID: orderID,
+					Price:   int32(amount * 100),
+				})
+				if err != nil || response.Rescode != 200 {
+					log.Error("ConfirmAlipay:", err.Error())
+					return
+				}
+			*/
+			err = ConfirmAlipay(orderID, int32(amount))
+			if err != nil {
 				log.Error("ConfirmAlipay:", err.Error())
 				return
 			}
