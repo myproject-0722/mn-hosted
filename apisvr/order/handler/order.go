@@ -46,7 +46,7 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 	var intIsRenew int = 0
 	isRenew, ok := req.Get["isrenew"]
 	if ok && len(isRenew.Values) != 0 {
-		intIsRenew, _ = strconv.Atoi(strings.Join(userid.Values, " "))
+		intIsRenew, _ = strconv.Atoi(strings.Join(isRenew.Values, " "))
 	}
 
 	strUserid := strings.Join(userid.Values, " ")
