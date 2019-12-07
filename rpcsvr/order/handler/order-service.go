@@ -42,10 +42,18 @@ func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp
 	log.Debug("Alipay coinname: ", req.CoinName, " price: ", price)
 
 	//检查主节点是否存在
-	masternode, err := dao.NodeDao.GetMasternode(db.Factoty.GetSession(), req.CoinName, req.MNKey)
-	if err != nil || masternode != nil {
-		rsp.Rescode = 401
-		return err
+	if req.IsRenew == 0 {
+		masternode, err := dao.NodeDao.GetMasternode(db.Factoty.GetSession(), req.CoinName, req.MNKey)
+		if err != nil || masternode != nil {
+			rsp.Rescode = 401
+			return err
+		}
+	} else {
+		masternode, err := dao.NodeDao.GetMasternode(db.Factoty.GetSession(), req.CoinName, req.MNKey)
+		if err == nil && masternode == nil {
+			rsp.Rescode = 401
+			return err
+		}
 	}
 
 	//插入order表生成订单id
