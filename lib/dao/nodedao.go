@@ -199,14 +199,19 @@ func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternod
 }
 
 func (*nodeDao) BackupMasternode(session *dbsession.DBSession, node model.Masternode) error {
-	result, err := session.Exec("insert ignore into t_masternode_backup(coinname, mnkey, userid, orderid, vps, dockerid, status, expiretime) values(?,?,?,?,?,?,?,?)",
-		node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Vps, node.DockerID, node.Status, node.ExpireTime)
+	result, err := session.Exec("insert ignore into t_masternode_backup(id, coinname, mnkey, userid, orderid, status, expiretime) values(?,?,?,?,?,?,?)",
+		node.Id, node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Status, node.ExpireTime)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
 
-	log.Println(result)
+	id, err := result.LastInsertId()
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Info("backup:", id)
 	return nil
 }
 

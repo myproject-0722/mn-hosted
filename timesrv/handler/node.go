@@ -7,7 +7,8 @@ import (
 
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
-	"github.com/myproject-0722/mn-hosted/lib/http"
+
+	//	"github.com/myproject-0722/mn-hosted/lib/http"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -23,11 +24,11 @@ func CheckMasterNodeExpired() {
 		if nodeid == -1 {
 			continue
 		}
-
-		if http.DelVpsNode(nodeid) == false {
-			continue
-		}
-
+		/*
+			if http.DelVpsNode(nodeid) == false {
+				continue
+			}
+		*/
 		//先备份数据到备份表
 		err := dao.NodeDao.BackupMasternode(db.Factoty.GetSession(), *v)
 		if err != nil {
