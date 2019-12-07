@@ -55,7 +55,7 @@ func (s *OrderService) Alipay(ctx context.Context, req *order.AlipayRequest, rsp
 	o.TimeType = req.TimeType
 	o.MNKey = req.MNKey
 	o.Price = price
-	o.IsRenew = 1
+	o.IsRenew = req.IsRenew
 	//o.TxID = req.TxID
 	o.Status = 0
 
@@ -109,6 +109,7 @@ func (s *OrderService) ConfirmAlipay(ctx context.Context, req *order.ConfirmAlip
 		MNKey:    o.MNKey,
 		TimeType: o.TimeType,
 		OrderID:  req.OrderID,
+		IsRenew:  o.IsRenew,
 	})
 	if err != nil {
 		rsp.Rescode = 500

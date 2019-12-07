@@ -28,6 +28,7 @@ message AlipayRequest {
   string coinName = 2;
   string MNKey = 3;
   int32 timeType = 4;
+  int32 isRenew = 5;
 }
 
 message AlipayResponse {

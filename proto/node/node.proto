@@ -78,6 +78,7 @@ message MasterNodeNewRequest {
   string MNKey = 3;
   int32 timeType = 4;
   int64 orderID = 5;
+  int32 isRenew = 6;
 }
 
 message MasterNodeNewResponse {

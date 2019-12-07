@@ -67,33 +67,58 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 	log.Debug("Received MasterNodeNewRequest:", req.UserId, " ", req.CoinName, " ", req.MNKey, " ", req.OrderID)
 	//将订单纪录写入主节点表
 	var masternode model.Masternode
-	masternode.CoinName = req.CoinName
-	masternode.MNKey = req.MNKey
-	masternode.UserID = req.UserId
-	masternode.OrderID = req.OrderID
-	masternode.Status = 1
-	masternode.ExpireTime = time.Now()
-	if req.TimeType == 1 {
-		masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, 1)
-	} else if req.TimeType == 2 {
-		masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 1, 0)
-	} else if req.TimeType == 3 {
-		masternode.ExpireTime = masternode.ExpireTime.AddDate(1, 0, 0)
-	}
+	//判断是否为续期
+	if req.IsRenew == 1 {
+		dbmasternode, err := dao.NodeDao.GetMasternode(db.Factoty.GetSession(), req.CoinName, req.MNKey)
+		if err != nil {
+			rsp.Rescode = 500
+			log.Error("GetMasternode Error", err.Error())
+			return err
+		}
+		masternode.ExpireTime = dbmasternode.ExpireTime
+		if req.TimeType == 1 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, 1)
+		} else if req.TimeType == 2 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 1, 0)
+		} else if req.TimeType == 3 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(1, 0, 0)
+		}
+		err = dao.NodeDao.UpdateMasternodeExpireTime(db.Factoty.GetSession(), req.CoinName, req.MNKey, masternode.ExpireTime)
+		if err != nil {
+			rsp.Rescode = 500
+			log.Error("UpdateMasternodeExpireTime Error", err.Error())
+			return err
+		}
+	} else {
+		masternode.CoinName = req.CoinName
+		masternode.MNKey = req.MNKey
+		masternode.UserID = req.UserId
+		masternode.OrderID = req.OrderID
+		masternode.Status = 1
+		masternode.ExpireTime = time.Now()
 
-	id, err := dao.NodeDao.AddMasternode(db.Factoty.GetSession(), masternode)
-	if err != nil {
-		rsp.Rescode = 500
-		log.Error("Sql Error, please check!", err.Error())
-		return err
+		if req.TimeType == 1 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, 1)
+		} else if req.TimeType == 2 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 1, 0)
+		} else if req.TimeType == 3 {
+			masternode.ExpireTime = masternode.ExpireTime.AddDate(1, 0, 0)
+		}
+
+		id, err := dao.NodeDao.AddMasternode(db.Factoty.GetSession(), masternode)
+		if err != nil {
+			rsp.Rescode = 500
+			log.Error("Sql Error, please check!", err.Error())
+			return err
+		}
+		log.Debug("AddMasternode id=", id)
+		/* 暂时注掉方便测试
+		if http.AddVpsNode(req.OrderID) == false {
+			rsp.Rescode = 500
+			return errors.BadRequest("AddVpsNode", "Vps add err")
+		}
+		*/
 	}
-	log.Debug("AddMasternode id=", id)
-	/* 暂时注掉方便测试
-	if http.AddVpsNode(req.OrderID) == false {
-		rsp.Rescode = 500
-		return errors.BadRequest("AddVpsNode", "Vps add err")
-	}
-	*/
 	rsp.Rescode = 200
 	return nil
 }

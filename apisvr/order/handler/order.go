@@ -43,6 +43,12 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 		return errors.BadRequest("go.mnhosted.api.order", "timetype cannot be blank")
 	}
 
+	var intIsRenew int = 0
+	isRenew, ok := req.Get["isrenew"]
+	if ok && len(isRenew.Values) != 0 {
+		intIsRenew, _ = strconv.Atoi(strings.Join(userid.Values, " "))
+	}
+
 	strUserid := strings.Join(userid.Values, " ")
 	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
 	if err != nil {
@@ -62,6 +68,7 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 		CoinName: strings.Join(coinname.Values, " "),
 		MNKey:    strings.Join(mnkey.Values, " "),
 		TimeType: int32(intTimeType),
+		IsRenew:  int32(intIsRenew),
 	})
 
 	if err != nil {
