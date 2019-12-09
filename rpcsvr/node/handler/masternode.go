@@ -95,6 +95,7 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 		masternode.UserID = req.UserId
 		masternode.OrderID = req.OrderID
 		masternode.Status = 1
+		masternode.CreateTime = time.Now()
 		masternode.ExpireTime = time.Now()
 
 		if req.TimeType == 1 {
