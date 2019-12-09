@@ -23,9 +23,9 @@ func (s *Coin) Get(ctx context.Context, req *node.CoinListRequest, rsp *node.Coi
 		item := new(node.CoinItem)
 		item.CoinName = v.CoinName
 		item.MNRequired = v.MNRequired
-		item.DPrice = float64(v.DPrice / 100)
-		item.MPrice = float64(v.MPrice / 100)
-		item.YPrice = float64(v.YPrice / 100)
+		item.DPrice = float64(v.DPrice) / 100
+		item.MPrice = float64(v.MPrice) / 100
+		item.YPrice = float64(v.YPrice) / 100
 		item.Volume = v.Volume
 		item.Roi = v.Roi
 		item.MonthlyIncome = v.MonthlyIncome
