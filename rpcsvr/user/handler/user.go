@@ -72,7 +72,7 @@ func (s *User) SignUp(ctx context.Context, req *user.SignUpRequest, rsp *user.Si
 func (s *User) SignIn(ctx context.Context, req *user.SignInRequest, rsp *user.SignInResponse) error {
 	log.Info("Received SignInRequest Name: ", req.Account, " Passwd: ", req.Passwd)
 	id, err := dao.UserDao.Check(db.Factoty.GetSession(), req.Account, req.Passwd)
-	if err != nil {
+	if err != nil || id == 0 {
 		rsp.Rescode = 404
 		rsp.Msg = " SignIn Error!"
 		return nil
