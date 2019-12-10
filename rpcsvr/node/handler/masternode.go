@@ -128,6 +128,7 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 	log.Debug("Received MasterNodeListRequest:", req.UserId)
 	nodelist, err := dao.NodeDao.GetMasternodeByUserID(db.Factoty.GetSession(), req.UserId)
 	if err != nil {
+		log.Error("db GetMasternodeByUserID", err.Error())
 		return err
 	}
 
