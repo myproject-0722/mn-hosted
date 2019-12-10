@@ -56,7 +56,7 @@ func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagen
 
 // udpate coins count
 func (*nodeDao) UpdateCoinCount(session *dbsession.DBSession, coinname string, node *model.MasternodeCount) error {
-	_, err := session.Exec("update t_coinlist set volume = ? , mnhosted = ? where coinname = '?'", node.Earns, node.Count, coinname)
+	_, err := session.Exec("update t_coinlist set volume = ? , mnhosted = ? where coinname = ?", node.Earns, node.Count, coinname)
 	if err != nil {
 		log.Error(err)
 		return err

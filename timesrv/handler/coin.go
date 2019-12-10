@@ -25,7 +25,7 @@ func CountCoins() {
 
 		err = dao.NodeDao.UpdateCoinCount(db.Factoty.GetSession(), coinName, node)
 		if err != nil {
-			log.Error("db UpdateCoinCount", err.Error())
+			log.Error("db UpdateCoinCount:", err.Error())
 			continue
 		}
 	}
