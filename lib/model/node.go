@@ -39,7 +39,14 @@ type Masternode struct {
 	Status     int32     `json:"status"`     //
 	SyncStatus int32     `json:"syncstatus"` //
 	MNStatus   int32     `json:"mnstatus"`   //
+	Earn       int64     `json:"earn"`       //
 	CreateTime time.Time `json:"createtime"` //
 	ExpireTime time.Time `json:"expiretime"` //
 	UpdateTime time.Time `json:"updatetime"` // 更新时间
+}
+
+//
+type MasternodeCount struct {
+	Count int32 `json:"count"`
+	Earns int64 `json:"earns"` // id
 }

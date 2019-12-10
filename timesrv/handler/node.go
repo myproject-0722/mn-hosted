@@ -29,14 +29,8 @@ func CheckMasterNodeExpired() {
 				continue
 			}
 		*/
-		//先备份数据到备份表
-		err := dao.NodeDao.BackupMasternode(db.Factoty.GetSession(), *v)
-		if err != nil {
-			log.Error("BackupMasternode orderid=", v.OrderID, i, err)
-			continue
-		}
-		//删除masternode表纪录
-		delerr := dao.NodeDao.DelMasternodeByID(db.Factoty.GetSession(), v.Id)
+		//设置主节点已过期标志
+		delerr := dao.NodeDao.UpdateMasternodeStatus(db.Factoty.GetSession(), v.Id, 2)
 		if delerr != nil {
 			log.Fatal("DelMasternodeByID orderid=", v.OrderID, i, delerr)
 		}

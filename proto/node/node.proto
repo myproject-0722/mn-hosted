@@ -62,9 +62,13 @@ message MasternodeItem {
   int64 MNID = 1;
   string coinName = 2;
   string MNKey = 3;
-  int32 SyncStatus = 4;
-  string createTime = 5;
-  string expireTime = 6;
+  string vps = 4;
+  int64 earn = 5; //need * 100000000
+  int32 Status = 6;
+  int32 SyncStatus = 7;
+  string createTime = 8;
+  string expireTime = 9;
+  int32 MNStatus = 10;
 }
 
 message MasterNodeListResponse {

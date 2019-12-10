@@ -14,6 +14,26 @@ type nodeDao struct{}
 var NodeDao = new(nodeDao)
 
 // get
+func (*nodeDao) GetAllCoinList(session *dbsession.DBSession) ([]*model.Coin, error) {
+	rows, err := session.Query("select id, coinname, mnrequired, dprice, mprice, yprice, volume, roi, monthlyincome, mnhosted, createtime, updatetime from t_coinlist")
+	if err != nil {
+		return nil, err
+	}
+	coinlist := make([]*model.Coin, 0)
+	for rows.Next() {
+		coin := new(model.Coin)
+		err := rows.Scan(&coin.Id, &coin.CoinName, &coin.MNRequired, &coin.DPrice, &coin.MPrice, &coin.YPrice, &coin.Volume, &coin.Roi, &coin.MonthlyIncome, &coin.MNHosted, &coin.CreateTime, &coin.UpdateTime)
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
+		coinlist = append(coinlist, coin)
+	}
+
+	return coinlist, nil
+}
+
+// get
 func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagenum int32) ([]*model.Coin, error) {
 	start := (pageNo - 1) * perPagenum
 	rows, err := session.Query("select id, coinname, mnrequired, dprice, mprice, yprice, volume, roi, monthlyincome, mnhosted, createtime, updatetime from t_coinlist limit ? , ? ", start, perPagenum)
@@ -32,6 +52,16 @@ func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagen
 	}
 
 	return coinlist, nil
+}
+
+// udpate coins count
+func (*nodeDao) UpdateCoinCount(session *dbsession.DBSession, coinname string, node *model.MasternodeCount) error {
+	_, err := session.Exec("update t_coinlist set volume = ? , mnhosted = ? where coinname = '?'", node.Earns, node.Count, coinname)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 // get
@@ -66,6 +96,24 @@ func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnk
 	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
 	if err == sql.ErrNoRows {
 		return nil, nil
+	}
+
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return node, nil
+}
+
+// 获取相关币种主节点的统计，正常分布式项目计算不应该放在数据库，不过此项目数据库压力较小，计算可放在数据库内统计
+func (*nodeDao) GetMasternodeCountByCoin(session *dbsession.DBSession, coinname string) (*model.MasternodeCount, error) {
+	row := session.QueryRow("select count(id), sum(earn) from t_masternode where coinname = ? ", coinname)
+	node := new(model.MasternodeCount)
+	err := row.Scan(&node.Count, &node.Earns)
+	if err == sql.ErrNoRows {
+		return nil, err
 	}
 
 	if err != nil {
@@ -118,6 +166,17 @@ func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinnam
 	return nil
 }
 
+// udpate
+func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, status int32) error {
+	result, err := session.Exec("update t_masternode set status = ? where id = ? ", status, id)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
 // delete
 func (*nodeDao) DelMasternodeByID(session *dbsession.DBSession, id int64) error {
 	result, err := session.Exec("delete from t_masternode where id = ?", id)
@@ -145,14 +204,14 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 
 // get
 func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, syncstatus, createtime, expiretime from t_masternode where userid = ?", userid)
+	rows, err := session.Query("select id, coinname, mnkey, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where userid = ?", userid)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}
@@ -164,7 +223,7 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 
 // get
 func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where expiretime <= ?", expiretime)
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where status = 2 and expiretime <= ?", expiretime)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +257,7 @@ func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternod
 	return id, nil
 }
 
+/*
 func (*nodeDao) BackupMasternode(session *dbsession.DBSession, node model.Masternode) error {
 	result, err := session.Exec("insert ignore into t_masternode_backup(id, coinname, mnkey, userid, orderid, status, createtime, expiretime) values(?,?,?,?,?,?,?,?)",
 		node.Id, node.CoinName, node.MNKey, node.UserID, node.OrderID, node.Status, node.CreateTime, node.ExpireTime)
@@ -213,7 +273,7 @@ func (*nodeDao) BackupMasternode(session *dbsession.DBSession, node model.Master
 	}
 	log.Info("backup:", id)
 	return nil
-}
+}*/
 
 // insert or update
 func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsPrice) error {

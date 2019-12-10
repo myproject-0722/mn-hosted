@@ -137,7 +137,11 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 		item.MNID = v.Id
 		item.CoinName = v.CoinName
 		item.MNKey = v.MNKey
+		item.Vps = v.Vps
+		item.Status = v.Status
+		item.Earn = v.Earn
 		item.SyncStatus = v.SyncStatus
+		item.MNStatus = v.MNStatus
 		item.CreateTime = v.CreateTime.Local().Format("2006-01-02 15:04:05")
 		item.ExpireTime = v.ExpireTime.Local().Format("2006-01-02 15:04:05")
 		rsp.Masternodelist = append(rsp.Masternodelist, item)
