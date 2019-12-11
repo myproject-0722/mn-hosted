@@ -50,3 +50,15 @@ type MasternodeCount struct {
 	Count int32 `json:"count"`
 	Earns int64 `json:"earns"` // id
 }
+
+//
+type Node struct {
+	Id         int64     `json:"id"`         // id
+	CoinName   string    `json:"coinname"`   // 货币名称
+	UserID     int64     `json:"userid"`     //
+	VpsID      int64     `json:"vpsid"`      //
+	OrderID    int64     `json:"orderid"`    //
+	Port       int32     `json:"port"`       // vps
+	CreateTime time.Time `json:"createtime"` //
+	UpdateTime time.Time `json:"updatetime"` // 更新时间
+}

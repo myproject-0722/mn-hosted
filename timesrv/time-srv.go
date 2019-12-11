@@ -22,6 +22,9 @@ func main() {
 
 		handler.CountCoins()
 
+		//暂时注释掉
+		//handler.UpdateMasternodeInfo()
+
 		//handler.UpdateCoinsPrice()
 		//if i >= 5 {
 		//exitProgram <- true

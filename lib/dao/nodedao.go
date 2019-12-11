@@ -177,6 +177,17 @@ func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, s
 	return nil
 }
 
+// udpate
+func (*nodeDao) UpdateMasternodeVpsInfo(session *dbsession.DBSession, node *model.Masternode) error {
+	result, err := session.Exec("update t_masternode set syncstatus = 1, vps = ? where id = ? ", node.Vps, node.Id)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
 // delete
 func (*nodeDao) DelMasternodeByID(session *dbsession.DBSession, id int64) error {
 	result, err := session.Exec("delete from t_masternode where id = ?", id)
@@ -240,6 +251,25 @@ func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretim
 	return nodelist, nil
 }
 
+// get
+func (*nodeDao) GetMasternodeBySyncStatus(session *dbsession.DBSession, syncstatus int32) ([]*model.Masternode, error) {
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where status = ? ", syncstatus)
+	if err != nil {
+		return nil, err
+	}
+	nodelist := make([]*model.Masternode, 0)
+	for rows.Next() {
+		node := new(model.Masternode)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime, &node.UpdateTime)
+		if err != nil {
+			return nil, err
+		}
+		nodelist = append(nodelist, node)
+	}
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return nodelist, nil
+}
+
 // insert
 func (*nodeDao) AddMasternode(session *dbsession.DBSession, node model.Masternode) (int64, error) {
 	result, err := session.Exec("insert ignore into t_masternode(coinname, mnkey, userid, orderid, status, createtime, expiretime) values(?,?,?,?,?,?,?)",
@@ -286,4 +316,17 @@ func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsP
 	}
 
 	return nil
+}
+
+// get
+func (*nodeDao) GetNodeByOrderID(session *dbsession.DBSession, orderid int64) (*model.Node, error) {
+	row := session.QueryRow("select port from t_node where order_id = ? ", orderid)
+	node := new(model.Node)
+	err := row.Scan(&node.Port)
+	if err != nil {
+		return nil, err
+	}
+
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return node, nil
 }

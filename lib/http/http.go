@@ -114,7 +114,8 @@ func Request(method string, reqURL string, reqBody []byte) (res []byte, err erro
 func VpsRequest(api string, reqBody []byte) (interface{}, error) {
 	r, err := Request("POST", conf.GetVpsUrl()+api, reqBody)
 	if err != nil {
-		log.Println(r)
+		log.Error("VpsRequest", err.Error())
+		return "1", err
 	}
 
 	var dat map[string]interface{}
@@ -123,6 +124,16 @@ func VpsRequest(api string, reqBody []byte) (interface{}, error) {
 		return res, nil
 	}
 	return "1", nil
+}
+
+func VpsRequestGet(api string, reqBody []byte) ([]byte, error) {
+	r, err := Request("POST", conf.GetVpsUrl()+api, reqBody)
+	if err != nil {
+		log.Error("VpsRequest", err.Error())
+		return nil, err
+	}
+
+	return r, nil
 }
 
 func AddVpsNode(orderid int64) bool {
@@ -163,6 +174,49 @@ func DelVpsNode(nodeid int64) bool {
 		return true
 	}
 	return false
+}
+
+func GetAllVps() []byte {
+	jsondata := make(map[string]interface{})
+	jsondata["id"] = 0
+	bytesData, err := json.Marshal(jsondata)
+	if err != nil {
+		log.Error(err.Error())
+		return nil
+	}
+	res, err := VpsRequestGet("vps/get", bytesData)
+	if err != nil {
+		log.Error(err.Error())
+		return nil
+	}
+
+	return res
+}
+
+func GetIpByVpsID(vpsid int64) string {
+	jsondata := make(map[string]interface{})
+	jsondata["id"] = vpsid
+	bytesData, err := json.Marshal(jsondata)
+	if err != nil {
+		log.Error(err.Error())
+		return ""
+	}
+	res, err := VpsRequestGet("vps/getallnodefromvps", bytesData)
+	if err != nil {
+		log.Error(err.Error())
+		return ""
+	}
+
+	var dat map[string]interface{}
+	err = json.Unmarshal(res, &dat)
+	if err == nil {
+		res := dat["Errno"]
+		if res == 0 {
+			return dat["vpsip"].(string)
+		}
+		return ""
+	}
+	return ""
 }
 
 func GetCoinsPrice() (string, error) {
