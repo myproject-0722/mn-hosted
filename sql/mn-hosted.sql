@@ -85,7 +85,7 @@ CREATE TABLE `t_masternode` (
   `mnkey` varchar(32) NOT NULL COMMENT '主节点私钥',
   `userid` bigint(20) NOT NULL COMMENT '所属用户id',
   `orderid` bigint(20) NOT NULL COMMENT '定单id',
-  `vps` varchar(255) COMMENT 'vps ip及端口',
+  `vps` varchar(255) DEFAULT "" COMMENT 'vps ip及端口',
   `dockerid` varchar(128) COMMENT 'dockerid',
   `status` int(11) DEFAULT 0 COMMENT '0未发布、1已发布、2已过期',
   `syncstatus` int(11) DEFAULT 0 COMMENT '0未同步、2已同步',
