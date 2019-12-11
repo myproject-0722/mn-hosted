@@ -75,7 +75,22 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 			log.Error("GetMasternode Error", err.Error())
 			return err
 		}
-		masternode.ExpireTime = dbmasternode.ExpireTime
+
+		//已失效
+		if dbmasternode.Status == 2 {
+			masternode.ExpireTime = time.Now()
+
+			/*
+				//重新启动
+				if http.AddVpsNode(dbmasternode.OrderID) == false {
+					rsp.Rescode = 500
+					return errors.BadRequest("AddVpsNode", "Vps add err")
+				}
+			*/
+		} else {
+			masternode.ExpireTime = dbmasternode.ExpireTime
+		}
+
 		if req.TimeType == 1 {
 			masternode.ExpireTime = masternode.ExpireTime.AddDate(0, 0, 1)
 		} else if req.TimeType == 2 {
