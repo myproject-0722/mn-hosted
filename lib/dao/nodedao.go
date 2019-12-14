@@ -167,6 +167,17 @@ func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinnam
 }
 
 // udpate
+func (*nodeDao) UpdateMasternodeMNStatus(session *dbsession.DBSession, vps string, mnstatus int32, mnstatusex string) error {
+	result, err := session.Exec("update t_masternode set mnstatus = ? , mnstatusex = ? where vps = ? ", mnstatus, mnstatusex, vps)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
+// udpate
 func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, status int32) error {
 	result, err := session.Exec("update t_masternode set status = ? where id = ? ", status, id)
 	if err != nil {
@@ -216,6 +227,25 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 // get
 func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64) ([]*model.Masternode, error) {
 	rows, err := session.Query("select id, coinname, mnkey, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where userid = ?", userid)
+	if err != nil {
+		return nil, err
+	}
+	nodelist := make([]*model.Masternode, 0)
+	for rows.Next() {
+		node := new(model.Masternode)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
+		if err != nil {
+			return nil, err
+		}
+		nodelist = append(nodelist, node)
+	}
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return nodelist, nil
+}
+
+// get
+func (*nodeDao) GetMasternodeByCoinName(session *dbsession.DBSession, coinname string) ([]*model.Masternode, error) {
+	rows, err := session.Query("select id, coinname, mnkey, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ?", coinname)
 	if err != nil {
 		return nil, err
 	}

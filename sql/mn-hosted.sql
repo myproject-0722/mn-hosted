@@ -22,7 +22,7 @@ CREATE TABLE `t_order` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单id',
   `userid` bigint(20) NOT NULL COMMENT '所属用户id',
   `coinname` varchar(32) COMMENT '主节点币名称',
-  `mnkey` varchar(32) COMMENT '主节点私钥',
+  `mnkey` varchar(32) COMMENT '主节点bls私钥',
   `timetype` TINYINT COMMENT '支付时间(1-天,2-月,3-年)',
   `price` int(11) COMMENT '付费金额',
   `txid` varchar(128) COMMENT 'txid,用于数据货币支付，暂时不用',
@@ -82,19 +82,44 @@ DROP TABLE IF EXISTS `t_masternode`;
 CREATE TABLE `t_masternode` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主节点唯一id',
   `coinname` varchar(32) NOT NULL COMMENT '主节点币类型',
-  `mnkey` varchar(32) NOT NULL COMMENT '主节点私钥',
+  `mnkey` varchar(32) NOT NULL COMMENT '主节点bls私钥',
+  `mnpayee` varchar(32) NOT NULL COMMENT '主节点收益地址',
   `userid` bigint(20) NOT NULL COMMENT '所属用户id',
   `orderid` bigint(20) NOT NULL COMMENT '定单id',
   `vps` varchar(255) DEFAULT "" COMMENT 'vps ip及端口',
   `dockerid` varchar(128) COMMENT 'dockerid',
   `status` int(11) DEFAULT 0 COMMENT '0未发布、1已发布、2已过期',
   `syncstatus` int(11) DEFAULT 0 COMMENT '0未同步、2已同步',
-  `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态',
+  `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态 0非正常 1正常',
+  `mnstatusex` varchar(32) DEFAULT "未知" COMMENT '主节点状态 ENABLED等',
   `earn` bigint(20) DEFAULT 0 COMMENT '收益',
   `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `expiretime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '到期时间',
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`coinname`,`mnkey`),
   UNIQUE KEY (`id`),
-  KEY (`userid`)
+  KEY (`userid`),
+  KEY (`mnpayee`),
+  KEY (`vps`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for t_dashblock
+-- ----------------------------
+DROP TABLE IF EXISTS `t_dashblock`;
+CREATE TABLE `t_dashblock` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '唯一id',
+  `blockid` int(11) NOT NULL COMMENT '区块id',
+  `mnpayee` varchar(32) NOT NULL COMMENT '主节点收益地址',
+  `poolpubkey` varchar(32) COMMENT '挖矿地址',
+  `blockvalue` int(11) COMMENT '区块价值*1000000',
+  `mnvalue` int(11) COMMENT '主节点收益*1000000',
+  `poolvalue` int(11) COMMENT '挖矿收益*1000000',
+  `issuperblock` TINYINT DEFAULT 0 COMMENT '是否为超级块(0否 1是)',
+  `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY (`mnpayee`),
+  KEY (`poolpubkey`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

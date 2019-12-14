@@ -230,6 +230,20 @@ func GetCoinsPrice() (string, error) {
 	return string(body), nil
 }
 
+func GetDashMNStatus(ips string) ([]byte, error) {
+	baseUrl := "https://www.dashninja.pl/api/masternodes?testnet=0&exstatus=1&balance=1&ips="
+	url := baseUrl + ips
+	resp, error := http.Get(url)
+	if error != nil {
+		return nil, error
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return body, nil
+	//fmt.Println(string(body))
+	//return string(body), nil
+}
+
 /*
 package main
 

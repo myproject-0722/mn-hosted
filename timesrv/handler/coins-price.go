@@ -38,6 +38,8 @@ func UpdateCoinsPrice() {
 		fmt.Println(id, priceUsd)
 
 		coin := new(model.CoinsPrice)
+		coin.Id = id.(int64)
+		coin.Price = priceUsd.(int32)
 		err := dao.NodeDao.UpdateCoinsPrice(db.Factoty.GetSession(), *coin)
 		if err != nil {
 			log.Error("UpdateCoinsPrice", err)

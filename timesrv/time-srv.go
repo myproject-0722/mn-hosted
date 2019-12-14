@@ -30,6 +30,13 @@ func main() {
 		//exitProgram <- true
 		//}
 	})
+
+	spec = "0 */5 * * * ?"
+	c.AddFunc(spec, func() {
+
+		//handler.SyncDashMNStatus()
+
+	})
 	c.Start()
 
 	<-exitProgram
