@@ -36,6 +36,9 @@ func main() {
 
 		//handler.SyncDashMNStatus()
 
+		handler.SyncDashMNRewards()
+
+		handler.UpdateDashMNBlockData()
 	})
 	c.Start()
 

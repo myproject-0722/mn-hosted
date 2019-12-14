@@ -77,11 +77,6 @@ func (*nodeDao) GetCoinItem(session *dbsession.DBSession, coinname string) (*mod
 		return nil, err
 	}
 
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-
 	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
 	return coin, nil
 }
@@ -167,8 +162,19 @@ func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinnam
 }
 
 // udpate
-func (*nodeDao) UpdateMasternodeMNStatus(session *dbsession.DBSession, vps string, mnstatus int32, mnstatusex string) error {
-	result, err := session.Exec("update t_masternode set mnstatus = ? , mnstatusex = ? where vps = ? ", mnstatus, mnstatusex, vps)
+func (*nodeDao) UpdateMasternodeMNStatus(session *dbsession.DBSession, vps string, key string, mnstatus int32, mnstatusex string) error {
+	result, err := session.Exec("update t_masternode set mnpayee = ? ,mnstatus = ? , mnstatusex = ? where vps = ? ", key, mnstatus, mnstatusex, vps)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
+// udpate
+func (*nodeDao) UpdateMasternodeRewards(session *dbsession.DBSession, mnpayee string, rewards int64) error {
+	result, err := session.Exec("update t_masternode set rewards = ? where mnpayee = ? ", rewards, mnpayee)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -245,14 +251,14 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 
 // get
 func (*nodeDao) GetMasternodeByCoinName(session *dbsession.DBSession, coinname string) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ?", coinname)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ?", coinname)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}

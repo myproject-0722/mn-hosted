@@ -244,6 +244,20 @@ func GetDashMNStatus(ips string) ([]byte, error) {
 	//return string(body), nil
 }
 
+func GetDashBlockData() ([]byte, error) {
+	baseUrl := "https://www.dashninja.pl/data/blocks24h-0.json"
+	url := baseUrl
+	resp, error := http.Get(url)
+	if error != nil {
+		return nil, error
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return body, nil
+	//fmt.Println(string(body))
+	//return string(body), nil
+}
+
 /*
 package main
 

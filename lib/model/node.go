@@ -32,6 +32,7 @@ type Masternode struct {
 	Id         int64     `json:"id"`         // id
 	CoinName   string    `json:"coinname"`   // 货币名称
 	MNKey      string    `json:"mnkey"`      // key
+	MNPayee    string    `json:"mnpayee"`    // key
 	UserID     int64     `json:"userid"`     //
 	OrderID    int64     `json:"orderid"`    //
 	Vps        string    `json:"vps"`        // vps
