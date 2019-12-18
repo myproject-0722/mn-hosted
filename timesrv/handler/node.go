@@ -98,33 +98,15 @@ func CheckMasterNodeExpired() {
 		if nodeid == -1 {
 			continue
 		}
-		/*
-			if http.DelVpsNode(nodeid) == false {
-				continue
-			}
-		*/
+
+		if http.DelVpsNode(nodeid) == false {
+			continue
+		}
+
 		//设置主节点已过期标志
 		delerr := dao.NodeDao.UpdateMasternodeStatus(db.Factoty.GetSession(), v.Id, 2)
 		if delerr != nil {
 			log.Fatal("DelMasternodeByID orderid=", v.OrderID, i, delerr)
 		}
-		//删除节点
-		/*var vpsDelCmd string = "vpsdel " + strconv.FormatInt(v.OrderID, 10)
-		log.Print("vpsDelCmd=", vpsDelCmd)
-		vpsDelCmdStatus := cmd.ExecShell(vpsDelCmd)
-		if vpsDelCmdStatus == "1" {
-			log.Error("vps add err")
-		}*/
-		/*item := new(node.CoinItem)
-		item.CoinName = v.CoinName
-		item.MNRequired = v.MNRequired
-		item.DPrice = float64(v.DPrice / 100)
-		item.MPrice = float64(v.MPrice / 100)
-		item.YPrice = float64(v.YPrice / 100)
-		item.Volume = v.Volume
-		item.Roi = v.Roi
-		item.MonthlyIncome = v.MonthlyIncome
-		item.MNHosted = v.MNHosted
-		rsp.Coinlist = append(rsp.Coinlist, item)*/
 	}
 }
