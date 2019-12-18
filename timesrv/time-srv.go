@@ -11,6 +11,11 @@ func main() {
 	liblog.InitLog("/home/lixu/git/golang/src/mn-hosted/log", "timesvr.log")
 	db.Init()
 
+	//status, _ := http.GetVdsMNStatus("VcmjrcQvxUSgdgphLRotF8kgHJmVfKNMLAL")
+	//log.Info("GetVdsMNStatus", status)
+	//rewards, _ := http.GetVdsRewards("VcZiR7G8rUFFuFm9HqdEb7M7J69rZhfqQQX")
+	//log.Info("GetVdsRewards", rewards)
+
 	exitProgram := make(chan bool)
 
 	c := cron.New()
@@ -22,8 +27,7 @@ func main() {
 
 		handler.CountCoins()
 
-		//暂时注释掉
-		//handler.UpdateMasternodeInfo()
+		handler.UpdateMasternodeInfo()
 
 		//handler.UpdateCoinsPrice()
 		//if i >= 5 {
@@ -34,9 +38,17 @@ func main() {
 	spec = "0 */5 * * * ?"
 	c.AddFunc(spec, func() {
 
-		//handler.SyncDashMNStatus()
+		handler.SyncDashMNStatus()
 
 		handler.SyncDashMNRewards()
+
+		handler.SyncVdsMNStatus()
+
+		handler.SyncVdsMNRewards()
+
+		handler.SyncSnowgemMNStatus()
+
+		handler.SyncSnowgemMNRewards()
 
 		handler.UpdateDashMNBlockData()
 	})

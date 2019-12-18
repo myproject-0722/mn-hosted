@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/myproject-0722/mn-hosted/conf"
@@ -256,6 +257,78 @@ func GetDashBlockData() ([]byte, error) {
 	return body, nil
 	//fmt.Println(string(body))
 	//return string(body), nil
+}
+
+func GetSnowgemMNRewards(address string) (float64, error) {
+	baseUrl := "http://127.0.0.1:3002/ext/getbalance/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return 0, error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return 0, error
+	}
+
+	rewards, error := strconv.ParseFloat(string(body), 64)
+	if error != nil {
+		return 0, error
+	}
+	return rewards, nil
+}
+
+func GetSnowgemMNStatus(address string) (string, error) {
+	baseUrl := "http://127.0.0.1:3002/ext/masternodestatus/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return "", error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return "", error
+	}
+
+	return string(body), nil
+}
+
+func GetVdsMNRewards(address string) (float64, error) {
+	baseUrl := "http://127.0.0.1:3001/ext/getbalance/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return 0, error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return 0, error
+	}
+
+	rewards, error := strconv.ParseFloat(string(body), 64)
+	if error != nil {
+		return 0, error
+	}
+	return rewards, nil
+}
+
+func GetVdsMNStatus(address string) (string, error) {
+	baseUrl := "http://127.0.0.1:3001/ext/masternodestatus/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return "", error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return "", error
+	}
+
+	return string(body), nil
 }
 
 /*
