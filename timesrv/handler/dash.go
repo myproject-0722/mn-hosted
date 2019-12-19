@@ -45,15 +45,22 @@ func SyncDashMNStatus() {
 	}
 
 	for _, v := range mnlist {
-		if v.MNPayee != "" {
-			//获取主节点状态
-			status, err := http.GetDashMNStatus(v.MNPayee)
+		if v.Vps != "" {
+			//获取主节点payee
+			mnpayee, err := http.GetDashMNPayee(v.Vps)
 			if err != nil {
 				log.Error("GetDashMNStatus", err.Error())
 				return
 			}
 
-			err = dao.NodeDao.UpdateMasternodeMNStatus(db.Factoty.GetSession(), v.Vps, v.MNPayee, 1, status)
+			//获取主节点状态
+			status, err := http.GetDashMNStatus(mnpayee)
+			if err != nil {
+				log.Error("GetDashMNStatus", err.Error())
+				return
+			}
+
+			err = dao.NodeDao.UpdateMasternodeMNStatus(db.Factoty.GetSession(), v.Vps, mnpayee, 1, status)
 			if err != nil {
 				log.Error("UpdateMasternodeMNStatus:", err.Error())
 			}

@@ -368,6 +368,22 @@ func GetDashMNStatus(address string) (string, error) {
 	return string(body), nil
 }
 
+func GetDashMNPayee(address string) (string, error) {
+	baseUrl := "http://127.0.0.1:3003/ext/masternodemnpayee/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return "", error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return "", error
+	}
+
+	return string(body), nil
+}
+
 /*
 package main
 
