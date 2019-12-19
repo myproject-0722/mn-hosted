@@ -34,6 +34,15 @@ func (*orderDao) GetOrderItem(session *dbsession.DBSession, orderID int64) (*mod
 		return nil, err
 	}
 
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return item, nil
+}
+
+// get
+func (*orderDao) GetInfoByUserID(session *dbsession.DBSession, userID int64) (*model.OrderInfo, error) {
+	row := session.QueryRow("select count(id), sum(price) from t_order where userid = ? ", userID)
+	item := new(model.OrderInfo)
+	err := row.Scan(&item.Num, &item.Payout)
 	if err != nil {
 		log.Error(err)
 		return nil, err

@@ -24,7 +24,7 @@ CREATE TABLE `t_order` (
   `coinname` varchar(32) COMMENT '主节点币名称',
   `mnkey` varchar(64) COMMENT '主节点bls私钥',
   `timetype` TINYINT COMMENT '支付时间(1-天,2-月,3-年)',
-  `price` int(11) COMMENT '付费金额',
+  `price` int(11) DEFAULT 0 COMMENT '付费金额',
   `txid` varchar(128) COMMENT 'txid,用于数据货币支付，暂时不用',
   `isrenew` TINYINT(1) DEFAULT 0 COMMENT 'isrenew 0-非 1-是',
   `status` int(11) DEFAULT 0 COMMENT '订单状态 0 未完成 1 已完成',
@@ -32,7 +32,7 @@ CREATE TABLE `t_order` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=600 DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------

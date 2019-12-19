@@ -16,6 +16,39 @@ type Order struct {
 	Client order.OrderService
 }
 
+func (s *Order) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Order GetInfo API request")
+
+	userid, ok := req.Get["userid"]
+	if !ok || len(userid.Values) == 0 {
+		log.Error("userid cannot be blank")
+		return errors.BadRequest("go.mnhosted.api.order", "userid cannot be blank")
+	}
+
+	strUserid := strings.Join(userid.Values, " ")
+	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+	if err != nil {
+		log.Error("userid err")
+		return errors.BadRequest("go.mnhosted.api.order", "userid err")
+	}
+
+	resp, err := s.Client.GetInfo(ctx, &order.GetInfoRequest{
+		UserID: intUserid,
+	})
+
+	if err != nil {
+		rsp.StatusCode = 404
+		log.Error("Alipay error", err.Error())
+		return errors.BadRequest("go.mnhosted.api.order", "order err")
+	}
+
+	rsp.StatusCode = resp.Rescode
+
+	b, _ := json.Marshal(resp)
+	rsp.Body = string(b)
+	return nil
+}
+
 func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Debug("Received Masternode alipay API request")
 

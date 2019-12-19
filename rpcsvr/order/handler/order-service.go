@@ -167,3 +167,16 @@ func (s *OrderService) Update(ctx context.Context, req *order.UpdateRequest, rsp
 	rsp.Rescode = 200
 	return nil
 }
+
+func (s *OrderService) GetInfo(ctx context.Context, req *order.GetInfoRequest, rsp *order.GetInfoResponse) error {
+	info, err := dao.OrderDao.GetInfoByUserID(db.Factoty.GetSession(), req.UserID)
+	if err != nil {
+		rsp.Rescode = 500
+		return nil
+	}
+
+	rsp.Num = info.Num
+	rsp.Payout = info.Payout / 100
+	rsp.Rescode = 200
+	return nil
+}

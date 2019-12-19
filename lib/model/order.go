@@ -16,3 +16,9 @@ type Order struct {
 	CreateTime time.Time `json:"createtime"` //
 	UpdateTime time.Time `json:"updatetime"` // 更新时间
 }
+
+//
+type OrderInfo struct {
+	Num    int32   `json:"num"` //
+	Payout float64 `json:"payout"`
+}

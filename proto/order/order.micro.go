@@ -38,6 +38,7 @@ type OrderService interface {
 	Alipay(ctx context.Context, in *AlipayRequest, opts ...client.CallOption) (*AlipayResponse, error)
 	ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, opts ...client.CallOption) (*ConfirmAlipayResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error)
+	GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error)
 }
 
 type orderService struct {
@@ -98,6 +99,16 @@ func (c *orderService) Update(ctx context.Context, in *UpdateRequest, opts ...cl
 	return out, nil
 }
 
+func (c *orderService) GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.GetInfo", in)
+	out := new(GetInfoResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Order service
 
 type OrderHandler interface {
@@ -105,6 +116,7 @@ type OrderHandler interface {
 	Alipay(context.Context, *AlipayRequest, *AlipayResponse) error
 	ConfirmAlipay(context.Context, *ConfirmAlipayRequest, *ConfirmAlipayResponse) error
 	Update(context.Context, *UpdateRequest, *UpdateResponse) error
+	GetInfo(context.Context, *GetInfoRequest, *GetInfoResponse) error
 }
 
 func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.HandlerOption) error {
@@ -113,6 +125,7 @@ func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.Han
 		Alipay(ctx context.Context, in *AlipayRequest, out *AlipayResponse) error
 		ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, out *ConfirmAlipayResponse) error
 		Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error
+		GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error
 	}
 	type Order struct {
 		order
@@ -139,4 +152,8 @@ func (h *orderHandler) ConfirmAlipay(ctx context.Context, in *ConfirmAlipayReque
 
 func (h *orderHandler) Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error {
 	return h.OrderHandler.Update(ctx, in, out)
+}
+
+func (h *orderHandler) GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error {
+	return h.OrderHandler.GetInfo(ctx, in, out)
 }

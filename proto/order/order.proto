@@ -7,6 +7,7 @@ service order {
   rpc Alipay(AlipayRequest) returns (AlipayResponse) {}
   rpc ConfirmAlipay(ConfirmAlipayRequest) returns (ConfirmAlipayResponse) {}
   rpc Update(UpdateRequest) returns (UpdateResponse) {}
+  rpc GetInfo(GetInfoRequest) returns (GetInfoResponse) {}
 }
 
 message NewRequest {
@@ -53,4 +54,14 @@ message UpdateRequest {
 
 message UpdateResponse {
   int32 rescode = 1;
+}
+
+message GetInfoRequest {
+  int64 userID = 1;
+}
+
+message GetInfoResponse {
+  int32 rescode = 1;
+  int32 num = 2;
+  double payout = 3;
 }
