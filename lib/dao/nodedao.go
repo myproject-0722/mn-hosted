@@ -174,7 +174,7 @@ func (*nodeDao) UpdateMasternodeMNStatus(session *dbsession.DBSession, vps strin
 
 // udpate
 func (*nodeDao) UpdateMasternodeRewards(session *dbsession.DBSession, mnpayee string, rewards int64) error {
-	result, err := session.Exec("update t_masternode set rewards = ? where mnpayee = ? ", rewards, mnpayee)
+	result, err := session.Exec("update t_masternode set earn = ? where mnpayee = ? ", rewards, mnpayee)
 	if err != nil {
 		log.Error(err)
 		return err
