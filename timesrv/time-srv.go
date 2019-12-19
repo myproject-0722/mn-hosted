@@ -50,7 +50,11 @@ func main() {
 
 		handler.SyncSnowgemMNRewards()
 
-		handler.UpdateDashMNBlockData()
+		handler.SyncDashMNStatus()
+
+		handler.SyncDashMNRewards()
+
+		//handler.UpdateDashMNBlockData()
 	})
 	c.Start()
 

@@ -231,6 +231,7 @@ func GetCoinsPrice() (string, error) {
 	return string(body), nil
 }
 
+/*
 func GetDashMNStatus(ips string) ([]byte, error) {
 	baseUrl := "https://www.dashninja.pl/api/masternodes?testnet=0&exstatus=1&balance=1&ips="
 	url := baseUrl + ips
@@ -244,7 +245,7 @@ func GetDashMNStatus(ips string) ([]byte, error) {
 	//fmt.Println(string(body))
 	//return string(body), nil
 }
-
+*/
 func GetDashBlockData() ([]byte, error) {
 	baseUrl := "https://www.dashninja.pl/data/blocks24h-0.json"
 	url := baseUrl
@@ -317,6 +318,42 @@ func GetVdsMNRewards(address string) (float64, error) {
 
 func GetVdsMNStatus(address string) (string, error) {
 	baseUrl := "http://127.0.0.1:3001/ext/masternodestatus/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return "", error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return "", error
+	}
+
+	return string(body), nil
+}
+
+func GetDashMNRewards(address string) (float64, error) {
+	baseUrl := "http://127.0.0.1:3003/ext/getbalance/"
+	url := baseUrl + address
+	resp, error := http.Get(url)
+	if error != nil {
+		return 0, error
+	}
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		return 0, error
+	}
+
+	rewards, error := strconv.ParseFloat(string(body), 64)
+	if error != nil {
+		return 0, error
+	}
+	return rewards, nil
+}
+
+func GetDashMNStatus(address string) (string, error) {
+	baseUrl := "http://127.0.0.1:3003/ext/masternodestatus/"
 	url := baseUrl + address
 	resp, error := http.Get(url)
 	if error != nil {
