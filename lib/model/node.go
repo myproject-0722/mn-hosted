@@ -39,7 +39,7 @@ type Masternode struct {
 	DockerID   string    `json:"dockerid"`   //dockerid
 	Status     int32     `json:"status"`     //
 	SyncStatus int32     `json:"syncstatus"` //
-	MNStatus   int32     `json:"mnstatus"`   //
+	MNStatus   string    `json:"mnstatus"`   //
 	Earn       int64     `json:"earn"`       //
 	CreateTime time.Time `json:"createtime"` //
 	ExpireTime time.Time `json:"expiretime"` //
