@@ -28,7 +28,7 @@ func SyncDashMNRewards() {
 			log.Debug(v.MNPayee, " rewards: ", res)
 			rewards := int64(res * 1000000)
 			//更新rewards
-			err = dao.NodeDao.UpdateMasternodeRewards(db.Factoty.GetSession(), v.MNPayee, rewards)
+			err = dao.NodeDao.UpdateMasternodeRewards(db.Factoty.GetSession(), v.MNPayee, rewards, "dash")
 			if err != nil {
 				log.Error("UpdateMasternodeRewards", err.Error())
 				continue
