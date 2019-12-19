@@ -151,6 +151,7 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 		item.MNID = v.Id
 		item.CoinName = v.CoinName
 		item.MNKey = v.MNKey
+		item.MNPayee = v.MNPayee
 		item.Vps = v.Vps
 		item.Status = v.Status
 		item.Earn = float64(v.Earn) / 1000000

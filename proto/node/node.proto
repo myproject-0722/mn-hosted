@@ -69,6 +69,7 @@ message MasternodeItem {
   string createTime = 8;
   string expireTime = 9;
   string MNStatus = 10;
+  string MNPayee = 11;
 }
 
 message MasterNodeListResponse {

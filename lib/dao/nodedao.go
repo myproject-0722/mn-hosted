@@ -232,14 +232,14 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 
 // get
 func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where userid = ?", userid)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where userid = ?", userid)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}
