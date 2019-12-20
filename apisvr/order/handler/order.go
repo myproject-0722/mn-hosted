@@ -49,7 +49,7 @@ func (s *Order) GetOrderList(ctx context.Context, req *api.Request, rsp *api.Res
 	return nil
 }
 
-func (s *Order) GetInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
+func (s *Order) GetOrderInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Debug("Received Order GetInfo API request")
 
 	userid, ok := req.Get["userid"]
