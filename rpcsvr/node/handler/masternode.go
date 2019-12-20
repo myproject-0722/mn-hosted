@@ -4,8 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/micro/go-micro/errors"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
+	"github.com/myproject-0722/mn-hosted/lib/http"
 	"github.com/myproject-0722/mn-hosted/lib/model"
 	node "github.com/myproject-0722/mn-hosted/proto/node"
 	log "github.com/sirupsen/logrus"
@@ -79,13 +81,13 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 		//已失效
 		if dbmasternode.Status == 2 {
 			masternode.ExpireTime = time.Now()
-			/*
-				//重新启动
-				if http.AddVpsNode(dbmasternode.OrderID) == false {
-					rsp.Rescode = 500
-					return errors.BadRequest("AddVpsNode", "Vps add err")
-				}
-			*/
+
+			//重新启动
+			if http.AddVpsNode(dbmasternode.OrderID) == false {
+				rsp.Rescode = 500
+				return errors.BadRequest("AddVpsNode", "Vps add err")
+			}
+
 		} else {
 			masternode.ExpireTime = dbmasternode.ExpireTime
 		}
@@ -127,11 +129,11 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 			return err
 		}
 		log.Debug("AddMasternode id=", id)
-		/*
-			if http.AddVpsNode(req.OrderID) == false {
-				rsp.Rescode = 500
-				return errors.BadRequest("AddVpsNode", "Vps add err")
-			}*/
+
+		if http.AddVpsNode(req.OrderID) == false {
+			rsp.Rescode = 500
+			return errors.BadRequest("AddVpsNode", "Vps add err")
+		}
 	}
 	rsp.Rescode = 200
 	return nil
