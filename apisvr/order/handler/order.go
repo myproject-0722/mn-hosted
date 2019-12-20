@@ -16,8 +16,8 @@ type Order struct {
 	Client order.OrderService
 }
 
-func (s *Order) GetList(ctx context.Context, req *api.Request, rsp *api.Response) error {
-	log.Debug("Received Order GetList API request")
+func (s *Order) GetOrderList(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Order GetOrderList API request")
 
 	userid, ok := req.Get["userid"]
 	if !ok || len(userid.Values) == 0 {
@@ -32,7 +32,7 @@ func (s *Order) GetList(ctx context.Context, req *api.Request, rsp *api.Response
 		return errors.BadRequest("go.mnhosted.api.order", "userid err")
 	}
 
-	resp, err := s.Client.GetList(ctx, &order.OrderListRequest{
+	resp, err := s.Client.GetOrderList(ctx, &order.GetOrderListRequest{
 		UserID: intUserid,
 	})
 

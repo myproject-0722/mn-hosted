@@ -39,7 +39,7 @@ type OrderService interface {
 	ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, opts ...client.CallOption) (*ConfirmAlipayResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...client.CallOption) (*UpdateResponse, error)
 	GetInfo(ctx context.Context, in *GetInfoRequest, opts ...client.CallOption) (*GetInfoResponse, error)
-	GetList(ctx context.Context, in *OrderListRequest, opts ...client.CallOption) (*OrderListResponse, error)
+	GetOrderList(ctx context.Context, in *GetOrderListRequest, opts ...client.CallOption) (*GetOrderListResponse, error)
 }
 
 type orderService struct {
@@ -110,9 +110,9 @@ func (c *orderService) GetInfo(ctx context.Context, in *GetInfoRequest, opts ...
 	return out, nil
 }
 
-func (c *orderService) GetList(ctx context.Context, in *OrderListRequest, opts ...client.CallOption) (*OrderListResponse, error) {
-	req := c.c.NewRequest(c.name, "Order.GetList", in)
-	out := new(OrderListResponse)
+func (c *orderService) GetOrderList(ctx context.Context, in *GetOrderListRequest, opts ...client.CallOption) (*GetOrderListResponse, error) {
+	req := c.c.NewRequest(c.name, "Order.GetOrderList", in)
+	out := new(GetOrderListResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -128,7 +128,7 @@ type OrderHandler interface {
 	ConfirmAlipay(context.Context, *ConfirmAlipayRequest, *ConfirmAlipayResponse) error
 	Update(context.Context, *UpdateRequest, *UpdateResponse) error
 	GetInfo(context.Context, *GetInfoRequest, *GetInfoResponse) error
-	GetList(context.Context, *OrderListRequest, *OrderListResponse) error
+	GetOrderList(context.Context, *GetOrderListRequest, *GetOrderListResponse) error
 }
 
 func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.HandlerOption) error {
@@ -138,7 +138,7 @@ func RegisterOrderHandler(s server.Server, hdlr OrderHandler, opts ...server.Han
 		ConfirmAlipay(ctx context.Context, in *ConfirmAlipayRequest, out *ConfirmAlipayResponse) error
 		Update(ctx context.Context, in *UpdateRequest, out *UpdateResponse) error
 		GetInfo(ctx context.Context, in *GetInfoRequest, out *GetInfoResponse) error
-		GetList(ctx context.Context, in *OrderListRequest, out *OrderListResponse) error
+		GetOrderList(ctx context.Context, in *GetOrderListRequest, out *GetOrderListResponse) error
 	}
 	type Order struct {
 		order
@@ -171,6 +171,6 @@ func (h *orderHandler) GetInfo(ctx context.Context, in *GetInfoRequest, out *Get
 	return h.OrderHandler.GetInfo(ctx, in, out)
 }
 
-func (h *orderHandler) GetList(ctx context.Context, in *OrderListRequest, out *OrderListResponse) error {
-	return h.OrderHandler.GetList(ctx, in, out)
+func (h *orderHandler) GetOrderList(ctx context.Context, in *GetOrderListRequest, out *GetOrderListResponse) error {
+	return h.OrderHandler.GetOrderList(ctx, in, out)
 }
