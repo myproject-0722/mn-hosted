@@ -40,7 +40,7 @@ func (*orderDao) GetOrderItem(session *dbsession.DBSession, orderID int64) (*mod
 
 // get
 func (*orderDao) GetOrderListByUserID(session *dbsession.DBSession, userid int64) ([]*model.Order, error) {
-	rows, err := session.Query("id, coinname, mnkey, timetype, price, isrenew, status, createtime from t_order where userid = ?", userid)
+	rows, err := session.Query("select id, coinname, mnkey, timetype, price, isrenew, status, createtime from t_order where userid = ?", userid)
 	if err != nil {
 		return nil, err
 	}

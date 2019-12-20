@@ -184,6 +184,7 @@ func (s *OrderService) GetInfo(ctx context.Context, req *order.GetInfoRequest, r
 func (s *OrderService) GetOrderList(ctx context.Context, req *order.GetOrderListRequest, rsp *order.GetOrderListResponse) error {
 	list, err := dao.OrderDao.GetOrderListByUserID(db.Factoty.GetSession(), req.UserID)
 	if err != nil {
+		log.Error("GetOrderListByUserID: ", err.Error())
 		rsp.Rescode = 500
 		return nil
 	}
