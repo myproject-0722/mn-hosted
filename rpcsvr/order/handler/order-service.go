@@ -180,3 +180,27 @@ func (s *OrderService) GetInfo(ctx context.Context, req *order.GetInfoRequest, r
 	rsp.Rescode = 200
 	return nil
 }
+
+func (s *OrderService) GetList(ctx context.Context, req *order.OrderListRequest, rsp *order.OrderListResponse) error {
+	list, err := dao.OrderDao.GetOrderListByUserID(db.Factoty.GetSession(), req.UserID)
+	if err != nil {
+		rsp.Rescode = 500
+		return nil
+	}
+
+	for _, v := range list {
+		item := new(order.OrderItem)
+		item.ID = v.Id
+		item.CoinName = v.CoinName
+		item.MNKey = v.MNKey
+		item.TimeType = v.TimeType
+		item.Price = float64(v.Price) / 100
+		item.Status = v.Status
+		item.IsRenew = v.IsRenew
+		item.CreateTime = v.CreateTime.Local().Format("2006-01-02 15:04:05")
+		rsp.OrderList = append(rsp.OrderList, item)
+	}
+
+	rsp.Rescode = 200
+	return nil
+}

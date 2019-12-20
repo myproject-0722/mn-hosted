@@ -8,6 +8,7 @@ service order {
   rpc ConfirmAlipay(ConfirmAlipayRequest) returns (ConfirmAlipayResponse) {}
   rpc Update(UpdateRequest) returns (UpdateResponse) {}
   rpc GetInfo(GetInfoRequest) returns (GetInfoResponse) {}
+  rpc GetList(OrderListRequest) returns (OrderListResponse) {}
 }
 
 message NewRequest {
@@ -64,4 +65,24 @@ message GetInfoResponse {
   int32 rescode = 1;
   int32 num = 2;
   double payout = 3;
+}
+
+message OrderListRequest {
+  int64 userID = 1;
+}
+
+message OrderItem {
+  int64 ID = 1;
+  string coinName = 2;
+  string MNKey = 3;
+  int32 timeType = 4;
+  double price = 5; //
+  int32 Status = 6;
+  int32 isRenew = 7;
+  string createTime = 8;
+}
+
+message OrderListResponse {
+  int32 rescode = 1;
+  repeated OrderItem orderList = 2;
 }
