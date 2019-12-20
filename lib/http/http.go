@@ -139,7 +139,8 @@ func VpsRequestGet(api string, reqBody []byte) ([]byte, error) {
 
 func AddVpsNode(orderid int64) bool {
 	jsondata := make(map[string]interface{})
-	jsondata["id"] = orderid
+	strOrderID := strconv.FormatInt(orderid, 10)
+	jsondata["id"] = strOrderID
 	bytesData, err := json.Marshal(jsondata)
 	if err != nil {
 		log.Error(err.Error())
@@ -159,7 +160,8 @@ func AddVpsNode(orderid int64) bool {
 
 func DelVpsNode(nodeid int64) bool {
 	jsondata := make(map[string]interface{})
-	jsondata["id"] = nodeid
+	strNodeID := strconv.FormatInt(nodeid, 10)
+	jsondata["id"] = strNodeID
 	bytesData, err := json.Marshal(jsondata)
 	if err != nil {
 		log.Error(err.Error())
@@ -179,7 +181,7 @@ func DelVpsNode(nodeid int64) bool {
 
 func GetAllVps() []byte {
 	jsondata := make(map[string]interface{})
-	jsondata["id"] = 0
+	jsondata["id"] = "0"
 	bytesData, err := json.Marshal(jsondata)
 	if err != nil {
 		log.Error(err.Error())
@@ -196,7 +198,8 @@ func GetAllVps() []byte {
 
 func GetIpByVpsID(vpsid int64) string {
 	jsondata := make(map[string]interface{})
-	jsondata["id"] = vpsid
+	strVpsID := strconv.FormatInt(vpsid, 10)
+	jsondata["id"] = strVpsID
 	bytesData, err := json.Marshal(jsondata)
 	if err != nil {
 		log.Error(err.Error())
