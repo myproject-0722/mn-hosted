@@ -66,6 +66,8 @@ func UpdateMasternodeInfo() {
 	}
 
 	for _, v := range nodelist {
+		log.Debug("UpdateMasternodeVpsInfo orderid:", v.OrderID, "vps:", v.Vps)
+
 		//查看node表中是否有纪录
 		node, err := dao.NodeDao.GetNodeByOrderID(db.Factoty.GetSession(), v.OrderID)
 		if err != nil {
@@ -75,7 +77,7 @@ func UpdateMasternodeInfo() {
 		//跟据vpsid获取vpsip
 		//ip := getVpsIpByVpsID(vpsinfo, node.VpsID)
 
-		v.Vps = node.PublicIP + strconv.Itoa(int(node.Port))
+		v.Vps = node.PublicIP + ":" + strconv.Itoa(int(node.Port))
 
 		log.Debug("UpdateMasternodeVpsInfo orderid:", v.OrderID, "vps:", v.Vps)
 		err = dao.NodeDao.UpdateMasternodeVpsInfo(db.Factoty.GetSession(), v)

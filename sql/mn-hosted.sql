@@ -32,7 +32,7 @@ CREATE TABLE `t_order` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=600 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=620 DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------

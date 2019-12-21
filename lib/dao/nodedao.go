@@ -289,7 +289,7 @@ func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretim
 
 // get
 func (*nodeDao) GetMasternodeBySyncStatus(session *dbsession.DBSession, syncstatus int32) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where status = ? ", syncstatus)
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where syncstatus = ? ", syncstatus)
 	if err != nil {
 		return nil, err
 	}
