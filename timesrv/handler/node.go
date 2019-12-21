@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/bitly/go-simplejson"
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
 	"github.com/myproject-0722/mn-hosted/lib/http"
@@ -33,6 +32,7 @@ func getVpsIpByVpsID(vpsinfo []interface{}, vpsid int64) string {
 
 func UpdateMasternodeInfo() {
 	log.Debug("UpdateMasternodeInfo")
+	/* 不从vps获取信息了
 	//获取vps信息
 	vpsResp := http.GetAllVps()
 	if vpsResp == nil {
@@ -57,7 +57,7 @@ func UpdateMasternodeInfo() {
 		log.Error("GetAllVps:", err.Error())
 		return
 	}
-
+	*/
 	//获取同步未完成的主节点
 	nodelist, err := dao.NodeDao.GetMasternodeBySyncStatus(db.Factoty.GetSession(), 0)
 	if err != nil {
@@ -73,9 +73,9 @@ func UpdateMasternodeInfo() {
 		}
 
 		//跟据vpsid获取vpsip
-		ip := getVpsIpByVpsID(vpsinfo, node.VpsID)
+		//ip := getVpsIpByVpsID(vpsinfo, node.VpsID)
 
-		v.Vps = ip + strconv.Itoa(int(node.Port))
+		v.Vps = node.PublicIP + strconv.Itoa(int(node.Port))
 
 		err = dao.NodeDao.UpdateMasternodeVpsInfo(db.Factoty.GetSession(), v)
 		if err != nil {

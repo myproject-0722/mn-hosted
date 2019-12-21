@@ -356,9 +356,9 @@ func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsP
 
 // get
 func (*nodeDao) GetNodeByOrderID(session *dbsession.DBSession, orderid int64) (*model.Node, error) {
-	row := session.QueryRow("select port from t_node where order_id = ? ", orderid)
+	row := session.QueryRow("select public_ip, port from t_node where order_id = ? ", orderid)
 	node := new(model.Node)
-	err := row.Scan(&node.Port)
+	err := row.Scan(&node.PublicIP, &node.Port)
 	if err != nil {
 		return nil, err
 	}
