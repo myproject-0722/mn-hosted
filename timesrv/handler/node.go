@@ -77,6 +77,7 @@ func UpdateMasternodeInfo() {
 
 		v.Vps = node.PublicIP + strconv.Itoa(int(node.Port))
 
+		log.Debug("UpdateMasternodeVpsInfo orderid:", v.OrderID, "vps:", v.Vps)
 		err = dao.NodeDao.UpdateMasternodeVpsInfo(db.Factoty.GetSession(), v)
 		if err != nil {
 			log.Error("UpdateMasternodeVpsInfo:", err.Error())
