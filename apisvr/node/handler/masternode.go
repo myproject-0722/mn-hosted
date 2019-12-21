@@ -350,6 +350,32 @@ func (s *Masternode) GetCount(ctx context.Context, req *api.Request, rsp *api.Re
 	return nil
 }
 
+func (s *Masternode) GetCoinRewards(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Masternode GetCoinRewards request")
+
+	userid, ok := req.Get["userid"]
+	if !ok || len(userid.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
+	}
+
+	strUserid := strings.Join(userid.Values, " ")
+	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
+
+	response, err := s.CoinClient.GetCoinRewards(ctx, &node.CoinRewardsRequest{
+		UserID: intUserid,
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = 200
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	fmt.Println(response)
+	return nil
+}
+
 func (s *Masternode) GetCoinList(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Debug("Received Coinlist Get request")
 

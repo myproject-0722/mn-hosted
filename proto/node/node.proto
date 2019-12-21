@@ -5,6 +5,7 @@ package go.mnhosted.srv.node;
 service coin {
   rpc Get(CoinListRequest) returns (CoinListResponse) {}
   rpc GetCoinItem(CoinItemRequest) returns (CoinItemResponse) {}
+  rpc GetCoinRewards(CoinRewardsRequest) returns (CoinRewardsResponse) {}
 }
 
 message CoinListRequest {
@@ -27,6 +28,21 @@ message CoinItem {
 message CoinListResponse {
   int32 rescode = 1;
   repeated CoinItem coinlist = 2;
+}
+
+message CoinRewardsRequest {
+  int64 userID = 1;
+}
+
+message CoinRewardsItem {
+  string coinName = 1;
+  double rewards = 2;
+  int32 MNCount = 3;
+}
+
+message CoinRewardsResponse {
+  int32 rescode = 1;
+  repeated CoinRewardsItem rewardslist = 2;
 }
 
 message CoinItemRequest {

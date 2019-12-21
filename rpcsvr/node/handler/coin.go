@@ -36,6 +36,26 @@ func (s *Coin) Get(ctx context.Context, req *node.CoinListRequest, rsp *node.Coi
 	return nil
 }
 
+func (s *Coin) GetCoinRewards(ctx context.Context, req *node.CoinRewardsRequest, rsp *node.CoinRewardsResponse) error {
+	list, err := dao.NodeDao.GetCoinRewards(db.Factoty.GetSession(), req.UserID)
+	if err != nil {
+		return err
+	}
+
+	rsp.Rescode = 200
+	listLength := len(list)
+	for i := 0; i < listLength; i++ {
+		v := list[i]
+		item := new(node.CoinRewardsItem)
+		item.CoinName = v.CoinName
+		item.MNCount = v.MNCount
+		item.Rewards = v.Rewards
+		rsp.Rewardslist = append(rsp.Rewardslist, item)
+	}
+
+	return nil
+}
+
 func (s *Coin) GetCoinItem(ctx context.Context, req *node.CoinItemRequest, rsp *node.CoinItemResponse) error {
 	v, err := dao.NodeDao.GetCoinItem(db.Factoty.GetSession(), req.CoinName)
 	if err != nil {

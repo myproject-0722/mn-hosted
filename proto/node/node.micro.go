@@ -36,6 +36,7 @@ var _ server.Option
 type CoinService interface {
 	Get(ctx context.Context, in *CoinListRequest, opts ...client.CallOption) (*CoinListResponse, error)
 	GetCoinItem(ctx context.Context, in *CoinItemRequest, opts ...client.CallOption) (*CoinItemResponse, error)
+	GetCoinRewards(ctx context.Context, in *CoinRewardsRequest, opts ...client.CallOption) (*CoinRewardsResponse, error)
 }
 
 type coinService struct {
@@ -76,17 +77,29 @@ func (c *coinService) GetCoinItem(ctx context.Context, in *CoinItemRequest, opts
 	return out, nil
 }
 
+func (c *coinService) GetCoinRewards(ctx context.Context, in *CoinRewardsRequest, opts ...client.CallOption) (*CoinRewardsResponse, error) {
+	req := c.c.NewRequest(c.name, "Coin.GetCoinRewards", in)
+	out := new(CoinRewardsResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Coin service
 
 type CoinHandler interface {
 	Get(context.Context, *CoinListRequest, *CoinListResponse) error
 	GetCoinItem(context.Context, *CoinItemRequest, *CoinItemResponse) error
+	GetCoinRewards(context.Context, *CoinRewardsRequest, *CoinRewardsResponse) error
 }
 
 func RegisterCoinHandler(s server.Server, hdlr CoinHandler, opts ...server.HandlerOption) error {
 	type coin interface {
 		Get(ctx context.Context, in *CoinListRequest, out *CoinListResponse) error
 		GetCoinItem(ctx context.Context, in *CoinItemRequest, out *CoinItemResponse) error
+		GetCoinRewards(ctx context.Context, in *CoinRewardsRequest, out *CoinRewardsResponse) error
 	}
 	type Coin struct {
 		coin
@@ -105,6 +118,10 @@ func (h *coinHandler) Get(ctx context.Context, in *CoinListRequest, out *CoinLis
 
 func (h *coinHandler) GetCoinItem(ctx context.Context, in *CoinItemRequest, out *CoinItemResponse) error {
 	return h.CoinHandler.GetCoinItem(ctx, in, out)
+}
+
+func (h *coinHandler) GetCoinRewards(ctx context.Context, in *CoinRewardsRequest, out *CoinRewardsResponse) error {
+	return h.CoinHandler.GetCoinRewards(ctx, in, out)
 }
 
 // Client API for Masternode service

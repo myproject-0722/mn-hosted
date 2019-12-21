@@ -54,6 +54,26 @@ func (*nodeDao) GetCoinList(session *dbsession.DBSession, pageNo int32, perPagen
 	return coinlist, nil
 }
 
+// get
+func (*nodeDao) GetCoinRewards(session *dbsession.DBSession, userid int64) ([]*model.CoinRewards, error) {
+	rows, err := session.Query("select coinname, count(id), sum(earn) from t_masternode where userid = ? group by coinname", userid)
+	if err != nil {
+		return nil, err
+	}
+	list := make([]*model.CoinRewards, 0)
+	for rows.Next() {
+		item := new(model.CoinRewards)
+		err := rows.Scan(&item.CoinName, &item.MNCount, &item.Rewards)
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
+		list = append(list, item)
+	}
+
+	return list, nil
+}
+
 // udpate coins count
 func (*nodeDao) UpdateCoinCount(session *dbsession.DBSession, coinname string, node *model.MasternodeCount) error {
 	_, err := session.Exec("update t_coinlist set volume = ? , mnhosted = ? where coinname = ?", node.Earns, node.Count, coinname)

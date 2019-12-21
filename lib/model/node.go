@@ -28,6 +28,13 @@ type CoinsPrice struct {
 }
 
 //
+type CoinRewards struct {
+	CoinName string  `json:"coinname"` // 货币名称
+	Rewards  float64 `json:"rewards"`  //
+	MNCount  int32   `json:"mncount"`
+}
+
+//
 type Masternode struct {
 	Id         int64     `json:"id"`         // id
 	CoinName   string    `json:"coinname"`   // 货币名称
