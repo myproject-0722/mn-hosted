@@ -49,7 +49,7 @@ func (s *Coin) GetCoinRewards(ctx context.Context, req *node.CoinRewardsRequest,
 		item := new(node.CoinRewardsItem)
 		item.CoinName = v.CoinName
 		item.MNCount = v.MNCount
-		item.Rewards = v.Rewards
+		item.Rewards = v.Rewards / 1000000
 		rsp.Rewardslist = append(rsp.Rewardslist, item)
 	}
 
