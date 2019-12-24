@@ -11,7 +11,7 @@ type orderDao struct{}
 var OrderDao = new(orderDao)
 
 func (*orderDao) Insert(session *dbsession.DBSession, o *model.Order) (int64, error) {
-	result, err := session.Exec("insert into t_order(userid, coinname, mnkey, timetype, price, isrenew, txid, status) value(?, ?, ?, ?, ?, ?, ?, ?)", o.UserID, o.CoinName, o.MNKey, o.TimeType, o.Price, o.IsRenew, o.TxID, o.Status)
+	result, err := session.Exec("insert into t_order(userid, coinname, mnname, mnkey, timetype, price, isrenew, txid, txindex, status) value(?, ?, ?, ?, ?, ?, ?, ?)", o.UserID, o.CoinName, o.MNName, o.MNKey, o.TimeType, o.Price, o.IsRenew, o.TxID, o.TxIndex, o.Status)
 	if err != nil {
 		log.Error(err)
 		return -1, err
