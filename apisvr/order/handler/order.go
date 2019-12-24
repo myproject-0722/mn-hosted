@@ -97,6 +97,24 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 		return errors.BadRequest("go.mnhosted.api.order", "coinname cannot be blank")
 	}
 
+	txid, ok := req.Get["txid"]
+	strTxID := ""
+	if ok && len(txid.Values) > 0 {
+		strTxID = strings.Join(txid.Values, " ")
+	}
+
+	mnname, ok := req.Get["mnname"]
+	strMNName := ""
+	if ok && len(mnname.Values) > 0 {
+		strMNName = strings.Join(mnname.Values, " ")
+	}
+
+	txindex, ok := req.Get["txindex"]
+	intTxIndex := 0
+	if ok && len(txindex.Values) > 0 {
+		intTxIndex, _ = strconv.Atoi(strings.Join(txindex.Values, " "))
+	}
+
 	mnkey, ok := req.Get["mnkey"]
 	if !ok || len(mnkey.Values) == 0 {
 		log.Error("mnkey cannot be blank")
@@ -133,6 +151,9 @@ func (s *Order) Alipay(ctx context.Context, req *api.Request, rsp *api.Response)
 		UserID:   intUserid,
 		CoinName: strings.Join(coinname.Values, " "),
 		MNKey:    strings.Join(mnkey.Values, " "),
+		MNName:   strMNName,
+		TxID:     strTxID,
+		TxIndex:  int32(intTxIndex),
 		TimeType: int32(intTimeType),
 		IsRenew:  int32(intIsRenew),
 	})

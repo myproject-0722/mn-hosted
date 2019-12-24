@@ -29,8 +29,11 @@ message AlipayRequest {
   int64 userID = 1;
   string coinName = 2;
   string MNKey = 3;
-  int32 timeType = 4;
-  int32 isRenew = 5;
+  string MNName = 4;
+  string txID = 5;
+  int32 txIndex = 6;
+  int32 timeType = 7;
+  int32 isRenew = 8;
 }
 
 message AlipayResponse {
