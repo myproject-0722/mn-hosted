@@ -122,6 +122,24 @@ func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnk
 	return node, nil
 }
 
+// get
+func (*nodeDao) GetMasternodeByMNID(session *dbsession.DBSession, mnid int64) (*model.Masternode, error) {
+	row := session.QueryRow("select orderid, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where id = ? ", mnid)
+	node := new(model.Masternode)
+	err := row.Scan(&node.OrderID, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return node, nil
+}
+
 // 获取相关币种主节点的统计，正常分布式项目计算不应该放在数据库，不过此项目数据库压力较小，计算可放在数据库内统计
 func (*nodeDao) GetMasternodeCountByCoin(session *dbsession.DBSession, coinname string) (*model.MasternodeCount, error) {
 	row := session.QueryRow("select count(id), sum(earn) from t_masternode where coinname = ? ", coinname)
@@ -206,6 +224,17 @@ func (*nodeDao) UpdateMasternodeRewards(session *dbsession.DBSession, mnpayee st
 // udpate
 func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, status int32) error {
 	result, err := session.Exec("update t_masternode set status = ? where id = ? ", status, id)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	log.Println(result)
+	return nil
+}
+
+// udpate
+func (*nodeDao) UpdateMasternodeMNKey(session *dbsession.DBSession, id int64, mnkey string) error {
+	result, err := session.Exec("update t_masternode set mnkey = ? where id = ? ", mnkey, id)
 	if err != nil {
 		log.Error(err)
 		return err

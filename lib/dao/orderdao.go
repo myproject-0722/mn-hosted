@@ -72,11 +72,21 @@ func (*orderDao) GetInfoByUserID(session *dbsession.DBSession, userID int64) (*m
 }
 
 func (*orderDao) Update(session *dbsession.DBSession, id int64, mnkey string, status int32) error {
-	result, err := session.Exec("update t_order set mnkey = ?, status = ? where id = ?", mnkey, status, id)
+	_, err := session.Exec("update t_order set mnkey = ?, status = ? where id = ?", mnkey, status, id)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
+	return nil
+}
+
+func (*orderDao) Modify(session *dbsession.DBSession, o *model.Order) error {
+	_, err := session.Exec("update t_order set mnname = ?, mnkey = ?, txid = ?, txindex = ? where id = ?", o.MNName, o.MNKey, o.TxID, o.TxIndex, o.Id)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	//log.Println(result)
 	return nil
 }

@@ -410,3 +410,56 @@ func (s *Masternode) GetCoinList(ctx context.Context, req *api.Request, rsp *api
 
 	return nil
 }
+
+func (s *Masternode) Modify(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Modify request")
+
+	mnid, ok := req.Get["mnid"]
+	if !ok || len(mnid.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.node", "mnid cannot be blank")
+	}
+	strMNID := strings.Join(mnid.Values, " ")
+	intMNID, err := strconv.ParseInt(strMNID, 10, 64)
+
+	mnname, ok := req.Get["mnname"]
+	strMNName := ""
+	if ok && len(mnname.Values) > 0 {
+		strMNName = strings.Join(mnname.Values, " ")
+	}
+
+	mnkey, ok := req.Get["mnkey"]
+	if !ok || len(mnkey.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.node", "mnkey cannot be blank")
+	}
+
+	txid, ok := req.Get["txid"]
+	strTxID := ""
+	if ok && len(txid.Values) > 0 {
+		strTxID = strings.Join(txid.Values, " ")
+	}
+
+	txindex, ok := req.Get["txindex"]
+	intTxIndex := 0
+	if ok && len(txindex.Values) > 0 {
+		intTxIndex, _ = strconv.Atoi(strings.Join(txindex.Values, " "))
+	}
+
+	response, err := s.Client.Modify(ctx, &node.MasterNodeModifyRequest{
+		MNID:    intMNID,
+		MNName:  strMNName,
+		MNKey:   strings.Join(mnkey.Values, " "),
+		TxID:    strTxID,
+		TxIndex: int32(intTxIndex),
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	fmt.Println(response)
+
+	return nil
+}

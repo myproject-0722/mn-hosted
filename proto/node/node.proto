@@ -56,6 +56,7 @@ message CoinItemResponse {
 
 service masternode {
 	rpc New(MasterNodeNewRequest) returns (MasterNodeNewResponse) {}
+  rpc Modify(MasterNodeModifyRequest) returns (MasterNodeModifyResponse) {}
   rpc Renew(MasterNodeRenewRequest) returns (MasterNodeRenewResponse) {}
   rpc IsExsit(MasterNodeCheckRequest) returns (MasterNodeCheckResponse) {}
   rpc Get(MasterNodeListRequest) returns (MasterNodeListResponse) {}
@@ -103,6 +104,19 @@ message MasterNodeNewRequest {
 }
 
 message MasterNodeNewResponse {
+	int32 rescode = 1; 	//200 ok
+}
+
+message MasterNodeModifyRequest {
+  int64 userID = 1;
+  int64 MNID = 2;
+  string MNKey = 3;
+  string MNName = 4;
+  string txID = 5;
+  int32 txIndex = 6;
+}
+
+message MasterNodeModifyResponse {
 	int32 rescode = 1; 	//200 ok
 }
 

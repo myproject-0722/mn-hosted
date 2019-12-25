@@ -128,6 +128,7 @@ func (h *coinHandler) GetCoinRewards(ctx context.Context, in *CoinRewardsRequest
 
 type MasternodeService interface {
 	New(ctx context.Context, in *MasterNodeNewRequest, opts ...client.CallOption) (*MasterNodeNewResponse, error)
+	Modify(ctx context.Context, in *MasterNodeModifyRequest, opts ...client.CallOption) (*MasterNodeModifyResponse, error)
 	Renew(ctx context.Context, in *MasterNodeRenewRequest, opts ...client.CallOption) (*MasterNodeRenewResponse, error)
 	IsExsit(ctx context.Context, in *MasterNodeCheckRequest, opts ...client.CallOption) (*MasterNodeCheckResponse, error)
 	Get(ctx context.Context, in *MasterNodeListRequest, opts ...client.CallOption) (*MasterNodeListResponse, error)
@@ -155,6 +156,16 @@ func NewMasternodeService(name string, c client.Client) MasternodeService {
 func (c *masternodeService) New(ctx context.Context, in *MasterNodeNewRequest, opts ...client.CallOption) (*MasterNodeNewResponse, error) {
 	req := c.c.NewRequest(c.name, "Masternode.New", in)
 	out := new(MasterNodeNewResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masternodeService) Modify(ctx context.Context, in *MasterNodeModifyRequest, opts ...client.CallOption) (*MasterNodeModifyResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.Modify", in)
+	out := new(MasterNodeModifyResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -206,6 +217,7 @@ func (c *masternodeService) GetCount(ctx context.Context, in *GetCountRequest, o
 
 type MasternodeHandler interface {
 	New(context.Context, *MasterNodeNewRequest, *MasterNodeNewResponse) error
+	Modify(context.Context, *MasterNodeModifyRequest, *MasterNodeModifyResponse) error
 	Renew(context.Context, *MasterNodeRenewRequest, *MasterNodeRenewResponse) error
 	IsExsit(context.Context, *MasterNodeCheckRequest, *MasterNodeCheckResponse) error
 	Get(context.Context, *MasterNodeListRequest, *MasterNodeListResponse) error
@@ -215,6 +227,7 @@ type MasternodeHandler interface {
 func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...server.HandlerOption) error {
 	type masternode interface {
 		New(ctx context.Context, in *MasterNodeNewRequest, out *MasterNodeNewResponse) error
+		Modify(ctx context.Context, in *MasterNodeModifyRequest, out *MasterNodeModifyResponse) error
 		Renew(ctx context.Context, in *MasterNodeRenewRequest, out *MasterNodeRenewResponse) error
 		IsExsit(ctx context.Context, in *MasterNodeCheckRequest, out *MasterNodeCheckResponse) error
 		Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error
@@ -233,6 +246,10 @@ type masternodeHandler struct {
 
 func (h *masternodeHandler) New(ctx context.Context, in *MasterNodeNewRequest, out *MasterNodeNewResponse) error {
 	return h.MasternodeHandler.New(ctx, in, out)
+}
+
+func (h *masternodeHandler) Modify(ctx context.Context, in *MasterNodeModifyRequest, out *MasterNodeModifyResponse) error {
+	return h.MasternodeHandler.Modify(ctx, in, out)
 }
 
 func (h *masternodeHandler) Renew(ctx context.Context, in *MasterNodeRenewRequest, out *MasterNodeRenewResponse) error {

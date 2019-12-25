@@ -64,8 +64,41 @@ func (s *Masternode) Renew(ctx context.Context, req *node.MasterNodeRenewRequest
 	return nil
 }
 
+func (s *Masternode) Modify(ctx context.Context, req *node.MasterNodeModifyRequest, rsp *node.MasterNodeModifyResponse) error {
+	//获取主节点信息
+	node, err := dao.NodeDao.GetMasternodeByMNID(db.Factoty.GetSession(), req.MNID)
+	if err != nil {
+		rsp.Rescode = 500
+		log.Error("GetMasternode Error", err.Error())
+		return err
+	}
+
+	//修改订单信息
+	var order model.Order
+	order.MNName = req.MNName
+	order.Id = node.OrderID
+	order.MNKey = req.MNKey
+	order.TxID = req.TxID
+	order.TxIndex = req.TxIndex
+
+	err = dao.NodeDao.UpdateMasternodeMNKey(db.Factoty.GetSession(), req.MNID, req.MNKey)
+	if err != nil {
+		log.Error("UpdateMasternodeMNKey", err.Error())
+		return err
+	}
+
+	err = dao.OrderDao.Modify(db.Factoty.GetSession(), &order)
+	if err != nil {
+		log.Error("Modify", err.Error())
+		return err
+	}
+
+	//调用vps服务
+
+	return nil
+}
+
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
-	log.Debug("Received MasterNodeNewRequest:", req.UserId)
 	log.Debug("Received MasterNodeNewRequest:", req.UserId, " ", req.CoinName, " ", req.MNKey, " ", req.OrderID)
 	//将订单纪录写入主节点表
 	var masternode model.Masternode

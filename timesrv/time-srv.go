@@ -35,7 +35,7 @@ func main() {
 		//}
 	})
 
-	spec = "0 */5 * * * ?"
+	spec = "*/60 * * * * ?"
 	c.AddFunc(spec, func() {
 
 		handler.SyncDashMNStatus()
