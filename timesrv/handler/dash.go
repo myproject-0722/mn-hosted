@@ -50,7 +50,7 @@ func SyncDashMNStatus() {
 			//获取主节点payee
 			mnpayee, err := http.GetDashMNPayee(v.Vps)
 			if err != nil {
-				log.Error("GetDashMNStatus", err.Error())
+				log.Error("GetDashMNPayee", err.Error())
 				return
 			}
 
@@ -61,6 +61,7 @@ func SyncDashMNStatus() {
 				return
 			}
 
+			log.Debug("UpdateMasternodeMNStatus vps:", v.Vps, " payee:", mnpayee, " status:", status)
 			err = dao.NodeDao.UpdateMasternodeMNStatus(db.Factoty.GetSession(), v.Vps, mnpayee, 1, status)
 			if err != nil {
 				log.Error("UpdateMasternodeMNStatus:", err.Error())

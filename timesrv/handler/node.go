@@ -8,7 +8,6 @@ import (
 
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
-	"github.com/myproject-0722/mn-hosted/lib/http"
 
 	//	"github.com/myproject-0722/mn-hosted/lib/http"
 	log "github.com/sirupsen/logrus"
@@ -66,7 +65,7 @@ func UpdateMasternodeInfo() {
 	}
 
 	for _, v := range nodelist {
-		log.Debug("UpdateMasternodeVpsInfo orderid:", v.OrderID, "vps:", v.Vps)
+		log.Debug("UpdateMasternodeVpsInfo orderid:", v.OrderID, " vps:", v.Vps)
 
 		//查看node表中是否有纪录
 		node, err := dao.NodeDao.GetNodeByOrderID(db.Factoty.GetSession(), v.OrderID)
@@ -102,9 +101,10 @@ func CheckMasterNodeExpired() {
 			continue
 		}
 
-		if http.DelVpsNode(nodeid) == false {
-			continue
-		}
+		/*	暂时注释掉
+			if http.DelVpsNode(nodeid) == false {
+				continue
+			}*/
 
 		//设置主节点已过期标志
 		delerr := dao.NodeDao.UpdateMasternodeStatus(db.Factoty.GetSession(), v.Id, 2)
