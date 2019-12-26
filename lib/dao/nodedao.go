@@ -319,7 +319,7 @@ func (*nodeDao) GetMasternodeByCoinName(session *dbsession.DBSession, coinname s
 
 // get
 func (*nodeDao) GetExpiredTimeMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where status = 2 and expiretime <= ?", expiretime)
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, createtime, expiretime, updatetime from t_masternode where status != 2 and expiretime <= ?", expiretime)
 	if err != nil {
 		return nil, err
 	}

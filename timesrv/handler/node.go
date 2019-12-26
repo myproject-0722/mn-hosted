@@ -8,6 +8,7 @@ import (
 
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
+	"github.com/myproject-0722/mn-hosted/lib/http"
 
 	//	"github.com/myproject-0722/mn-hosted/lib/http"
 	log "github.com/sirupsen/logrus"
@@ -101,10 +102,10 @@ func CheckMasterNodeExpired() {
 			continue
 		}
 
-		/*	暂时注释掉
-			if http.DelVpsNode(nodeid) == false {
-				continue
-			}*/
+		if http.DelVpsNode(nodeid) == false {
+			log.Error("DelVpsNode nodeid=", nodeid)
+			continue
+		}
 
 		//设置主节点已过期标志
 		delerr := dao.NodeDao.UpdateMasternodeStatus(db.Factoty.GetSession(), v.Id, 2)
