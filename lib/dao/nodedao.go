@@ -175,7 +175,7 @@ func (*nodeDao) GetMasternodeCount(session *dbsession.DBSession, userID int64) i
 
 // get
 func (*nodeDao) GetNodeIDByOrderID(session *dbsession.DBSession, orderid int64) int64 {
-	row := session.QueryRow("select id from t_masternode where orderid = ?", orderid)
+	row := session.QueryRow("select id from t_node where order_id = ?", orderid)
 	var id int64
 	err := row.Scan(&id)
 
