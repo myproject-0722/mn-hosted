@@ -73,6 +73,8 @@ message GetCountResponse {
 
 message MasterNodeListRequest {
   int64 userId = 1;
+  int32 curPage = 2;
+  int32 pageSize = 3;
 }
 
 message MasternodeItem {

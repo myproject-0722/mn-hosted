@@ -174,7 +174,7 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 
 func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, rsp *node.MasterNodeListResponse) error {
 	log.Debug("Received MasterNodeListRequest:", req.UserId)
-	nodelist, err := dao.NodeDao.GetMasternodeByUserID(db.Factoty.GetSession(), req.UserId)
+	nodelist, err := dao.NodeDao.GetMasternodeByUserID(db.Factoty.GetSession(), req.UserId, req.CurPage, req.PageSize)
 	if err != nil {
 		log.Error("db GetMasternodeByUserID", err.Error())
 		return err

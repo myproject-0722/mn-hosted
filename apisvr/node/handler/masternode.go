@@ -306,11 +306,27 @@ func (s *Masternode) Get(ctx context.Context, req *api.Request, rsp *api.Respons
 		return errors.BadRequest("go.mnhosted.api.node", "userid cannot be blank")
 	}
 
+	curPage, ok := req.Get["curpage"]
+	var intCurPage int = 1
+	if ok && len(curPage.Values) > 0 {
+		strCurPage := strings.Join(curPage.Values, " ")
+		intCurPage, _ = strconv.Atoi(strCurPage)
+	}
+
+	pageSize, ok := req.Get["pagesize"]
+	var intPageSize int = 10
+	if ok && len(pageSize.Values) > 0 {
+		strPageSize := strings.Join(pageSize.Values, " ")
+		intPageSize, _ = strconv.Atoi(strPageSize)
+	}
+
 	strUserid := strings.Join(userid.Values, " ")
 	intUserid, err := strconv.ParseInt(strUserid, 10, 64)
 
 	response, err := s.Client.Get(ctx, &node.MasterNodeListRequest{
-		UserId: intUserid,
+		UserId:   intUserid,
+		CurPage:  int32(intCurPage),
+		PageSize: int32(intPageSize),
 	})
 	if err != nil {
 		return err
