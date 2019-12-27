@@ -106,9 +106,9 @@ func (*nodeDao) GetMasternode(session *dbsession.DBSession, coinname string, mnk
 	//strSql := "select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
 	//log.Println("sql=", strSql)
 	//row := session.QueryRow(strSql)
-	row := session.QueryRow("select id, coinname, mnkey, userid, syncstatus, createtime, expiretime from t_masternode where coinname = ? and mnkey = ? ", coinname, mnkey)
+	row := session.QueryRow("select id, coinname, mnkey, userid, syncstatus, status, createtime, expiretime from t_masternode where coinname = ? and mnkey = ? ", coinname, mnkey)
 	node := new(model.Masternode)
-	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.CreateTime, &node.ExpireTime)
+	err := row.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.SyncStatus, &node.Status, &node.CreateTime, &node.ExpireTime)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}

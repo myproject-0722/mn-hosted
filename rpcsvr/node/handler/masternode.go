@@ -111,10 +111,13 @@ func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rs
 			return err
 		}
 
+		log.Debug("renew coiname:", req.CoinName, " mnkey:", req.MNKey, " status:", dbmasternode.Status)
+
 		//已失效
 		if dbmasternode.Status == 2 {
 			masternode.ExpireTime = time.Now()
 
+			log.Debug("add vps node orderid:", dbmasternode.OrderID)
 			//重新启动
 			if http.AddVpsNode(dbmasternode.OrderID) == false {
 				rsp.Rescode = 500
