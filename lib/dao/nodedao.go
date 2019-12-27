@@ -234,23 +234,23 @@ func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, s
 
 // udpate
 func (*nodeDao) UpdateMasternodeMNKey(session *dbsession.DBSession, id int64, mnkey string) error {
-	result, err := session.Exec("update t_masternode set mnkey = ? where id = ? ", mnkey, id)
+	_, err := session.Exec("update t_masternode set mnkey = ? where id = ? ", mnkey, id)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
 	return nil
 }
 
 // udpate
 func (*nodeDao) UpdateMasternodeVpsInfo(session *dbsession.DBSession, node *model.Masternode) error {
-	result, err := session.Exec("update t_masternode set syncstatus = 1, vps = ? where orderid = ? ", node.Vps, node.OrderID)
+	_, err := session.Exec("update t_masternode set syncstatus = 1, syncstatusex = ?, vps = ? where orderid = ? ", node.Status, node.Vps, node.OrderID)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
 	return nil
 }
 
@@ -406,9 +406,9 @@ func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsP
 
 // get
 func (*nodeDao) GetNodeByOrderID(session *dbsession.DBSession, orderid int64) (*model.Node, error) {
-	row := session.QueryRow("select public_ip, port from t_node where order_id = ? ", orderid)
+	row := session.QueryRow("select public_ip, port, status from t_node where order_id = ? ", orderid)
 	node := new(model.Node)
-	err := row.Scan(&node.PublicIP, &node.Port)
+	err := row.Scan(&node.PublicIP, &node.Port, &node.Status)
 	if err != nil {
 		return nil, err
 	}

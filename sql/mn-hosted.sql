@@ -34,7 +34,7 @@ CREATE TABLE `t_order` (
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=680 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=790 DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------
@@ -92,6 +92,7 @@ CREATE TABLE `t_masternode` (
   `dockerid` varchar(128) COMMENT 'dockerid',
   `status` int(11) DEFAULT 0 COMMENT '0未发布、1已发布、2已过期',
   `syncstatus` int(11) DEFAULT 0 COMMENT '0未同步、2已同步',
+  `syncstatusex` varchar(32) DEFAULT "未知" COMMENT '同步状态描述',
   `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态 0非正常 1正常',
   `mnstatusex` varchar(32) DEFAULT "未知" COMMENT '主节点状态 ENABLED等',
   `earn` bigint(20) DEFAULT 0 COMMENT '收益',

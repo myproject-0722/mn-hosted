@@ -68,6 +68,7 @@ type Node struct {
 	OrderID    int64     `json:"orderid"`    //
 	PublicIP   string    `json:"publicip"`   //
 	Port       int32     `json:"port"`       // vps
+	Status     string    `json:"status"`     // status
 	CreateTime time.Time `json:"createtime"` //
 	UpdateTime time.Time `json:"updatetime"` // 更新时间
 }
