@@ -301,7 +301,7 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 
 // get
 func (*nodeDao) GetMasternodeByCoinName(session *dbsession.DBSession, coinname string) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ? and status != 2", coinname)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ? and syncstatusex = finish", coinname)
 	if err != nil {
 		return nil, err
 	}
