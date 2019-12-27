@@ -99,7 +99,7 @@ func (s *Masternode) Modify(ctx context.Context, req *node.MasterNodeModifyReque
 }
 
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
-	log.Debug("Received MasterNodeNewRequest:", req.UserId, " ", req.CoinName, " ", req.MNKey, " ", req.OrderID)
+	log.Debug("Received MasterNodeNewRequest userid:", req.UserId, " coinname:", req.CoinName, " key:", req.MNKey, " orderid:", req.OrderID, " isrenew:", req.IsRenew)
 	//将订单纪录写入主节点表
 	var masternode model.Masternode
 	//判断是否为续期

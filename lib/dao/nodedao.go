@@ -270,7 +270,7 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 	//strSql := "update t_masternode set expiretime = '" + expiretime.Unix() + "' where coinname = '" + coinname + "' and mnkey= '" + mnkey + "'"
 	//log.Println("sql=", strSql)
 	//result, err := session.Exec(strSql)
-	result, err := session.Exec("update t_masternode set expiretime = ? where coinname = ? and mnkey = ?", expiretime, coinname, mnkey)
+	result, err := session.Exec("update t_masternode set expiretime = ?, status = 1 where coinname = ? and mnkey = ?", expiretime, coinname, mnkey)
 	if err != nil {
 		log.Error(err)
 		return err
