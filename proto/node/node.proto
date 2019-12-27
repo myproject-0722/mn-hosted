@@ -89,6 +89,7 @@ message MasternodeItem {
   string expireTime = 9;
   string MNStatus = 10;
   string MNPayee = 11;
+  string SyncStatusEx = 12;
 }
 
 message MasterNodeListResponse {
