@@ -245,7 +245,7 @@ func (*nodeDao) UpdateMasternodeMNKey(session *dbsession.DBSession, id int64, mn
 
 // udpate
 func (*nodeDao) UpdateMasternodeVpsInfo(session *dbsession.DBSession, node *model.Masternode) error {
-	_, err := session.Exec("update t_masternode set syncstatus = 1, syncstatusex = ?, vps = ? where orderid = ? ", node.Status, node.Vps, node.OrderID)
+	_, err := session.Exec("update t_masternode set syncstatus = 1, syncstatusex = ?, vps = ? where orderid = ? ", node.SyncStatusEx, node.Vps, node.OrderID)
 	if err != nil {
 		log.Error(err)
 		return err

@@ -36,21 +36,22 @@ type CoinRewards struct {
 
 //
 type Masternode struct {
-	Id         int64     `json:"id"`         // id
-	CoinName   string    `json:"coinname"`   // 货币名称
-	MNKey      string    `json:"mnkey"`      // key
-	MNPayee    string    `json:"mnpayee"`    // key
-	UserID     int64     `json:"userid"`     //
-	OrderID    int64     `json:"orderid"`    //
-	Vps        string    `json:"vps"`        // vps
-	DockerID   string    `json:"dockerid"`   //dockerid
-	Status     int32     `json:"status"`     //
-	SyncStatus int32     `json:"syncstatus"` //
-	MNStatus   string    `json:"mnstatus"`   //
-	Earn       int64     `json:"earn"`       //
-	CreateTime time.Time `json:"createtime"` //
-	ExpireTime time.Time `json:"expiretime"` //
-	UpdateTime time.Time `json:"updatetime"` // 更新时间
+	Id           int64     `json:"id"`           // id
+	CoinName     string    `json:"coinname"`     // 货币名称
+	MNKey        string    `json:"mnkey"`        // key
+	MNPayee      string    `json:"mnpayee"`      // key
+	UserID       int64     `json:"userid"`       //
+	OrderID      int64     `json:"orderid"`      //
+	Vps          string    `json:"vps"`          // vps
+	DockerID     string    `json:"dockerid"`     //dockerid
+	Status       int32     `json:"status"`       //
+	SyncStatus   int32     `json:"syncstatus"`   //
+	MNStatus     string    `json:"mnstatus"`     //
+	SyncStatusEx string    `json:"syncstatusex"` //
+	Earn         int64     `json:"earn"`         //
+	CreateTime   time.Time `json:"createtime"`   //
+	ExpireTime   time.Time `json:"expiretime"`   //
+	UpdateTime   time.Time `json:"updatetime"`   // 更新时间
 }
 
 //
