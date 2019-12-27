@@ -59,7 +59,7 @@ func UpdateMasternodeInfo() {
 	}
 	*/
 	//获取同步未完成的主节点
-	nodelist, err := dao.NodeDao.GetMasternodeBySyncStatus(db.Factoty.GetSession(), 0)
+	nodelist, err := dao.NodeDao.GetUnfinishedMasternode(db.Factoty.GetSession())
 	if err != nil {
 		log.Error("UpdateMasternodeInfo", err)
 		return
