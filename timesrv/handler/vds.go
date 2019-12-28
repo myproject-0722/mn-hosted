@@ -56,6 +56,33 @@ func SyncVdsMNStatus() {
 			err = dao.NodeDao.UpdateMasternodeMNStatus(db.Factoty.GetSession(), v.Vps, v.MNPayee, 1, status)
 			if err != nil {
 				log.Error("UpdateMasternodeMNStatus:", err.Error())
+				return
+			}
+		} else {
+			//获取txid
+			o, err := dao.OrderDao.GetOrderItem(db.Factoty.GetSession(), v.OrderID)
+			if err != nil {
+				log.Error("SyncVdsMNStatus GetOrderItem Error: ", v.OrderID)
+				return
+			}
+
+			//获取payee
+			payee, err := http.GetVdsMNPayee(o.TxID)
+			if err != nil {
+				log.Error("GetVdsMNPayee", err.Error())
+				return
+			}
+
+			status, err := http.GetVdsMNStatus(payee)
+			if err != nil {
+				log.Error("GetVdsMNStatus", err.Error())
+				return
+			}
+
+			err = dao.NodeDao.UpdateMasternodeMNStatus(db.Factoty.GetSession(), v.Vps, payee, 1, status)
+			if err != nil {
+				log.Error("UpdateMasternodeMNStatus:", err.Error())
+				return
 			}
 		}
 	}
