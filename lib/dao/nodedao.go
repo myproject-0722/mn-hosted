@@ -301,14 +301,14 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 
 // get
 func (*nodeDao) GetMasternodeByCoinName(session *dbsession.DBSession, coinname string) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ? and syncstatusex = 'finish'", coinname)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, orderid, vps, earn, status, syncstatus, mnstatus, createtime, expiretime from t_masternode where coinname = ? and syncstatusex = 'finish'", coinname)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.OrderID, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}
@@ -406,9 +406,9 @@ func (*nodeDao) UpdateCoinsPrice(session *dbsession.DBSession, item model.CoinsP
 
 // get
 func (*nodeDao) GetNodeByOrderID(session *dbsession.DBSession, orderid int64) (*model.Node, error) {
-	row := session.QueryRow("select public_ip, port, status from t_node where order_id = ? ", orderid)
+	row := session.QueryRow("select public_ip, port, state, status from t_node where order_id = ? ", orderid)
 	node := new(model.Node)
-	err := row.Scan(&node.PublicIP, &node.Port, &node.Status)
+	err := row.Scan(&node.PublicIP, &node.Port, &node.State, &node.Status)
 	if err != nil {
 		return nil, err
 	}

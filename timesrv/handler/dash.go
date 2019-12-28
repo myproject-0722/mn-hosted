@@ -47,18 +47,28 @@ func SyncDashMNStatus() {
 
 	for _, v := range mnlist {
 		if v.Vps != "" {
-			//获取主节点payee
-			mnpayee, err := http.GetDashMNPayee(v.Vps)
+			//从节点表获取状态
+			node, err := dao.NodeDao.GetNodeByOrderID(db.Factoty.GetSession(), v.OrderID)
 			if err != nil {
-				log.Error("GetDashMNPayee", err.Error())
-				return
+				continue
 			}
 
-			//获取主节点状态
-			status, err := http.GetDashMNStatus(mnpayee)
-			if err != nil {
-				log.Error("GetDashMNStatus", err.Error())
-				return
+			var mnpayee string = ""
+			var status string = node.Status
+			if node.State == "READY" {
+				//获取主节点payee
+				mnpayee, err = http.GetDashMNPayee(v.Vps)
+				if err != nil {
+					log.Error("GetDashMNPayee", err.Error())
+					return
+				}
+
+				//获取主节点状态
+				status, err = http.GetDashMNStatus(mnpayee)
+				if err != nil {
+					log.Error("GetDashMNStatus", err.Error())
+					return
+				}
 			}
 
 			log.Debug("UpdateMasternodeMNStatus vps:", v.Vps, " payee:", mnpayee, " status:", status)
