@@ -234,7 +234,7 @@ func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, s
 
 // udpate
 func (*nodeDao) UpdateMasternodeMNKey(session *dbsession.DBSession, id int64, mnkey string) error {
-	_, err := session.Exec("update t_masternode set mnkey = ? where id = ? ", mnkey, id)
+	_, err := session.Exec("update t_masternode set syncstatus = 0, syncstatusex='', mnkey = ? where id = ? ", mnkey, id)
 	if err != nil {
 		log.Error(err)
 		return err
