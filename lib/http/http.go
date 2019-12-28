@@ -179,6 +179,27 @@ func DelVpsNode(nodeid int64) bool {
 	return false
 }
 
+func UpdateVpsNode(nodeid int64) bool {
+	jsondata := make(map[string]interface{})
+	strNodeID := strconv.FormatInt(nodeid, 10)
+	jsondata["id"] = strNodeID
+	bytesData, err := json.Marshal(jsondata)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	res, err := VpsRequest("vps/update", bytesData)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	if res == "0" {
+		//fmt.Println("添加主节点成功")
+		return true
+	}
+	return false
+}
+
 func GetAllVps() []byte {
 	jsondata := make(map[string]interface{})
 	jsondata["id"] = "0"
