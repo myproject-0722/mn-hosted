@@ -54,7 +54,7 @@ func SyncDashMNStatus() {
 			}
 
 			var mnpayee string = ""
-			var status string = node.Status
+			var status string = node.State
 			if node.State == "READY" {
 				//获取主节点payee
 				mnpayee, err = http.GetDashMNPayee(v.Vps)
