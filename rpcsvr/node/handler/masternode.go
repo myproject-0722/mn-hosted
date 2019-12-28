@@ -95,8 +95,11 @@ func (s *Masternode) Modify(ctx context.Context, req *node.MasterNodeModifyReque
 
 	nodeid := dao.NodeDao.GetNodeIDByOrderID(db.Factoty.GetSession(), node.OrderID)
 	if nodeid == -1 {
-		log.Error("GetNodeIDByOrderID Error: orderid:", nodeid)
-		return errors.BadRequest("GetNodeIDByOrderID", "Orderid err")
+		//调用vps服务
+		if http.AddVpsNode(node.OrderID) == false {
+			rsp.Rescode = 500
+			return errors.BadRequest("AddVpsNode", "Vps add err")
+		}
 	}
 
 	//调用vps服务
