@@ -140,8 +140,9 @@ func CheckMasterNode() {
 			if user != nil {
 				content := "您的主节点托管即将到期，如需续期，请尽快处理!"
 				subject := "主节点托管提示"
-				var mailTo []string
-				mailTo = append(mailTo, user.Account)
+				mailTo := []string{
+					user.Account,
+				}
 				mail.SendMail(mailTo, subject, content)
 				log.Debug("CheckMasterNode mail account:", user.Account, " vps:", v.Vps, " will expired")
 			}
@@ -153,8 +154,9 @@ func CheckMasterNode() {
 			if user != nil {
 				content := "您的主节点状态异常，请尽快检查处理!"
 				subject := "主节点托管提示"
-				var mailTo []string
-				mailTo = append(mailTo, user.Account)
+				mailTo := []string{
+					user.Account,
+				}
 				mail.SendMail(mailTo, subject, content)
 				log.Debug("CheckMasterNode mail account:", user.Account, " vps:", v.Vps, " status:", v.MNStatusEx)
 			}
