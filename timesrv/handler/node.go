@@ -9,6 +9,7 @@ import (
 	"github.com/myproject-0722/mn-hosted/lib/dao"
 	"github.com/myproject-0722/mn-hosted/lib/db"
 	"github.com/myproject-0722/mn-hosted/lib/http"
+	"github.com/myproject-0722/mn-hosted/lib/mail"
 
 	//	"github.com/myproject-0722/mn-hosted/lib/http"
 	log "github.com/sirupsen/logrus"
@@ -112,6 +113,47 @@ func CheckMasterNodeExpired() {
 		delerr := dao.NodeDao.UpdateMasternodeStatus(db.Factoty.GetSession(), v.Id, 2)
 		if delerr != nil {
 			log.Fatal("DelMasternodeByID orderid=", v.OrderID, i, delerr)
+		}
+	}
+}
+
+func CheckMasterNode() {
+	log.Debug("CheckMasterNode")
+	nowTime := time.Now()
+	nodelist, err := dao.NodeDao.GetValidMasternode(db.Factoty.GetSession(), nowTime)
+	if err != nil {
+		log.Error("GetExpiredTimeMasternode", err)
+		return
+	}
+
+	// 1小时后
+	hh, _ := time.ParseDuration("1h")
+	hh1 := nowTime.Add(hh * 1)
+	//fmt.Println(hh1)
+	for _, v := range nodelist {
+		//有效期一小时内提醒
+		if hh1.After(v.ExpireTime) {
+			//告警
+			//获取账号
+			user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), v.UserID)
+			if user != nil {
+				content := "您的主节点托管即将到期，如需续期，请尽快处理!"
+				subject := "主节点托管提示"
+				var mailTo []string
+				mailTo = append(mailTo, user.Account)
+				mail.SendMail(mailTo, subject, content)
+			}
+		}
+
+		if v.MNStatusEx == "POSE_BANNED" || v.MNStatusEx == "ERROR" {
+			user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), v.UserID)
+			if user != nil {
+				content := "您的主节点状态异常，请尽快检查处理!"
+				subject := "主节点托管提示"
+				var mailTo []string
+				mailTo = append(mailTo, user.Account)
+				mail.SendMail(mailTo, subject, content)
+			}
 		}
 	}
 }

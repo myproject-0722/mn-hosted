@@ -289,7 +289,7 @@ func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatus, &node.SyncStatusEx, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatusEx, &node.SyncStatusEx, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}
@@ -347,6 +347,25 @@ func (*nodeDao) GetUnfinishedMasternode(session *dbsession.DBSession) ([]*model.
 	for rows.Next() {
 		node := new(model.Masternode)
 		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.CreateTime, &node.ExpireTime, &node.UpdateTime)
+		if err != nil {
+			return nil, err
+		}
+		nodelist = append(nodelist, node)
+	}
+	//fmt.Println(coin.Id, coin.MNPrice, coin.MNRequired, coin.Volume)
+	return nodelist, nil
+}
+
+// get
+func (*nodeDao) GetValidMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, mnstatusex, createtime, expiretime, updatetime from t_masternode where syncstatusex = 'finish' and expiretime >= ?", expiretime)
+	if err != nil {
+		return nil, err
+	}
+	nodelist := make([]*model.Masternode, 0)
+	for rows.Next() {
+		node := new(model.Masternode)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.MNStatusEx, &node.CreateTime, &node.ExpireTime, &node.UpdateTime)
 		if err != nil {
 			return nil, err
 		}

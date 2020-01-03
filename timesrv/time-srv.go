@@ -56,6 +56,11 @@ func main() {
 
 		//handler.UpdateDashMNBlockData()
 	})
+
+	spec = "* */10 * * * ?"
+	c.AddFunc(spec, func() {
+		handler.CheckMasterNode()
+	})
 	c.Start()
 
 	<-exitProgram

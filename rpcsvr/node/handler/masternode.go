@@ -208,7 +208,7 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 		item.Earn = float64(v.Earn) / 1000000
 		item.SyncStatus = v.SyncStatus
 		item.SyncStatusEx = v.SyncStatusEx
-		item.MNStatus = v.MNStatus
+		item.MNStatus = v.MNStatusEx
 		item.CreateTime = v.CreateTime.Local().Format("2006-01-02 15:04:05")
 		item.ExpireTime = v.ExpireTime.Local().Format("2006-01-02 15:04:05")
 		rsp.Masternodelist = append(rsp.Masternodelist, item)
