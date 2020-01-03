@@ -63,11 +63,13 @@ func SyncDashMNStatus() {
 					return
 				}
 
-				//获取主节点状态
-				status, err = http.GetDashMNStatus(mnpayee)
-				if err != nil {
-					log.Error("GetDashMNStatus", err.Error())
-					return
+				if mnpayee != "" {
+					//获取主节点状态
+					status, err = http.GetDashMNStatus(mnpayee)
+					if err != nil {
+						log.Error("GetDashMNStatus", err.Error())
+						return
+					}
 				}
 			}
 
