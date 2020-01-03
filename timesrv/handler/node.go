@@ -143,6 +143,7 @@ func CheckMasterNode() {
 				var mailTo []string
 				mailTo = append(mailTo, user.Account)
 				mail.SendMail(mailTo, subject, content)
+				log.Debug("CheckMasterNode mail account:", user.Account, " vps:", v.Vps, " will expired")
 			}
 		}
 
@@ -155,6 +156,7 @@ func CheckMasterNode() {
 				var mailTo []string
 				mailTo = append(mailTo, user.Account)
 				mail.SendMail(mailTo, subject, content)
+				log.Debug("CheckMasterNode mail account:", user.Account, " vps:", v.Vps, " status:", v.MNStatusEx)
 			}
 		}
 	}
