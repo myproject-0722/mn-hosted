@@ -22,8 +22,7 @@ func SyncDashMNRewards() {
 			res, err := http.GetDashMNRewards(v.MNPayee)
 			if err != nil {
 				log.Error("GetDashRewards:", err.Error())
-				res = 0
-				//continue
+				continue
 			}
 
 			log.Debug(v.MNPayee, " rewards: ", res)
