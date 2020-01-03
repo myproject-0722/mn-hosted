@@ -282,7 +282,7 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 // get
 func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64, pageNo int32, perPagenum int32) ([]*model.Masternode, error) {
 	start := (pageNo - 1) * perPagenum
-	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatusex, syncstatusex, createtime, expiretime from t_masternode where userid = ? order by id limit ?, ?", userid, start, perPagenum)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatusex, syncstatusex, createtime, expiretime from t_masternode where userid = ? order by expiretime desc limit ?, ?", userid, start, perPagenum)
 	if err != nil {
 		return nil, err
 	}
