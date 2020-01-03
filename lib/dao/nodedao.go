@@ -358,7 +358,7 @@ func (*nodeDao) GetUnfinishedMasternode(session *dbsession.DBSession) ([]*model.
 
 // get
 func (*nodeDao) GetValidMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, mnstatusex, createtime, expiretime, updatetime from t_masternode where syncstatusex = 'finish' and expiretime >= ?", expiretime)
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, mnstatusex, createtime, expiretime, updatetime from t_masternode where syncstatusex = 'finish' and status = 1 and expiretime >= ?", expiretime)
 	if err != nil {
 		return nil, err
 	}

@@ -135,6 +135,7 @@ func CheckMasterNode() {
 		if hh1.After(v.ExpireTime) {
 			//告警
 			//获取账号
+			log.Debug("CheckMasterNode vps:", v.Vps, " will expired")
 			user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), v.UserID)
 			if user != nil {
 				content := "您的主节点托管即将到期，如需续期，请尽快处理!"
@@ -145,6 +146,7 @@ func CheckMasterNode() {
 			}
 		}
 
+		log.Debug("CheckMasterNode vps:", v.Vps, " status:", v.MNStatusEx)
 		if v.MNStatusEx == "POSE_BANNED" || v.MNStatusEx == "ERROR" {
 			user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), v.UserID)
 			if user != nil {
