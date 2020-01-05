@@ -66,9 +66,9 @@ func (s *Coin) GetCoinItem(ctx context.Context, req *node.CoinItemRequest, rsp *
 	rsp.Coin = new(node.CoinItem)
 	rsp.Coin.CoinName = v.CoinName
 	rsp.Coin.MNRequired = v.MNRequired
-	rsp.Coin.DPrice = float64(v.DPrice / 100)
-	rsp.Coin.MPrice = float64(v.MPrice / 100)
-	rsp.Coin.YPrice = float64(v.YPrice / 100)
+	rsp.Coin.DPrice = float64(v.DPrice) / 100
+	rsp.Coin.MPrice = float64(v.MPrice) / 100
+	rsp.Coin.YPrice = float64(v.YPrice) / 100
 	rsp.Coin.Volume = v.Volume
 	rsp.Coin.Roi = v.Roi
 	rsp.Coin.MonthlyIncome = v.MonthlyIncome
