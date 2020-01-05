@@ -366,6 +366,29 @@ func (s *Masternode) GetCount(ctx context.Context, req *api.Request, rsp *api.Re
 	return nil
 }
 
+func (s *Masternode) GetCoinInfo(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Masternode GetCoinInfo request")
+
+	coinname, ok := req.Get["coinname"]
+	if !ok || len(coinname.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.api.node", "coinname cannot be blank")
+	}
+
+	response, err := s.CoinClient.GetCoinItem(ctx, &node.CoinItemRequest{
+		CoinName: strings.Join(coinname.Values, " "),
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = 200
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	//fmt.Println(response)
+	return nil
+}
+
 func (s *Masternode) GetCoinRewards(ctx context.Context, req *api.Request, rsp *api.Response) error {
 	log.Debug("Received Masternode GetCoinRewards request")
 
