@@ -37,6 +37,9 @@ var (
 	VpsBaseUrl string = "http://127.0.0.1:18889/api/v1/"
 )
 */
+
+var LogLevelMap map[string]int
+
 type Conf struct {
 	Version string              `yaml:"version"`
 	Host    map[string]string   `yaml:"host"`
@@ -124,6 +127,10 @@ func GetLogDir() string {
 	return GetLog("basedir")
 }
 
+func GetLogLevel() int {
+	return LogLevelMap[GetLog("level")]
+}
+
 func init() {
 	prefixPath := os.Getenv("mnhosted-path")
 	if prefixPath == "" {
@@ -135,4 +142,6 @@ func init() {
 		fmt.Println("read yaml config error: ", err)
 	}
 	err = yaml.UnmarshalStrict(yamlFile, &config)
+
+	LogLevelMap = map[string]int{"panic": 0, "fatal": 1, "error": 2, "warn": 3, "info": 4, "debug": 5}
 }

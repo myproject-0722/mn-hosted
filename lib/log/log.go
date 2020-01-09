@@ -5,12 +5,14 @@ import (
 	"time"
 
 	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
+	"github.com/myproject-0722/mn-hosted/conf"
 	"github.com/rifflock/lfshook"
 	log "github.com/sirupsen/logrus"
 )
 
 func InitLog(logPath string, logFileName string) {
-	log.SetLevel(log.DebugLevel)
+	//log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.Level(conf.GetLogLevel()))
 
 	baseLogPaht := path.Join(logPath, logFileName)
 	writer, err := rotatelogs.New(

@@ -1,13 +1,13 @@
 version:
   0.0.1
 host:
-  jaeger: 161.189.42.122:6831
+  jaeger: 127.0.0.1:6831
   redis: 127.0.0.1:6379
   #mysql: 123456
   mysql: mnhosted:123456@tcp(localhost:3306)/mnhosted?charset=utf8&parseTime=true
 hosts:
-  kafka: ["161.189.42.122:9092"]
-  consul: ["161.189.42.122:8500"]
+  kafka: ["127.0.0.1:9092"]
+  consul: ["127.0.0.1:8500"]
 wallet:
   baseurl: http://mnhosted:123456@127.0.0.1:19998/
   user: mnhosted
@@ -17,3 +17,4 @@ vps:
   baseurl: http://127.0.0.1:18889/api/v1/
 log:
   basedir: /home/lixu/git/golang/src/mn-hosted/log/
+  level: debug

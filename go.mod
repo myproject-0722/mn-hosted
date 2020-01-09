@@ -1,6 +1,6 @@
 module github.com/myproject-0722/mn-hosted
 
-go 1.12
+go 1.13
 
 require (
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
@@ -27,6 +27,6 @@ require (
 	gopkg.in/yaml.v2 v2.2.4
 )
 
-replace github.com/micro/micro => github.com/micro/micro v1.5.0
+//replace github.com/micro/micro => github.com/micro/micro v1.5.0
 
-replace github.com/micro/go-micro => github.com/micro/go-micro v1.5.0
+//replace github.com/micro/go-micro => github.com/micro/go-micro v1.5.0
