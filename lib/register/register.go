@@ -14,7 +14,6 @@ import (
 	liblog "github.com/myproject-0722/mn-hosted/lib/log"
 	"github.com/myproject-0722/mn-hosted/lib/topic"
 	"github.com/myproject-0722/mn-hosted/lib/tracer"
-	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -40,7 +39,7 @@ func NewRegistry() registry.Registry {
 
 func NewMicroService(servername string) micro.Service {
 	liblog.InitLog(conf.GetLogDir(), servername+".log")
-	tracer.InitTracer(servername)
+	golbalTrace := tracer.InitTracer(servername)
 
 	brokerKafka := kafka.NewBroker(func(options *broker.Options) {
 		options.Addrs = conf.GetKafkaHosts()
@@ -58,7 +57,7 @@ func NewMicroService(servername string) micro.Service {
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*10),
 		micro.Broker(brokerKafka),
-		micro.WrapHandler(ocplugin.NewHandlerWrapper(opentracing.GlobalTracer())),
+		micro.WrapHandler(ocplugin.NewHandlerWrapper(golbalTrace)),
 	)
 
 	bk := microService.Server().Options().Broker

@@ -39,11 +39,12 @@ func NewTracer(servicename string, addr string) (opentracing.Tracer, io.Closer, 
 	return tracer, closer, err
 }
 
-func InitTracer(servicename string) {
-	t, io, err := NewTracer(servicename, conf.GetJaegerHost())
+func InitTracer(servicename string) opentracing.Tracer {
+	t, _, err := NewTracer(servicename, conf.GetJaegerHost())
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer io.Close()
+	//defer io.Close()
 	opentracing.SetGlobalTracer(t)
+	return opentracing.GlobalTracer()
 }
