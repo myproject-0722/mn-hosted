@@ -90,6 +90,7 @@ message MasternodeItem {
   string MNStatus = 10;
   string MNPayee = 11;
   string SyncStatusEx = 12;
+  int32 IsNotice = 13;
 }
 
 message MasterNodeListResponse {
