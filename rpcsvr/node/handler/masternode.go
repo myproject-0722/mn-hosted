@@ -196,8 +196,8 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 		return err
 	}
 
-	for i, v := range nodelist {
-		log.Debug("masternodelist get", i, v.SyncStatus)
+	for _, v := range nodelist {
+		//log.Debug("masternodelist get", i, v.SyncStatus)
 		item := new(node.MasternodeItem)
 		item.MNID = v.Id
 		item.CoinName = v.CoinName
@@ -209,11 +209,7 @@ func (s *Masternode) Get(ctx context.Context, req *node.MasterNodeListRequest, r
 		item.SyncStatus = v.SyncStatus
 		item.SyncStatusEx = v.SyncStatusEx
 		item.MNStatus = v.MNStatusEx
-		if v.IsNotice == 1 {
-			item.IsNotice = true
-		} else {
-			item.IsNotice = false
-		}
+		item.IsNotify = v.IsNotify
 
 		item.CreateTime = v.CreateTime.Local().Format("2006-01-02 15:04:05")
 		item.ExpireTime = v.ExpireTime.Local().Format("2006-01-02 15:04:05")

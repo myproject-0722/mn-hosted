@@ -49,7 +49,7 @@ type Masternode struct {
 	MNStatus     int32     `json:"mnstatus"`     //
 	SyncStatusEx string    `json:"syncstatusex"` //
 	MNStatusEx   string    `json:"mnstatusex"`   //
-	IsNotice     int32     `json:"isnotice"`     //
+	IsNotify     bool      `json:"isnotify"`     //
 	Earn         int64     `json:"earn"`         //
 	CreateTime   time.Time `json:"createtime"`   //
 	ExpireTime   time.Time `json:"expiretime"`   //

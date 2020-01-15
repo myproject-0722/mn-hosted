@@ -96,7 +96,7 @@ CREATE TABLE `t_masternode` (
   `mnstatus` int(11) DEFAULT 0 COMMENT '主节点状态 0非正常 1正常',
   `mnstatusex` varchar(32) DEFAULT "未知" COMMENT '主节点状态 ENABLED等',
   `earn` bigint(20) DEFAULT 0 COMMENT '收益',
-  `isnotice` int(11) DEFAULT 1 COMMENT '是否接受提醒',
+  `isnotify` tinyint(1) DEFAULT 1 COMMENT '是否接受提醒',
   `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `expiretime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '到期时间',
   `updatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -106,6 +106,9 @@ CREATE TABLE `t_masternode` (
   KEY (`mnpayee`),
   KEY (`vps`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+--ALTER TABLE t_masternode CHANGE isnotice isnotify tinyint(1);
+//ALTER TABLE t_masternode ALTER COLUMN isnotify SET DEFAULT 1;
 
 -- ----------------------------
 -- Table structure for t_dashblock

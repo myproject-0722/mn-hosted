@@ -90,7 +90,7 @@ message MasternodeItem {
   string MNStatus = 10;
   string MNPayee = 11;
   string SyncStatusEx = 12;
-  bool IsNotice = 13;
+  bool IsNotify = 13;
 }
 
 message MasterNodeListResponse {
@@ -121,6 +121,16 @@ message MasterNodeModifyRequest {
 }
 
 message MasterNodeModifyResponse {
+	int32 rescode = 1; 	//200 ok
+}
+
+message MasterNodeChangeNotifyRequest {
+  int64 userID = 1;
+  int64 MNID = 2;
+  bool isNotify = 3;
+}
+
+message MasterNodeChangeNotifyResponse {
 	int32 rescode = 1; 	//200 ok
 }
 

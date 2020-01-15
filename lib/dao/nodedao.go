@@ -282,14 +282,14 @@ func (*nodeDao) UpdateMasternodeExpireTime(session *dbsession.DBSession, coinnam
 // get
 func (*nodeDao) GetMasternodeByUserID(session *dbsession.DBSession, userid int64, pageNo int32, perPagenum int32) ([]*model.Masternode, error) {
 	start := (pageNo - 1) * perPagenum
-	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatusex, syncstatusex, isnotice, createtime, expiretime from t_masternode where userid = ? order by expiretime desc limit ?, ?", userid, start, perPagenum)
+	rows, err := session.Query("select id, coinname, mnkey, mnpayee, vps, earn, status, syncstatus, mnstatusex, syncstatusex, isnotify, createtime, expiretime from t_masternode where userid = ? order by expiretime desc limit ?, ?", userid, start, perPagenum)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatusEx, &node.SyncStatusEx, &node.IsNotice, &node.CreateTime, &node.ExpireTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.MNPayee, &node.Vps, &node.Earn, &node.Status, &node.SyncStatus, &node.MNStatusEx, &node.SyncStatusEx, &node.IsNotify, &node.CreateTime, &node.ExpireTime)
 		if err != nil {
 			return nil, err
 		}
