@@ -190,7 +190,7 @@ func (*nodeDao) GetNodeIDByOrderID(session *dbsession.DBSession, orderid int64) 
 
 // udpate
 func (*nodeDao) UpdateMasternodeNotify(session *dbsession.DBSession, mnid int64, isnotify bool) error {
-	_, err := session.Exec("update t_masternode set isnotify = ? where mnid = '?'", isnotify, mnid)
+	_, err := session.Exec("update t_masternode set isnotify = ? where id = '?'", isnotify, mnid)
 	if err != nil {
 		log.Error(err)
 		return err
