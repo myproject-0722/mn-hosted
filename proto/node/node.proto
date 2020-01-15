@@ -61,6 +61,7 @@ service masternode {
   rpc IsExsit(MasterNodeCheckRequest) returns (MasterNodeCheckResponse) {}
   rpc Get(MasterNodeListRequest) returns (MasterNodeListResponse) {}
   rpc GetCount(GetCountRequest) returns (GetCountResponse) {}
+  rpc ChangeNotify(MasterNodeChangeNotifyRequest) returns (MasterNodeChangeNotifyResponse) {}
 }
 
 message GetCountRequest {

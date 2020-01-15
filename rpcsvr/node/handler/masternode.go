@@ -111,6 +111,18 @@ func (s *Masternode) Modify(ctx context.Context, req *node.MasterNodeModifyReque
 	return nil
 }
 
+func (s *Masternode) ChangeNotify(ctx context.Context, req *node.MasterNodeChangeNotifyRequest, rsp *node.MasterNodeChangeNotifyResponse) error {
+	//获取主节点信息
+	err := dao.NodeDao.UpdateMasternodeNotify(db.Factoty.GetSession(), req.MNID, req.IsNotify)
+	if err != nil {
+		rsp.Rescode = 500
+		log.Error("UpdateMasternodeNotify Error", err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (s *Masternode) New(ctx context.Context, req *node.MasterNodeNewRequest, rsp *node.MasterNodeNewResponse) error {
 	log.Debug("Received MasterNodeNewRequest userid:", req.UserId, " coinname:", req.CoinName, " key:", req.MNKey, " orderid:", req.OrderID, " isrenew:", req.IsRenew)
 	//将订单纪录写入主节点表

@@ -133,6 +133,7 @@ type MasternodeService interface {
 	IsExsit(ctx context.Context, in *MasterNodeCheckRequest, opts ...client.CallOption) (*MasterNodeCheckResponse, error)
 	Get(ctx context.Context, in *MasterNodeListRequest, opts ...client.CallOption) (*MasterNodeListResponse, error)
 	GetCount(ctx context.Context, in *GetCountRequest, opts ...client.CallOption) (*GetCountResponse, error)
+	ChangeNotify(ctx context.Context, in *MasterNodeChangeNotifyRequest, opts ...client.CallOption) (*MasterNodeChangeNotifyResponse, error)
 }
 
 type masternodeService struct {
@@ -213,6 +214,16 @@ func (c *masternodeService) GetCount(ctx context.Context, in *GetCountRequest, o
 	return out, nil
 }
 
+func (c *masternodeService) ChangeNotify(ctx context.Context, in *MasterNodeChangeNotifyRequest, opts ...client.CallOption) (*MasterNodeChangeNotifyResponse, error) {
+	req := c.c.NewRequest(c.name, "Masternode.ChangeNotify", in)
+	out := new(MasterNodeChangeNotifyResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Masternode service
 
 type MasternodeHandler interface {
@@ -222,6 +233,7 @@ type MasternodeHandler interface {
 	IsExsit(context.Context, *MasterNodeCheckRequest, *MasterNodeCheckResponse) error
 	Get(context.Context, *MasterNodeListRequest, *MasterNodeListResponse) error
 	GetCount(context.Context, *GetCountRequest, *GetCountResponse) error
+	ChangeNotify(context.Context, *MasterNodeChangeNotifyRequest, *MasterNodeChangeNotifyResponse) error
 }
 
 func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...server.HandlerOption) error {
@@ -232,6 +244,7 @@ func RegisterMasternodeHandler(s server.Server, hdlr MasternodeHandler, opts ...
 		IsExsit(ctx context.Context, in *MasterNodeCheckRequest, out *MasterNodeCheckResponse) error
 		Get(ctx context.Context, in *MasterNodeListRequest, out *MasterNodeListResponse) error
 		GetCount(ctx context.Context, in *GetCountRequest, out *GetCountResponse) error
+		ChangeNotify(ctx context.Context, in *MasterNodeChangeNotifyRequest, out *MasterNodeChangeNotifyResponse) error
 	}
 	type Masternode struct {
 		masternode
@@ -266,4 +279,8 @@ func (h *masternodeHandler) Get(ctx context.Context, in *MasterNodeListRequest, 
 
 func (h *masternodeHandler) GetCount(ctx context.Context, in *GetCountRequest, out *GetCountResponse) error {
 	return h.MasternodeHandler.GetCount(ctx, in, out)
+}
+
+func (h *masternodeHandler) ChangeNotify(ctx context.Context, in *MasterNodeChangeNotifyRequest, out *MasterNodeChangeNotifyResponse) error {
+	return h.MasternodeHandler.ChangeNotify(ctx, in, out)
 }

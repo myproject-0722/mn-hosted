@@ -502,3 +502,44 @@ func (s *Masternode) Modify(ctx context.Context, req *api.Request, rsp *api.Resp
 
 	return nil
 }
+
+func (s *Masternode) ChangeNotify(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	log.Debug("Received Modify request")
+
+	mnid, ok := req.Get["mnid"]
+	if !ok || len(mnid.Values) == 0 {
+		return errors.BadRequest("go.mnhosted.srv.node", "mnid cannot be blank")
+	}
+	strMNID := strings.Join(mnid.Values, " ")
+	intMNID, err := strconv.ParseInt(strMNID, 10, 64)
+	if err != nil {
+		return errors.BadRequest("go.mnhosted.srv.node", err.Error())
+	}
+
+	isnotify, ok := req.Get["isnotify"]
+	strIsNotify := ""
+	if ok && len(isnotify.Values) > 0 {
+		strIsNotify = strings.Join(isnotify.Values, " ")
+	}
+
+	notify, err := strconv.ParseBool(strIsNotify)
+	if err != nil {
+		return errors.BadRequest("go.mnhosted.srv.node", err.Error())
+	}
+
+	response, err := s.Client.ChangeNotify(ctx, &node.MasterNodeChangeNotifyRequest{
+		MNID:     intMNID,
+		IsNotify: notify,
+	})
+	if err != nil {
+		return err
+	}
+
+	rsp.StatusCode = response.Rescode
+	b, _ := json.Marshal(response)
+	rsp.Body = string(b)
+	fmt.Println(rsp.Body)
+	fmt.Println(response)
+
+	return nil
+}

@@ -189,46 +189,57 @@ func (*nodeDao) GetNodeIDByOrderID(session *dbsession.DBSession, orderid int64) 
 }
 
 // udpate
-func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinname string, mnkey string, status int32) error {
-	result, err := session.Exec("update t_masternode set syncstatus = ? where coinname = '?' and mnkey = '?'", status, coinname, mnkey)
+func (*nodeDao) UpdateMasternodeNotify(session *dbsession.DBSession, mnid int64, isnotify bool) error {
+	_, err := session.Exec("update t_masternode set isnotify = ? where mnid = '?'", isnotify, mnid)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
+	return nil
+}
+
+// udpate
+func (*nodeDao) UpdateMasternodeSyncStatus(session *dbsession.DBSession, coinname string, mnkey string, status int32) error {
+	_, err := session.Exec("update t_masternode set syncstatus = ? where coinname = '?' and mnkey = '?'", status, coinname, mnkey)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	//log.Println(result)
 	return nil
 }
 
 // udpate
 func (*nodeDao) UpdateMasternodeMNStatus(session *dbsession.DBSession, vps string, key string, mnstatus int32, mnstatusex string) error {
-	result, err := session.Exec("update t_masternode set mnpayee = ? ,mnstatus = ? , mnstatusex = ? where vps = ? ", key, mnstatus, mnstatusex, vps)
+	_, err := session.Exec("update t_masternode set mnpayee = ? ,mnstatus = ? , mnstatusex = ? where vps = ? ", key, mnstatus, mnstatusex, vps)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
 	return nil
 }
 
 // udpate
 func (*nodeDao) UpdateMasternodeRewards(session *dbsession.DBSession, mnpayee string, rewards int64, coinname string) error {
-	result, err := session.Exec("update t_masternode set earn = ? where coinname = ? and mnpayee = ? ", rewards, coinname, mnpayee)
+	_, err := session.Exec("update t_masternode set earn = ? where coinname = ? and mnpayee = ? ", rewards, coinname, mnpayee)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
 	return nil
 }
 
 // udpate
 func (*nodeDao) UpdateMasternodeStatus(session *dbsession.DBSession, id int64, status int32) error {
-	result, err := session.Exec("update t_masternode set status = ? where id = ? ", status, id)
+	_, err := session.Exec("update t_masternode set status = ? where id = ? ", status, id)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
-	log.Println(result)
+	//log.Println(result)
 	return nil
 }
 
