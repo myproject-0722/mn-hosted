@@ -149,7 +149,7 @@ func CheckMasterNode() {
 		}
 
 		log.Debug("CheckMasterNode vps:", v.Vps, " status:", v.MNStatusEx)
-		if v.MNStatusEx == "POSE_BANNED" || v.MNStatusEx == "ERROR" {
+		if v.IsNotify && (v.MNStatusEx == "POSE_BANNED" || v.MNStatusEx == "ERROR") {
 			user := dao.UserDao.GetUserByUserID(db.Factoty.GetSession(), v.UserID)
 			if user != nil {
 				content := "您有主节点状态异常，请尽快登录托管平台检查处理!"

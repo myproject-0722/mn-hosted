@@ -369,14 +369,14 @@ func (*nodeDao) GetUnfinishedMasternode(session *dbsession.DBSession) ([]*model.
 
 // get
 func (*nodeDao) GetValidMasternode(session *dbsession.DBSession, expiretime time.Time) ([]*model.Masternode, error) {
-	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, mnstatusex, createtime, expiretime, updatetime from t_masternode where syncstatusex = 'finish' and status = 1 and expiretime >= ?", expiretime)
+	rows, err := session.Query("select id, coinname, mnkey, userid, orderid, status, syncstatus, mnstatus, mnstatusex, createtime, expiretime, updatetime, isnotify from t_masternode where syncstatusex = 'finish' and status = 1 and expiretime >= ?", expiretime)
 	if err != nil {
 		return nil, err
 	}
 	nodelist := make([]*model.Masternode, 0)
 	for rows.Next() {
 		node := new(model.Masternode)
-		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.MNStatusEx, &node.CreateTime, &node.ExpireTime, &node.UpdateTime)
+		err = rows.Scan(&node.Id, &node.CoinName, &node.MNKey, &node.UserID, &node.OrderID, &node.Status, &node.SyncStatus, &node.MNStatus, &node.MNStatusEx, &node.CreateTime, &node.ExpireTime, &node.UpdateTime, &node.IsNotify)
 		if err != nil {
 			return nil, err
 		}
