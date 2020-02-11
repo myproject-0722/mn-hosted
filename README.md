@@ -14,8 +14,13 @@ go get -u github.com/golang/protobuf/protoc-gen-go
 go get github.com/micro/protoc-gen-micro
 ## 5.依赖环境启动(仅方便测试)
 依赖的consul（注册中心）、nsq（消息队列），如无docker软件请自行安装
-### 启动
+### 编绎及启动
+cd bin
+./install.sh
+cd ..
 docker-compose up &
+cd bin
+./start.sh
 # 2.测试：
 ## 1.运行rpcsvr
 ### go run rpcsvr/user/main.go
